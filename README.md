@@ -36,3 +36,8 @@ Do not accept uploads, testimonials, corrections, or family documents until Priv
 ## Deployment
 
 Static site for GitHub + Cloudflare Pages. Suggested Cloudflare Pages settings: Framework preset `None`, build command blank, build output directory `/` or `.`.
+
+
+## v0.6 update
+
+Replaced primary contact buttons with Gmail web compose links, kept a default-email-app fallback, and added a copy-email button so contact works even when mailto links are not configured in the visitor's browser or operating system.

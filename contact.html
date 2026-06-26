@@ -30,12 +30,19 @@
 <main class="doc-main">
   <section class="panel highlight-panel">
     <h2>Project email</h2>
-    <p><strong>Email:</strong> <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
+    <p><strong>Email:</strong> <span class="email-text" id="projectEmail">allottedland@gmail.com</span></p>
+    <p class="small-note">The buttons below open Gmail in a new tab. If you use a different email app, copy the address and send from your own email account.</p>
     <div class="button-row">
-      <a class="button" href="mailto:allottedland@gmail.com?subject=AllottedLand.com%20Question">General question</a>
-      <a class="button secondary" href="mailto:allottedland@gmail.com?subject=AllottedLand%20Correction%20or%20Removal%20Request">Correction or removal request</a>
-      <a class="button tertiary" href="mailto:allottedland@gmail.com?subject=Volunteer%20to%20Help%20Index%20Maps">Volunteer to index maps</a>
+      <a class="button" href="https://mail.google.com/mail/?view=cm&fs=1&to=allottedland%40gmail.com&su=AllottedLand.com%20Question&body=Hello%20AllottedLand.com%2C%0A%0AI%20have%20a%20question%20about%3A%0A%0A" target="_blank" rel="noopener">General question</a>
+      <a class="button secondary" href="https://mail.google.com/mail/?view=cm&fs=1&to=allottedland%40gmail.com&su=AllottedLand%20Correction%20or%20Removal%20Request&body=Hello%20AllottedLand.com%2C%0A%0AI%20am%20requesting%20a%20correction%20or%20removal%20for%3A%0A%0APage%20or%20section%3A%0A%0AWhat%20needs%20to%20be%20corrected%20or%20removed%3A%0A%0ASource%20or%20reason%3A%0A%0A" target="_blank" rel="noopener">Correction or removal request</a>
+      <a class="button tertiary" href="https://mail.google.com/mail/?view=cm&fs=1&to=allottedland%40gmail.com&su=Volunteer%20to%20Help%20Index%20Maps&body=Hello%20AllottedLand.com%2C%0A%0AI%20would%20like%20to%20volunteer%20to%20help%20index%20maps.%0A%0A" target="_blank" rel="noopener">Volunteer to index maps</a>
+      <button class="button copy-button" type="button" data-copy="allottedland@gmail.com">Copy email address</button>
     </div>
+    <details class="fallback-details">
+      <summary>Use another email app instead</summary>
+      <p>Copy this address: <strong>allottedland@gmail.com</strong></p>
+      <p>Default email app link: <a href="mailto:allottedland@gmail.com?subject=AllottedLand.com%20Question">allottedland@gmail.com</a></p>
+    </details>
   </section>
 
   <section class="panel warning-panel">
@@ -68,7 +75,22 @@
 </main>
 <footer class="site-footer">
   <p><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="sources.html">Source records</a> · <a href="transcribe.html">Help index maps</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>
-  <p class="small-note">Contact: <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
+  <p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p>
 </footer>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(btn) {
+  btn.addEventListener('click', async function() {
+    const text = btn.getAttribute('data-copy');
+    try {
+      await navigator.clipboard.writeText(text);
+      const old = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(function() { btn.textContent = old; }, 1400);
+    } catch (e) {
+      window.prompt('Copy this email address:', text);
+    }
+  });
+});
+</script>
 </body>
 </html>
