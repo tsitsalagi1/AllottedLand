@@ -11,7 +11,7 @@ Recommended fields:
 - `sheet_title` — map sheet title or township label.
 - `township` — numeric township, without `T` or `N`.
 - `range` — numeric range, without `R` or `E`.
-- `township_range` — normalized string, for example `T26N R21E`.
+- `township_range` — normalized string, for example `T21N R12E`.
 - `loc_image_view` — public LOC image-view URL.
 - `loc_item_page` — main LOC item URL.
 - `ocr_status` — not OCRed, OCRed, verified, etc.
@@ -73,3 +73,15 @@ The county route file is critical for the “what county do I contact?” featur
 - `ocr-medium` — OCR text looks plausible but not confirmed.
 - `human-reviewed` — checked by a reviewer against map image.
 - `source-verified` — checked against original map plus Dawes/NARA/county/BIA source record.
+
+
+## v0.4 added files
+
+### data/map_review_status.json
+Project-level status fields for the current public index, including map pages indexed, verified name rows, public submission status, and next data goal.
+
+### data/sample_map_records.json
+Non-personal map-only examples used for testing and documentation. These records should not contain family names or private information.
+
+### data/transcription_queue_template.csv
+Template for future map transcription work. Public upload/intake is not open until privacy and review processes are finalized.
