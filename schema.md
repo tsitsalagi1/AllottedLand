@@ -90,3 +90,9 @@ Template for future map transcription work. Public upload/intake is not open unt
 ## Project contact
 
 Public project email: `allottedland@gmail.com`. Do not send private family documents or sensitive living-person information unless redacted and permission has been obtained.
+
+
+## Project update files
+
+- `changelog.html` — public project updates page for site visitors.
+- `CHANGELOG.md` — GitHub-facing version history for maintainers.
