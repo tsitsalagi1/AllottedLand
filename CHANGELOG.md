@@ -4,6 +4,19 @@ All notable public changes to AllottedLand.com will be documented here.
 
 The format follows the spirit of Keep a Changelog: versions are grouped by release and changes are written in plain language for users, families, researchers, and volunteers.
 
+## [0.8] - 2026-06
+
+### Added
+- Added the local Map Indexing Agent starter kit in `tools/map_indexing_agent.py`.
+- Added `tools/review_candidates.html` for local human review of OCR candidate rows.
+- Added `data/allotment_records_candidates.json` as a holding file for unverified OCR leads.
+- Added `docs/ocr-workflow.md` with installation, running, review, and safety instructions.
+- Added `tools/requirements.txt` for Python dependencies.
+
+### Safety
+- OCR results remain candidate leads only. Human review is required before any row is moved into `data/allotment_records.json`.
+- Public submissions and automatic publication remain closed.
+
 ## [0.7] - 2026-06
 
 ### Added

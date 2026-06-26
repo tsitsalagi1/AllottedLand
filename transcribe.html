@@ -52,6 +52,19 @@
     <p class="hint">Roll/enrollment numbers should be added only when supported by Dawes/NARA, allotment jacket, or other source-linked records. The LOC map layer alone should not pretend to be a complete roll-number database.</p>
   </section>
 
+
+  <section class="panel">
+    <h2>Map Indexing Agent starter kit</h2>
+    <p>Version 0.8 adds a local OCR helper that can download one public LOC map image, split it into tiles, run Tesseract OCR, and create candidate rows for human review. It does not publish records automatically.</p>
+    <div class="action-grid">
+      <a class="link-button" href="docs/ocr-workflow.md">Read OCR workflow</a>
+      <a class="link-button secondary" href="tools/map_indexing_agent.py">Download indexing agent</a>
+      <a class="link-button secondary" href="tools/review_candidates.html">Open review helper</a>
+      <a class="link-button secondary" href="tools/requirements.txt">Python requirements</a>
+    </div>
+    <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record.</p>
+  </section>
+
   <section class="panel disclaimer">
     <h2>No public upload form yet</h2>
     <p>Public submissions remain closed until privacy, consent, review, and removal processes are finalized. For now, this page explains the data plan so the project can grow carefully.</p>

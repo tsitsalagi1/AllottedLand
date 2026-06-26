@@ -96,3 +96,35 @@ Public project email: `allottedland@gmail.com`. Do not send private family docum
 
 - `changelog.html` — public project updates page for site visitors.
 - `CHANGELOG.md` — GitHub-facing version history for maintainers.
+
+
+## `data/allotment_records_candidates.json`
+
+Holding file for machine-extracted OCR candidate rows. These are not verified public records.
+
+Additional candidate-only fields may include:
+
+- `record_type` — usually `ocr-candidate`.
+- `run_id` — unique OCR run identifier.
+- `candidate_id` — unique row identifier.
+- `sheet_title` — map sheet title from `map_index.json`.
+- `image_source` — downloaded image URL used by the OCR agent.
+- `tile_id` — source tile identifier.
+- `tile_path` — local tile image path.
+- `tile_box` — tile position on the processed source image.
+- `bbox_in_tile` — OCR line bounding box within the tile.
+- `raw_ocr_line` — full OCR line as read by the machine.
+- `ocr_confidence_percent` — Tesseract confidence when available.
+- `review_status` — `not-reviewed`, `needs-second-review`, `approved`, or `rejected`.
+
+Candidate rows should be copied into `data/allotment_records.json` only after human review and cleanup.
+
+## `tools/` OCR helper files
+
+- `tools/map_indexing_agent.py` — local OCR candidate generator.
+- `tools/review_candidates.html` — local candidate review helper.
+- `tools/requirements.txt` — Python dependencies for the OCR agent.
+
+## `data/ocr_runs/`
+
+Local output folder for OCR run CSV files and tile images. Most generated run files should be reviewed before being committed to GitHub because they can become large.

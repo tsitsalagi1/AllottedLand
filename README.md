@@ -6,7 +6,7 @@ AllottedLand.com is a free public research-tool prototype for helping Native fam
 
 ## Current status
 
-Beta / Phase 1. Current public version: v0.7. See `CHANGELOG.md` and `changelog.html` for project updates.
+Beta / Phase 1. Current public version: v0.8. See `CHANGELOG.md` and `changelog.html` for project updates.
 
 Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
 
@@ -48,3 +48,16 @@ Replaced primary contact buttons with Gmail web compose links, kept a default-em
 ## v0.7 update
 
 Added public project-update tracking with `changelog.html` and `CHANGELOG.md`, updated navigation/footer links, and added the updates page to the sitemap.
+
+
+## v0.8 update
+
+Added a local Map Indexing Agent starter kit:
+
+- `tools/map_indexing_agent.py` — downloads one public LOC map image, tiles it, runs Tesseract OCR, and writes candidate rows.
+- `tools/review_candidates.html` — local browser review helper for OCR candidate rows.
+- `tools/requirements.txt` — Python package requirements.
+- `docs/ocr-workflow.md` — installation, running, review, and safety workflow.
+- `data/allotment_records_candidates.json` — unverified OCR candidate holding file.
+
+OCR candidates are not public verified records. Move rows into `data/allotment_records.json` only after human review against the original source image.
