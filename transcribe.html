@@ -55,14 +55,14 @@
 
   <section class="panel">
     <h2>Map Indexing Agent starter kit</h2>
-    <p>Version 0.8 adds a local OCR helper that can download one public LOC map image, split it into tiles, run Tesseract OCR, and create candidate rows for human review. It does not publish records automatically.</p>
+    <p>Version 0.9 improves the local OCR helper by reducing low-confidence junk rows, replacing the candidate file by default, supporting multiple Tesseract page-segmentation modes, and adding preprocessing options for old map images. It does not publish records automatically.</p>
     <div class="action-grid">
       <a class="link-button" href="docs/ocr-workflow.md">Read OCR workflow</a>
       <a class="link-button secondary" href="tools/map_indexing_agent.py">Download indexing agent</a>
       <a class="link-button secondary" href="tools/review_candidates.html">Open review helper</a>
       <a class="link-button secondary" href="tools/requirements.txt">Python requirements</a>
     </div>
-    <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record.</p>
+    <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record. If a run creates mostly gibberish, rerun with a higher confidence threshold or a different PSM/preprocessing option.</p>
   </section>
 
   <section class="panel disclaimer">

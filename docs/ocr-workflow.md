@@ -1,6 +1,6 @@
 # AllottedLand.com OCR / Map Indexing Workflow
 
-This is the first local Map Indexing Agent workflow for turning public Library of Congress allotment map images into reviewable candidate rows.
+This is the local Map Indexing Agent workflow for turning public Library of Congress allotment map images into reviewable candidate rows. Version 0.9 adds filtering and tuning options because old allotment maps often produce noisy OCR output.
 
 ## Safety rule
 
@@ -13,7 +13,7 @@ Do **not** publish machine OCR as verified data. OCR is only a lead. A human mus
 3. Enlarges and cleans the image for OCR.
 4. Splits the map into overlapping tiles.
 5. Runs Tesseract OCR on each tile.
-6. Writes candidate rows to `data/allotment_records_candidates.json` and CSV files in `data/ocr_runs/`.
+6. Writes candidate rows to `data/allotment_records_candidates.json`, a run-specific JSON file, and CSV files in `data/ocr_runs/`.
 7. Leaves every row marked `ocr-candidate` and `needs_human_review: yes`.
 
 ## Install requirements
@@ -35,13 +35,31 @@ tesseract --version
 Start with only a few tiles so you can confirm everything works:
 
 ```bash
-python tools/map_indexing_agent.py --page 29 --max-tiles 4
+python tools/map_indexing_agent.py --page 29 --max-tiles 4 --psm 11 --min-conf 45 --preprocess threshold
 ```
 
-Then run the full page:
+Then run more tiles once the first test works:
 
 ```bash
-python tools/map_indexing_agent.py --page 29
+python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 45 --preprocess threshold
+```
+
+If the output is still too noisy, raise the confidence threshold:
+
+```bash
+python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold
+```
+
+If the output misses too much, try multiple modes and lower confidence:
+
+```bash
+python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11,6 --min-conf 32 --preprocess all
+```
+
+Clear old candidates before a fresh test:
+
+```bash
+python tools/map_indexing_agent.py --clear-candidates
 ```
 
 The default image source is the Wikimedia Commons mirror of the LOC image file:
@@ -81,9 +99,10 @@ For each possible row:
 
 ## Output files
 
-- `data/allotment_records_candidates.json` — all candidate OCR rows.
+- `data/allotment_records_candidates.json` — latest candidate OCR rows by default. Use `--append` only if you intentionally want to accumulate runs.
 - `data/ocr_runs/page_###_candidates.csv` — per-page candidate CSV.
 - `data/ocr_runs/page_###_raw_lines.csv` — raw OCR line CSV.
+- `data/ocr_runs/loc###_YYYYMMDD_HHMMSS_candidates.json` — run-specific candidate JSON.
 - `data/ocr_runs/page_###_tiles/` — tile images for manual checking.
 
 ## Good confidence values
@@ -101,3 +120,16 @@ For each possible row:
 - Do not treat allotment numbers and roll/enrollment numbers as the same thing.
 - Do not publish living-person private information.
 - Do not publish sensitive documents before privacy, consent, and review procedures are finalized.
+
+
+## Useful tuning options
+
+- `--psm 11` — sparse text mode; often better for map labels.
+- `--psm 6` — assumes a uniform block of text; sometimes better for dense labels.
+- `--psm 11,6` — tries both and keeps the better candidate lines.
+- `--min-conf 45` — filters out low-confidence OCR. Raise it if output is junk; lower it if output misses too much.
+- `--preprocess threshold` — high-contrast black/white image.
+- `--preprocess soft` — lighter cleanup.
+- `--preprocess all` — tries soft, threshold, and invert.
+- `--append` — append candidates instead of replacing the local candidate file.
+- `--clear-candidates` — reset `data/allotment_records_candidates.json` to an empty list.

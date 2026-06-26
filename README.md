@@ -6,7 +6,7 @@ AllottedLand.com is a free public research-tool prototype for helping Native fam
 
 ## Current status
 
-Beta / Phase 1. Current public version: v0.8. See `CHANGELOG.md` and `changelog.html` for project updates.
+Beta / Phase 1. Current public version: v0.9. See `CHANGELOG.md` and `changelog.html` for project updates.
 
 Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
 
@@ -50,7 +50,7 @@ Replaced primary contact buttons with Gmail web compose links, kept a default-em
 Added public project-update tracking with `changelog.html` and `CHANGELOG.md`, updated navigation/footer links, and added the updates page to the sitemap.
 
 
-## v0.8 update
+## v0.9 update
 
 Added a local Map Indexing Agent starter kit:
 
