@@ -77,21 +77,21 @@
               <option value="Other / Unknown">Other / not sure</option>
             </select>
           </label>
-          <label>Ancestor first name <input id="wizFirst" placeholder="Claudie" autocomplete="off"></label>
-          <label>Ancestor last name <input id="wizLast" placeholder="Ketcher" autocomplete="off"></label>
-          <label>Name variants <input id="wizVariants" placeholder="Claude, Katcher, Ketchar" autocomplete="off"></label>
-          <label>Roll / enrollment no. <input id="wizRoll" placeholder="1637" autocomplete="off"></label>
+          <label>Ancestor first name <input id="wizFirst" placeholder="ancestor first name" autocomplete="off"></label>
+          <label>Ancestor last name <input id="wizLast" placeholder="ancestor last name" autocomplete="off"></label>
+          <label>Name variants <input id="wizVariants" placeholder="spelling variants, nicknames, married names" autocomplete="off"></label>
+          <label>Roll / enrollment no. <input id="wizRoll" placeholder="roll / enrollment #" autocomplete="off"></label>
           <label>Census card no. <input id="wizCard" placeholder="Card number" autocomplete="off"></label>
           <label>Allotment no. <input id="wizAllotment" placeholder="Allotment number" autocomplete="off"></label>
-          <label>Known county or town <input id="wizPlace" placeholder="Craig County, Tahlequah, Vinita" autocomplete="off"></label>
-          <label>Township <input id="wizTownship" placeholder="26" autocomplete="off"></label>
-          <label>Range <input id="wizRange" placeholder="21" autocomplete="off"></label>
-          <label>Section <input id="wizSection" placeholder="9" autocomplete="off"></label>
-          <label class="wide">Family story or notes <textarea id="wizStory" placeholder="Example: family said the land was near Vinita or Tahlequah; oil lease; tax sale; old cemetery nearby."></textarea></label>
+          <label>Known county or town <input id="wizPlace" placeholder="county, town, creek, cemetery, or place clue" autocomplete="off"></label>
+          <label>Township <input id="wizTownship" placeholder="township #" autocomplete="off"></label>
+          <label>Range <input id="wizRange" placeholder="range #" autocomplete="off"></label>
+          <label>Section <input id="wizSection" placeholder="section #" autocomplete="off"></label>
+          <label class="wide">Family story or notes <textarea id="wizStory" placeholder="Example: family story, old town, cemetery, oil lease, tax sale, deed, or county clue"></textarea></label>
         </div>
         <div class="buttons">
           <button type="submit">Build research path</button>
-          <button type="button" class="secondary" id="fillExample">Use example</button>
+          <button type="button" class="secondary" id="fillExample">Use map-only sample</button>
           <button type="button" class="ghost" id="clearWizard">Clear</button>
         </div>
       </form>
@@ -109,14 +109,14 @@
         <h2>Search the current index</h2>
         <p class="hint">Phase 1 searches the Library of Congress 1909 Cherokee Nation atlas by township/range. Name, roll number, and allotment-number search activates as verified records are added.</p>
         <div class="grid">
-          <label>First name <input id="givenName" placeholder="Claude" autocomplete="off"></label>
-          <label>Last name <input id="surname" placeholder="Ketcher" autocomplete="off"></label>
-          <label>Roll / enrollment no. <input id="rollNumber" placeholder="1637" autocomplete="off"></label>
+          <label>First name <input id="givenName" placeholder="first name" autocomplete="off"></label>
+          <label>Last name <input id="surname" placeholder="last name" autocomplete="off"></label>
+          <label>Roll / enrollment no. <input id="rollNumber" placeholder="roll / enrollment #" autocomplete="off"></label>
           <label>Allotment no. <input id="allotmentNumber" placeholder="Allotment #" autocomplete="off"></label>
-          <label>Township <input id="township" placeholder="26" autocomplete="off"></label>
-          <label>Range <input id="range" placeholder="21" autocomplete="off"></label>
-          <label>Township + range <input id="townshipRange" placeholder="T26N R21E" autocomplete="off"></label>
-          <label>Section <input id="section" placeholder="9" autocomplete="off"></label>
+          <label>Township <input id="township" placeholder="township #" autocomplete="off"></label>
+          <label>Range <input id="range" placeholder="range #" autocomplete="off"></label>
+          <label>Township + range <input id="townshipRange" placeholder="T21N R12E" autocomplete="off"></label>
+          <label>Section <input id="section" placeholder="section #" autocomplete="off"></label>
           <label class="wide">Any keyword <input id="keyword" placeholder="name, status, legal description, notes" autocomplete="off"></label>
         </div>
         <div class="buttons">
