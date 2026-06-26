@@ -28,7 +28,25 @@
   </div>
 </header>
 
+<section class="panel">
+  <p class="eyebrow">v0.11</p>
+  <h2>Tile Review Upgrade</h2>
+  <p>Improved the local OCR review helper with tile-image preview, bounding-box overlay, likely-noise filters, reject/hide controls, and better review trace output before any candidate becomes a public searchable row.</p>
+</section>
+
+
 <main class="doc-main">
+
+  <section class="panel">
+    <h2>v0.12 — Section-first map agent</h2>
+    <ul>
+      <li>Added section-first OCR mode so the agent can crop a specific PLSS section instead of OCRing random map tiles first.</li>
+      <li>Added commands for <code>--mode sections</code>, <code>--sections</code>, <code>--grid-pct</code>, and <code>--section-padding</code>.</li>
+      <li>Added section crop paths and section metadata to candidate rows.</li>
+      <li>Kept all OCR output as unverified candidate data until human review against the original source map.</li>
+    </ul>
+  </section>
+
   <section class="panel">
     <h2>Current version: v0.7</h2>
     <p>AllottedLand.com is still in Beta / Phase 1. The public site currently indexes Library of Congress Cherokee Nation atlas map pages and explains the research process. Verified public name, roll-number, allotment-number, testimonial, and land-loss datasets are not open yet.</p>

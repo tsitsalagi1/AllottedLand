@@ -139,3 +139,20 @@ python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 
 ```
 
 The agent also now checks common Windows install locations automatically.
+
+
+## Review trace fields
+
+Approved rows may include a `review_trace` object showing the original OCR candidate ID, tile ID, tile path, raw OCR line, and OCR confidence. This is optional but useful for auditability while records are still being reviewed.
+
+
+## v0.12 section-first candidate fields
+
+When the local OCR agent is run with `--mode sections`, candidate rows may also include:
+
+- `section_source` — usually `plss-grid-crop`, meaning the row came from a calculated section crop.
+- `section_image_path` — local path to the saved section crop image under `data/ocr_runs/`.
+- `section_grid` — grid rectangle and row/column metadata used to create the section crop.
+- `legal_description` — may be prefilled as `Section X, T##N R##E` for review convenience.
+
+These fields are review aids only. A section-first candidate is not a verified allotment record until a human checks the crop and original map source.

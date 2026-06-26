@@ -144,3 +144,17 @@ python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 
 ```
 
 The agent also now checks common Windows install locations automatically.
+
+
+## v0.12 section-first workflow
+
+A better approach for allotment maps is to anchor OCR to the fixed PLSS grid first:
+
+```cmd
+python tools\map_indexing_agent.py --clear-candidates
+python tools\map_indexing_agent.py --page 29 --mode sections --sections 24 --psm 11 --min-conf 45 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+
+Use `--sections all` to crop all 36 sections after testing one section. Use `--grid-pct left,top,right,bottom` to adjust the assumed map grid if section crops do not line up. Start with one section, inspect the saved crop under `data/ocr_runs/page_029_sections/`, then adjust.
+
+The section crop is a review aid. It does not prove ownership, title, heirship, or verification.

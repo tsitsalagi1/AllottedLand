@@ -1,32 +1,21 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.10
+AllottedLand.com Map Indexing Agent v0.12
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
 
+What changed in v0.12:
+  - Adds section-first extraction using the PLSS township section grid.
+  - Supports --sections 24 or --sections all or --sections 1,2,3.
+  - Saves one crop image per section so reviewers can inspect a fixed legal land unit.
+  - Adds section, section_source, section_image_path, and section_grid metadata to candidates.
+  - Keeps the older tile workflow as a fallback.
+
 What changed in v0.10:
   - Auto-detects common Windows Tesseract install paths.
   - Adds --tesseract-cmd so Windows users can point directly to tesseract.exe if PATH fails.
-
-What changed in v0.9:
-  - Replaces the candidate file by default instead of endlessly appending noisy rows.
-  - Adds confidence filtering so low-quality OCR junk is reduced.
-  - Supports multiple Tesseract PSM modes in one run, such as --psm 11,6.
-  - Adds preprocessing choices: soft, threshold, invert, and all.
-  - Writes a run-specific JSON file and a CSV, plus the standard review JSON.
-  - Adds --clear-candidates to quickly reset the local candidate file.
-
-Install:
-  pip install -r tools/requirements.txt
-  Also install the Tesseract OCR engine. If `tesseract -v` does not work, use --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe".
-
-Good first command:
-  python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 45 --preprocess threshold
-
-If that misses too much, lower confidence:
-  python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11,6 --min-conf 32 --preprocess all
 
 Safety rule:
   Treat every OCR row as a lead. Move a row into data/allotment_records.json
@@ -58,17 +47,27 @@ IMAGE_DIR = RUNS_DIR / "source_images"
 COMMONS_URL_TEMPLATE = "https://commons.wikimedia.org/wiki/Special:FilePath/Cherokee_Nation_LOC_2011585467-{page}.jpg"
 LOC_VIEW_TEMPLATE = "https://www.loc.gov/resource/g4021gm.gla00497/?sp={page}&st=image"
 
+# Standard PLSS section numbering when the map is north-up:
+# top row is 6 5 4 3 2 1, then row 2 is 7 8 9 10 11 12, etc.
+SECTION_GRID = [
+    [6, 5, 4, 3, 2, 1],
+    [7, 8, 9, 10, 11, 12],
+    [18, 17, 16, 15, 14, 13],
+    [19, 20, 21, 22, 23, 24],
+    [30, 29, 28, 27, 26, 25],
+    [31, 32, 33, 34, 35, 36],
+]
+
 SKIP_LINE_PATTERNS = [
     r"^township\b", r"^range\b", r"^section\b", r"^cherokee\b", r"^scale\b",
     r"^legend\b", r"^index\b", r"^map\b", r"^north\b", r"^south\b", r"^east\b", r"^west\b",
     r"^page\b", r"^loc\b", r"^image\b", r"^not\s+ocred\b",
 ]
 
-# Words/abbreviations often seen on maps that are not allottee names. We keep this
-# conservative so possible family names are not accidentally filtered away.
 MAP_NOISE_WORDS = {
     "road", "roads", "creek", "river", "branch", "school", "cem", "cemetery", "church",
     "railroad", "r.r", "rr", "town", "townsite", "boundary", "line", "reserve", "reservation",
+    "north", "south", "east", "west", "range", "township", "muskogee", "sale", "building",
 }
 
 @dataclass
@@ -80,6 +79,10 @@ class Tile:
     bottom: int
     path: Path
     preprocess: str
+    section: str = ""
+    section_source: str = ""
+    section_image_path: str = ""
+    section_grid: dict[str, Any] | None = None
 
 
 def load_map_index() -> list[dict[str, Any]]:
@@ -96,25 +99,16 @@ def find_page(page_no: int) -> dict[str, Any]:
 
 
 def resolve_tesseract(tesseract_cmd: str | None = None) -> str:
-    """Return a usable tesseract command/path and configure pytesseract.
-
-    Windows often installs Tesseract correctly but does not add it to PATH.
-    This function first respects --tesseract-cmd, then PATH, then common
-    Windows installation folders.
-    """
     candidates: list[str] = []
     if tesseract_cmd:
         candidates.append(tesseract_cmd)
-
     found = shutil.which("tesseract")
     if found:
         candidates.append(found)
-
     candidates.extend([
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
     ])
-
     for candidate in candidates:
         if not candidate:
             continue
@@ -122,7 +116,6 @@ def resolve_tesseract(tesseract_cmd: str | None = None) -> str:
         if shutil.which(candidate) or path.exists():
             pytesseract.pytesseract.tesseract_cmd = str(candidate)
             return str(candidate)
-
     raise RuntimeError(
         "Tesseract OCR engine was not found. Install Tesseract first, or run with "
         "--tesseract-cmd \"C:\\Program Files\\Tesseract-OCR\\tesseract.exe\"."
@@ -141,7 +134,7 @@ def download_image(page_no: int, image_url: str | None = None, overwrite: bool =
     if out_path.exists() and not overwrite:
         return out_path
     url = image_url or COMMONS_URL_TEMPLATE.format(page=page_no)
-    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.10 (+https://allottedland.com)"}
+    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.12 (+https://allottedland.com)"}
     resp = requests.get(url, headers=headers, timeout=120, allow_redirects=True)
     if resp.status_code != 200 or not resp.content:
         raise RuntimeError(f"Could not download image for page {page_no}: HTTP {resp.status_code} from {url}")
@@ -159,7 +152,6 @@ def base_image(path: Path, scale: float = 3.0) -> Image.Image:
 
 
 def preprocess_image(img: Image.Image, mode: str) -> Image.Image:
-    """Return an OCR-friendly copy using only Pillow, no OpenCV dependency."""
     out = img.copy()
     if mode == "soft":
         out = out.filter(ImageFilter.SHARPEN)
@@ -167,7 +159,6 @@ def preprocess_image(img: Image.Image, mode: str) -> Image.Image:
         return out
     if mode == "threshold":
         out = out.filter(ImageFilter.SHARPEN)
-        # Adaptive-ish simple threshold: keeps black text, removes light paper/background.
         out = out.point(lambda p: 255 if p > 178 else 0)
         out = ImageOps.expand(out, border=25, fill=255)
         return out
@@ -179,6 +170,66 @@ def preprocess_image(img: Image.Image, mode: str) -> Image.Image:
         out = ImageOps.expand(out, border=25, fill=255)
         return out
     raise ValueError(f"Unknown preprocess mode: {mode}")
+
+
+def parse_psm_list(psm_value: str) -> list[int]:
+    out: list[int] = []
+    for item in str(psm_value).split(','):
+        item = item.strip()
+        if item:
+            out.append(int(item))
+    return out or [11]
+
+
+def parse_sections(value: str | None) -> list[int]:
+    if not value:
+        return []
+    value = value.strip().lower()
+    if value in {"all", "*"}:
+        return list(range(1, 37))
+    sections: list[int] = []
+    for part in value.split(','):
+        part = part.strip()
+        if not part:
+            continue
+        if '-' in part:
+            a, b = [int(x.strip()) for x in part.split('-', 1)]
+            sections.extend(range(min(a, b), max(a, b) + 1))
+        else:
+            sections.append(int(part))
+    return sorted({s for s in sections if 1 <= s <= 36})
+
+
+def section_to_row_col(section: int) -> tuple[int, int]:
+    for r, row in enumerate(SECTION_GRID):
+        for c, value in enumerate(row):
+            if value == section:
+                return r, c
+    raise ValueError(f"Invalid section number: {section}")
+
+
+def parse_grid_pct(value: str, w: int, h: int) -> tuple[int, int, int, int]:
+    """Parse left,top,right,bottom as percentages/fractions or pixels.
+
+    Examples:
+      --grid-pct 0.07,0.12,0.93,0.88
+      --grid-pct 7,12,93,88
+      --grid-pct 300,420,5100,5200
+    """
+    parts = [float(p.strip()) for p in value.split(',')]
+    if len(parts) != 4:
+        raise ValueError("--grid-pct must contain four values: left,top,right,bottom")
+    # 0..1 fractions
+    if all(0 <= p <= 1 for p in parts):
+        l, t, r, b = parts
+        return int(l * w), int(t * h), int(r * w), int(b * h)
+    # 0..100 percentages
+    if all(0 <= p <= 100 for p in parts):
+        l, t, r, b = [p / 100.0 for p in parts]
+        return int(l * w), int(t * h), int(r * w), int(b * h)
+    # pixels
+    l, t, r, b = parts
+    return int(l), int(t), int(r), int(b)
 
 
 def make_tiles(img: Image.Image, page_no: int, tile_size: int, overlap: int, preprocess: str) -> list[Tile]:
@@ -202,9 +253,54 @@ def make_tiles(img: Image.Image, page_no: int, tile_size: int, overlap: int, pre
     return tiles
 
 
+def make_section_crops(
+    img: Image.Image,
+    page_no: int,
+    sections: list[int],
+    preprocess: str,
+    grid_pct: str,
+    padding: int = 30,
+) -> list[Tile]:
+    crops: list[Tile] = []
+    section_dir = RUNS_DIR / f"page_{page_no:03}_sections" / preprocess
+    section_dir.mkdir(parents=True, exist_ok=True)
+    w, h = img.size
+    gl, gt, gr, gb = parse_grid_pct(grid_pct, w, h)
+    gl, gt = max(0, gl), max(0, gt)
+    gr, gb = min(w, gr), min(h, gb)
+    cell_w = (gr - gl) / 6.0
+    cell_h = (gb - gt) / 6.0
+    grid_meta = {"left": gl, "top": gt, "right": gr, "bottom": gb, "grid_pct": grid_pct}
+
+    for section in sections:
+        row, col = section_to_row_col(section)
+        left = int(gl + col * cell_w) - padding
+        top = int(gt + row * cell_h) - padding
+        right = int(gl + (col + 1) * cell_w) + padding
+        bottom = int(gt + (row + 1) * cell_h) + padding
+        left, top = max(0, left), max(0, top)
+        right, bottom = min(w, right), min(h, bottom)
+        tile_id = f"p{page_no:03}_{preprocess}_s{section:02}"
+        crop_path = section_dir / f"{tile_id}.jpg"
+        img.crop((left, top, right, bottom)).save(crop_path, quality=94)
+        crops.append(Tile(
+            tile_id=tile_id,
+            left=left,
+            top=top,
+            right=right,
+            bottom=bottom,
+            path=crop_path,
+            preprocess=preprocess,
+            section=str(section),
+            section_source="plss-grid-crop",
+            section_image_path=str(crop_path.relative_to(PROJECT_ROOT)),
+            section_grid={**grid_meta, "row": row, "col": col, "section": section},
+        ))
+    return crops
+
+
 def clean_text(text: str) -> str:
     text = re.sub(r"\s+", " ", text or "").strip()
-    # Do not over-normalize; reviewers need to see OCR weirdness.
     text = text.replace("|", "I")
     return text
 
@@ -220,10 +316,10 @@ def token_quality(text: str) -> dict[str, int | float]:
 
 def looks_like_candidate(text: str, avg_conf: float | None, min_conf: float) -> bool:
     t = clean_text(text)
-    if len(t) < 3 or len(t) > 90:
+    if len(t) < 2 or len(t) > 100:
         return False
     q = token_quality(t)
-    if q["letters"] < 3:
+    if q["letters"] < 2 and q["digits"] < 2:
         return False
     if avg_conf is not None and avg_conf < min_conf:
         return False
@@ -233,26 +329,22 @@ def looks_like_candidate(text: str, avg_conf: float | None, min_conf: float) -> 
     words = {w.strip(".,;:'\"()[]{}-_").lower() for w in lower.split()}
     if words and words.issubset(MAP_NOISE_WORDS):
         return False
-    # Reject mostly number/grid noise or OCR hallucinations with too much punctuation.
-    if q["digits"] > q["letters"] * 2:
+    if q["digits"] > q["letters"] * 3 and q["letters"] > 0:
         return False
-    if q["punct"] > q["letters"]:
+    if q["punct"] > q["letters"] + q["digits"]:
         return False
-    if q["alpha_ratio"] < 0.38:
+    if q["alpha_ratio"] < 0.22 and q["digits"] < 2:
         return False
     return True
 
 
 def guess_name_and_allotment(line: str) -> tuple[str, str]:
-    """Conservative guess. This is for review only, not verification."""
     text = clean_text(line)
-    # Allotment numbers tend to be short/medium standalone numbers. Avoid decimals.
     nums = re.findall(r"(?<![.\d])\b\d{2,5}\b(?![.\d])", text)
     allotment_number = nums[0] if nums else ""
     name = re.sub(r"(?<![.\d])\b\d{1,5}\b(?![.\d])", " ", text)
     name = re.sub(r"[^A-Za-z .,'\-]", " ", name)
     name = clean_text(name)
-    # Remove obvious repeated single-letter OCR junk like "I I o I".
     parts = name.split()
     if parts and sum(1 for p in parts if len(p) == 1) > max(2, len(parts) // 2):
         return "", allotment_number
@@ -268,16 +360,6 @@ def split_name(name: str) -> tuple[str, str]:
     return " ".join(parts[:-1]), parts[-1]
 
 
-def parse_psm_list(psm_value: str) -> list[int]:
-    out: list[int] = []
-    for item in str(psm_value).split(','):
-        item = item.strip()
-        if not item:
-            continue
-        out.append(int(item))
-    return out or [11]
-
-
 def get_lines_from_tesseract(tile: Tile, psm: int, min_conf: float) -> list[dict[str, Any]]:
     config = f"--oem 3 --psm {psm} -l eng"
     data = pytesseract.image_to_data(Image.open(tile.path), config=config, output_type=pytesseract.Output.DICT)
@@ -289,7 +371,7 @@ def get_lines_from_tesseract(tile: Tile, psm: int, min_conf: float) -> list[dict
         grouped.setdefault(key, []).append(i)
 
     lines: list[dict[str, Any]] = []
-    for key, idxs in grouped.items():
+    for _, idxs in grouped.items():
         words = [clean_text(data["text"][i]) for i in idxs if clean_text(data["text"][i])]
         line = clean_text(" ".join(words))
         confs: list[float] = []
@@ -316,19 +398,23 @@ def get_lines_from_tesseract(tile: Tile, psm: int, min_conf: float) -> list[dict
             "bbox_in_tile": {"left": min(lefts), "top": min(tops), "right": max(rights), "bottom": max(bottoms)},
             "raw_line": line,
             "ocr_confidence_percent": avg_conf,
+            "section": tile.section,
+            "section_source": tile.section_source,
+            "section_image_path": tile.section_image_path,
+            "section_grid": tile.section_grid or {},
         })
     return lines
 
 
 def dedupe_lines(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Keep the best confidence for repeated/near-identical text from multiple modes."""
     best: dict[str, dict[str, Any]] = {}
     for line in lines:
         text_key = re.sub(r"[^a-z0-9]", "", line.get("raw_line", "").lower())
         if not text_key:
             continue
+        section_key = line.get("section") or ""
         tile_key = line.get("tile_id", "").split("_t")[-1]
-        key = f"{tile_key}:{text_key}"
+        key = f"{section_key}:{tile_key}:{text_key}"
         conf = line.get("ocr_confidence_percent") or 0
         if key not in best or conf > (best[key].get("ocr_confidence_percent") or 0):
             best[key] = line
@@ -338,6 +424,10 @@ def dedupe_lines(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def candidate_from_line(line: dict[str, Any], page: dict[str, Any], run_id: str, idx: int) -> dict[str, Any]:
     guessed_name, guessed_allotment = guess_name_and_allotment(line["raw_line"])
     given, surname = split_name(guessed_name)
+    section = str(line.get("section") or "")
+    legal_description = ""
+    if section:
+        legal_description = f"Section {section}, {page.get('township_range', '')}".strip()
     return {
         "record_type": "ocr-candidate",
         "run_id": run_id,
@@ -357,10 +447,13 @@ def candidate_from_line(line: dict[str, Any], page: dict[str, Any], run_id: str,
         "township_range": page.get("township_range", ""),
         "township": page.get("township", ""),
         "range": page.get("range", ""),
-        "section": "",
+        "section": section,
+        "section_source": line.get("section_source", ""),
+        "section_image_path": line.get("section_image_path", ""),
+        "section_grid": line.get("section_grid", {}),
         "county": "",
         "state": "Oklahoma",
-        "legal_description": "",
+        "legal_description": legal_description,
         "source_link": page.get("loc_image_view") or LOC_VIEW_TEMPLATE.format(page=page.get("loc_page", "")),
         "image_source": COMMONS_URL_TEMPLATE.format(page=page.get("loc_page", "")),
         "tile_id": line.get("tile_id", ""),
@@ -400,7 +493,7 @@ def write_csv(path: Path, rows: Iterable[dict[str, Any]]) -> None:
     flat_rows: list[dict[str, Any]] = []
     for row in rows:
         flat = dict(row)
-        for key in ("tile_box", "bbox_in_tile"):
+        for key in ("tile_box", "bbox_in_tile", "section_grid"):
             if isinstance(flat.get(key), dict):
                 for k, v in flat[key].items():
                     flat[f"{key}_{k}"] = v
@@ -423,14 +516,18 @@ def main() -> None:
     parser.add_argument("--page", type=int, required=False, help="LOC sequence page number, e.g. 29")
     parser.add_argument("--image-url", default=None, help="Optional direct image URL. Defaults to Wikimedia Commons LOC mirror.")
     parser.add_argument("--overwrite-image", action="store_true", help="Redownload source image even if cached.")
-    parser.add_argument("--scale", type=float, default=3.0, help="Image scale before tiling/OCR. Default: 3.0")
+    parser.add_argument("--scale", type=float, default=3.0, help="Image scale before cropping/OCR. Default: 3.0")
+    parser.add_argument("--mode", choices=["tiles", "sections"], default="tiles", help="OCR random tiles or PLSS section crops. Default: tiles")
+    parser.add_argument("--sections", default="", help="Section-first mode: e.g. 24, 24,25, 19-24, or all")
+    parser.add_argument("--grid-pct", default="7,12,93,88", help="Section grid left,top,right,bottom as percent/fraction/pixels. Default: 7,12,93,88")
+    parser.add_argument("--section-padding", type=int, default=30, help="Extra pixels around each section crop after scaling. Default: 30")
     parser.add_argument("--tile-size", type=int, default=1200, help="Tile size in pixels after scaling. Default: 1200")
     parser.add_argument("--overlap", type=int, default=220, help="Overlap between tiles in pixels. Default: 220")
     parser.add_argument("--psm", default="11", help="Tesseract PSM mode(s), e.g. 11 or 11,6. Default: 11")
     parser.add_argument("--preprocess", choices=["soft", "threshold", "invert", "all"], default="threshold", help="Preprocessing mode. Default: threshold")
     parser.add_argument("--tesseract-cmd", default=None, help="Optional full path to tesseract.exe, useful on Windows if PATH fails.")
     parser.add_argument("--min-conf", type=float, default=45.0, help="Minimum average OCR confidence. Default: 45")
-    parser.add_argument("--max-tiles", type=int, default=0, help="Limit tile count for quick testing. 0 means no limit.")
+    parser.add_argument("--max-tiles", type=int, default=0, help="Limit tile/section count for quick testing. 0 means no limit.")
     parser.add_argument("--append", action="store_true", help="Append to data/allotment_records_candidates.json instead of replacing it.")
     parser.add_argument("--clear-candidates", action="store_true", help="Clear data/allotment_records_candidates.json and exit.")
     args = parser.parse_args()
@@ -444,10 +541,10 @@ def main() -> None:
 
     check_tesseract(args.tesseract_cmd)
     page = find_page(args.page)
-    run_id = f"loc{args.page:03}_{time.strftime('%Y%m%d_%H%M%S')}"
+    run_id = f"loc{args.page:03}_{args.mode}_{time.strftime('%Y%m%d_%H%M%S')}"
     print(f"Run: {run_id}")
     print(f"Page: {page.get('loc_page')} — {page.get('sheet_title')}")
-    print(f"PSM: {args.psm} | preprocess: {args.preprocess} | min_conf: {args.min_conf}")
+    print(f"Mode: {args.mode} | PSM: {args.psm} | preprocess: {args.preprocess} | min_conf: {args.min_conf}")
 
     image_path = download_image(args.page, args.image_url, overwrite=args.overwrite_image)
     base = base_image(image_path, scale=args.scale)
@@ -455,35 +552,45 @@ def main() -> None:
     psm_modes = parse_psm_list(args.psm)
 
     all_raw_lines: list[dict[str, Any]] = []
-    tile_count = 0
+    processed_count = 0
     for mode in preprocess_modes:
         img = preprocess_image(base, mode)
-        tiles = make_tiles(img, args.page, args.tile_size, args.overlap, mode)
+        if args.mode == "sections":
+            sections = parse_sections(args.sections or "all")
+            units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding)
+            label = "section crops"
+        else:
+            units = make_tiles(img, args.page, args.tile_size, args.overlap, mode)
+            label = "tiles"
         if args.max_tiles and args.max_tiles > 0:
-            tiles = tiles[: args.max_tiles]
-        print(f"Tiles to OCR for {mode}: {len(tiles)}")
-        tile_count += len(tiles)
-        for tile in tiles:
-            tile_lines: list[dict[str, Any]] = []
+            units = units[: args.max_tiles]
+        print(f"{label.capitalize()} to OCR for {mode}: {len(units)}")
+        processed_count += len(units)
+        for unit in units:
+            unit_lines: list[dict[str, Any]] = []
             for psm in psm_modes:
-                tile_lines.extend(get_lines_from_tesseract(tile, psm, args.min_conf))
-            tile_lines = dedupe_lines(tile_lines)
-            all_raw_lines.extend(tile_lines)
-            print(f"{tile.tile_id}: {len(tile_lines)} candidate lines")
+                unit_lines.extend(get_lines_from_tesseract(unit, psm, args.min_conf))
+            unit_lines = dedupe_lines(unit_lines)
+            all_raw_lines.extend(unit_lines)
+            unit_label = f"section {unit.section}" if unit.section else unit.tile_id
+            print(f"{unit.tile_id} ({unit_label}): {len(unit_lines)} candidate lines")
 
     all_raw_lines = dedupe_lines(all_raw_lines)
     candidates = [candidate_from_line(line, page, run_id, i + 1) for i, line in enumerate(all_raw_lines)]
 
     write_candidates(candidates, append=args.append)
-    write_csv(RUNS_DIR / f"page_{args.page:03}_candidates.csv", candidates)
-    write_csv(RUNS_DIR / f"page_{args.page:03}_raw_lines.csv", all_raw_lines)
+    suffix = f"page_{args.page:03}_{args.mode}"
+    write_csv(RUNS_DIR / f"{suffix}_candidates.csv", candidates)
+    write_csv(RUNS_DIR / f"{suffix}_raw_lines.csv", all_raw_lines)
     write_json(RUNS_DIR / f"{run_id}_candidates.json", candidates)
 
-    print(f"Tiles processed: {tile_count}")
+    print(f"Units processed: {processed_count}")
     print(f"Candidate rows after filtering: {len(candidates)}")
     print(f"Wrote/updated: {CANDIDATES_PATH.relative_to(PROJECT_ROOT)}")
-    print(f"Wrote CSV: data/ocr_runs/page_{args.page:03}_candidates.csv")
+    print(f"Wrote CSV: data/ocr_runs/{suffix}_candidates.csv")
     print(f"Wrote run JSON: data/ocr_runs/{run_id}_candidates.json")
+    if args.mode == "sections":
+        print("Next: review section crop images under data/ocr_runs/page_XXX_sections/ and adjust --grid-pct if section boxes are off.")
     print("Next: open tools/review_candidates.html locally and review candidates before publishing any row.")
 
 

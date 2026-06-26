@@ -6,24 +6,39 @@
   <title>AllottedLand OCR Candidate Review</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f7f4ed; color: #1d1b18; }
-    header, main { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
     header { background: #24352f; color: white; max-width: none; }
-    header div { max-width: 1100px; margin: 0 auto; }
+    header div { max-width: 1180px; margin: 0 auto; }
     .panel { background: white; border: 1px solid #ddd2bf; border-radius: 16px; padding: 18px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
     label { display: block; font-weight: 700; margin: 12px 0 6px; }
-    input[type="file"], input[type="search"], textarea { width: 100%; padding: 10px; border: 1px solid #bbae98; border-radius: 10px; box-sizing: border-box; }
+    input[type="file"], input[type="search"], input[type="number"], textarea, input { width: 100%; padding: 10px; border: 1px solid #bbae98; border-radius: 10px; box-sizing: border-box; }
     button { background: #7b3f25; color: white; border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; margin: 4px 4px 4px 0; }
     button.secondary { background: #33433d; }
     button.copy { background: #27614d; }
+    button.reject { background: #8c2d20; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { border-bottom: 1px solid #eadfcd; padding: 8px; text-align: left; vertical-align: top; }
-    th { background: #f1eadf; position: sticky; top: 0; }
+    th { background: #f1eadf; position: sticky; top: 0; z-index: 1; }
+    tr.selected { outline: 2px solid #27614d; background: #fbf7ee; }
+    tr.hidden-row { display: none; }
     .muted { color: #6b6258; font-size: 14px; }
-    .pill { display: inline-block; padding: 2px 7px; border-radius: 999px; background: #f1eadf; font-size: 12px; }
+    .pill { display: inline-block; padding: 2px 7px; border-radius: 999px; background: #f1eadf; font-size: 12px; margin: 1px; }
+    .pill.warn { background: #ffe8b5; }
+    .pill.good { background: #dff2e7; }
+    .pill.bad { background: #ffd8ce; }
     pre { white-space: pre-wrap; background: #1d1b18; color: #f7f4ed; padding: 12px; border-radius: 12px; max-height: 300px; overflow: auto; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
     .row-actions { white-space: nowrap; }
     a { color: #7b3f25; }
+    .review-layout { display: grid; grid-template-columns: minmax(360px, 1fr) minmax(320px, 1fr); gap: 18px; align-items: start; }
+    .tile-wrap { position: relative; border: 1px solid #ddd2bf; border-radius: 12px; overflow: auto; background: #eee7db; max-height: 560px; }
+    .tile-stage { position: relative; display: inline-block; min-width: 100%; }
+    .tile-stage img { max-width: 100%; display: block; }
+    .bbox { position: absolute; border: 3px solid #d13d2f; background: rgba(209,61,47,.12); box-sizing: border-box; pointer-events: none; }
+    .small-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+    .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .toolbar label { margin: 0; font-weight: 600; }
+    .toolbar input { width: auto; }
   </style>
 </head>
 <body>
@@ -38,16 +53,40 @@
     <input type="file" id="file" accept="application/json,.json" />
     <label for="filter">Filter candidates</label>
     <input type="search" id="filter" placeholder="Search name, page, township/range, OCR text..." />
+    <div class="toolbar" style="margin-top:12px">
+      <label><input type="checkbox" id="hideLikelyNoise" /> Hide likely map-label noise</label>
+      <label><input type="checkbox" id="hideRejected" checked /> Hide rejected rows</label>
+      <label>Minimum confidence <input type="number" id="minConf" min="0" max="100" step="1" placeholder="0" /></label>
+      <button type="button" class="secondary" id="resetHidden">Reset hidden/rejected rows</button>
+    </div>
   </section>
 
   <section class="panel">
     <h2>Candidate rows</h2>
     <p id="count" class="muted">No file loaded.</p>
+    <p class="muted">Tip: high-confidence map labels like “Range,” “North,” or “No for sale” are not allottee names. Use the tile preview before drafting any approved row.</p>
     <div style="overflow:auto; max-height: 520px;">
       <table id="table">
-        <thead><tr><th>Candidate</th><th>Possible name</th><th>Allotment #</th><th>Page / TR</th><th>OCR line</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Candidate</th><th>Possible name</th><th>Allotment #</th><th>Page / TR / Section</th><th>OCR line</th><th>Actions</th></tr></thead>
         <tbody></tbody>
       </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Tile preview</h2>
+    <p id="tileHelp" class="muted">Select a candidate row to view the tile or section crop image that produced the OCR line. If the image does not show, confirm the candidate JSON has a <code>tile_path</code> and that the tile image exists under <code>data/ocr_runs/</code>.</p>
+    <div class="review-layout">
+      <div class="tile-wrap"><div class="tile-stage" id="tileStage"><p class="muted" style="padding:18px">No candidate selected.</p></div></div>
+      <div>
+        <h3>Selected OCR line</h3>
+        <pre id="selectedText">No candidate selected.</pre>
+        <div class="small-grid">
+          <button class="secondary" id="markPossibleName">Mark possible name</button>
+          <button class="secondary" id="markPossibleNumber">Mark possible allotment #</button>
+          <button class="reject" id="rejectRow">Reject / hide row</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -72,28 +111,118 @@
 <script>
 let rows = [];
 let selected = null;
+let rejected = new Set();
 const $ = (id) => document.getElementById(id);
 function norm(v){ return String(v ?? '').toLowerCase(); }
-function render(){
+function escapeHtml(v){ return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function pathForImg(p){
+  if (!p) return '';
+  let s = String(p).replaceAll('\\\\','/').replaceAll('\\','/');
+  if (/^(file:|https?:)/i.test(s)) return s;
+  if (s.startsWith('../')) return s;
+  return '../' + s.replace(/^\.\//,'');
+}
+function likelyNoise(r){
+  const t = norm(r.raw_ocr_line || r.possible_ocr_name || '');
+  const terms = ['township','range','north','south','east','west','no for sale','sale by','building','railroad','county line','legend','scale','muskogee','indian territory'];
+  if (terms.some(term => t.includes(term))) return true;
+  if (/^[A-Z\s,.'-]{6,}$/.test(String(r.raw_ocr_line || '').trim()) && !String(r.raw_ocr_line || '').match(/\d{3,}/)) return true;
+  return false;
+}
+function rowTags(r){
+  const tags = [];
+  const conf = Number(r.ocr_confidence_percent || 0);
+  if (conf >= 75) tags.push('<span class="pill good">high conf</span>');
+  if (likelyNoise(r)) tags.push('<span class="pill warn">likely map label</span>');
+  if (rejected.has(r.candidate_id)) tags.push('<span class="pill bad">rejected</span>');
+  if (r.tile_path || r.section_image_path) tags.push('<span class="pill">image</span>');
+  if (r.section) tags.push('<span class="pill good">sec. ' + escapeHtml(r.section) + '</span>');
+  return tags.join(' ');
+}
+function visibleRows(){
   const q = norm($('filter').value);
+  const minConf = Number($('minConf').value || 0);
+  return rows.filter(r => {
+    if (q && !norm(JSON.stringify(r)).includes(q)) return false;
+    if ($('hideRejected').checked && rejected.has(r.candidate_id)) return false;
+    if ($('hideLikelyNoise').checked && likelyNoise(r)) return false;
+    if (minConf && Number(r.ocr_confidence_percent || 0) < minConf) return false;
+    return true;
+  });
+}
+function render(){
   const body = document.querySelector('#table tbody');
   body.innerHTML = '';
-  const filtered = rows.filter(r => !q || norm(JSON.stringify(r)).includes(q));
-  $('count').textContent = `${filtered.length} of ${rows.length} candidate rows shown.`;
-  for (const r of filtered.slice(0, 500)) {
+  const filtered = visibleRows();
+  $('count').textContent = `${filtered.length} of ${rows.length} candidate rows shown. ${rejected.size} rejected/hidden.`;
+  for (const r of filtered.slice(0, 800)) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><span class="pill">${r.candidate_id || ''}</span><br>conf: ${r.ocr_confidence_percent ?? ''}</td>
-      <td>${r.possible_ocr_name || ''}</td>
-      <td>${r.allotment_number || ''}</td>
-      <td>p.${r.loc_page || ''}<br>${r.township_range || ''}</td>
-      <td>${r.raw_ocr_line || ''}<br><a href="${r.source_link || '#'}" target="_blank" rel="noopener">Open source map</a></td>
-      <td class="row-actions"><button class="secondary">Draft approved row</button></td>`;
-    tr.querySelector('button').addEventListener('click', () => draft(r));
+    if (selected && selected.candidate_id === r.candidate_id) tr.className = 'selected';
+    tr.innerHTML = `<td><span class="pill">${escapeHtml(r.candidate_id || '')}</span><br>conf: ${escapeHtml(r.ocr_confidence_percent ?? '')}<br>${rowTags(r)}</td>
+      <td>${escapeHtml(r.possible_ocr_name || '')}</td>
+      <td>${escapeHtml(r.allotment_number || '')}</td>
+      <td>p.${escapeHtml(r.loc_page || '')}<br>${escapeHtml(r.township_range || '')}<br>${r.section ? 'sec. ' + escapeHtml(r.section) : ''}</td>
+      <td>${escapeHtml(r.raw_ocr_line || '')}<br><a href="${escapeHtml(r.source_link || '#')}" target="_blank" rel="noopener">Open source map</a></td>
+      <td class="row-actions"><button class="secondary" data-action="view">View tile</button><button class="secondary" data-action="draft">Draft approved row</button><button class="reject" data-action="reject">Reject</button></td>`;
+    tr.querySelector('[data-action="view"]').addEventListener('click', () => selectRow(r));
+    tr.querySelector('[data-action="draft"]').addEventListener('click', () => draft(r));
+    tr.querySelector('[data-action="reject"]').addEventListener('click', () => { rejected.add(r.candidate_id); if (selected?.candidate_id === r.candidate_id) selected = null; render(); });
     body.appendChild(tr);
   }
 }
-function draft(r){
+function selectRow(r){
   selected = {...r};
+  const stage = $('tileStage');
+  stage.innerHTML = '';
+  const imgSrc = pathForImg(r.tile_path || r.section_image_path);
+  if (!imgSrc) {
+    stage.innerHTML = '<p class="muted" style="padding:18px">No tile path in this candidate row.</p>';
+  } else {
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.style.display = 'inline-block';
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = `OCR tile ${r.tile_id || ''}`;
+    img.addEventListener('load', () => drawBbox(wrap, img, r));
+    img.addEventListener('error', () => { stage.innerHTML = `<p class="muted" style="padding:18px">Tile image did not load: ${escapeHtml(imgSrc)}<br>Check that the tile/section crop exists locally under data/ocr_runs/.</p>`; });
+    wrap.appendChild(img);
+    stage.appendChild(wrap);
+  }
+  $('selectedText').textContent = JSON.stringify({
+    candidate_id: r.candidate_id,
+    raw_ocr_line: r.raw_ocr_line,
+    possible_ocr_name: r.possible_ocr_name,
+    allotment_number: r.allotment_number,
+    confidence: r.ocr_confidence_percent,
+    tile_path: r.tile_path,
+    section: r.section || '',
+    section_source: r.section_source || '',
+    section_image_path: r.section_image_path || '',
+    bbox_in_tile: r.bbox_in_tile,
+    notes: likelyNoise(r) ? 'Likely map label/noise. Do not approve unless verified as a person/allotment record.' : 'Review against tile/source map.'
+  }, null, 2);
+  render();
+}
+function drawBbox(wrap, img, r){
+  const box = r.bbox_in_tile || {};
+  if ([box.left, box.top, box.right, box.bottom].some(v => v === undefined || v === null || v === '')) return;
+  const naturalW = img.naturalWidth || 1;
+  const naturalH = img.naturalHeight || 1;
+  const shownW = img.clientWidth || naturalW;
+  const shownH = img.clientHeight || naturalH;
+  const sx = shownW / naturalW;
+  const sy = shownH / naturalH;
+  const div = document.createElement('div');
+  div.className = 'bbox';
+  div.style.left = (Number(box.left) * sx) + 'px';
+  div.style.top = (Number(box.top) * sy) + 'px';
+  div.style.width = Math.max(8, (Number(box.right) - Number(box.left)) * sx) + 'px';
+  div.style.height = Math.max(8, (Number(box.bottom) - Number(box.top)) * sy) + 'px';
+  wrap.appendChild(div);
+}
+function draft(r){
+  selectRow(r);
   $('verified_name').value = r.possible_ocr_name || '';
   $('given_name').value = r.given_name || '';
   $('surname').value = r.surname || '';
@@ -102,7 +231,7 @@ function draft(r){
   $('status_restriction_notation').value = r.status_restriction_notation || '';
   $('confidence').value = 'human-reviewed';
   $('needs_human_review').value = 'no';
-  $('notes').value = `Human-reviewed against source map. Original OCR line: ${r.raw_ocr_line || ''}`;
+  $('notes').value = `Human-reviewed against source map and tile image. Original OCR line: ${r.raw_ocr_line || ''}`;
   updateJson();
 }
 function approvedObject(){
@@ -129,7 +258,17 @@ function approvedObject(){
     source_link: selected.source_link || '',
     confidence: $('confidence').value.trim(),
     needs_human_review: $('needs_human_review').value.trim(),
-    notes: $('notes').value.trim()
+    notes: $('notes').value.trim(),
+    review_trace: {
+      candidate_id: selected.candidate_id || '',
+      tile_id: selected.tile_id || '',
+      tile_path: selected.tile_path || '',
+      section: selected.section || '',
+      section_source: selected.section_source || '',
+      section_image_path: selected.section_image_path || '',
+      raw_ocr_line: selected.raw_ocr_line || '',
+      ocr_confidence_percent: selected.ocr_confidence_percent || ''
+    }
   };
 }
 function updateJson(){
@@ -140,9 +279,15 @@ $('file').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   rows = JSON.parse(await file.text());
+  rejected = new Set();
+  selected = null;
   render();
 });
-$('filter').addEventListener('input', render);
+['filter','hideLikelyNoise','hideRejected','minConf'].forEach(id => $(id).addEventListener('input', render));
+$('resetHidden').addEventListener('click', () => { rejected = new Set(); render(); });
+$('markPossibleName').addEventListener('click', () => { if (!selected) return alert('Select a candidate first.'); $('verified_name').value = selected.possible_ocr_name || selected.raw_ocr_line || ''; updateJson(); });
+$('markPossibleNumber').addEventListener('click', () => { if (!selected) return alert('Select a candidate first.'); $('allotment_number').value = selected.allotment_number || ''; updateJson(); });
+$('rejectRow').addEventListener('click', () => { if (!selected) return alert('Select a candidate first.'); rejected.add(selected.candidate_id); selected = null; render(); });
 ['verified_name','given_name','surname','allotment_number','section','status_restriction_notation','confidence','needs_human_review','notes'].forEach(id => $(id).addEventListener('input', updateJson));
 $('copyJson').addEventListener('click', async () => {
   const obj = approvedObject();

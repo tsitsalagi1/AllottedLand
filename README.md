@@ -6,7 +6,7 @@ AllottedLand.com is a free public research-tool prototype for helping Native fam
 
 ## Current status
 
-Beta / Phase 1. Current public version: v0.9. See `CHANGELOG.md` and `changelog.html` for project updates.
+Beta / Phase 1. Current public version: v0.12. See `CHANGELOG.md` and `changelog.html` for project updates.
 
 Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
 
@@ -72,3 +72,19 @@ python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 
 ```
 
 The agent also now checks common Windows install locations automatically.
+
+
+## v0.11 — Tile Review Upgrade
+
+The local OCR review helper now shows saved tile images beside candidate OCR rows, includes a bounding-box overlay where available, and adds filters/reject buttons so noisy map-label text can be screened before any row is drafted for `data/allotment_records.json`.
+
+## v0.12 — Section-First Agent
+
+The local indexing agent now supports section-first OCR. Instead of OCRing random map tiles first, it can crop a fixed PLSS section, save the section image, and attach every OCR candidate to a stable township/range/section value. Example:
+
+```cmd
+python tools\map_indexing_agent.py --clear-candidates
+python tools\map_indexing_agent.py --page 29 --mode sections --sections 24 --psm 11 --min-conf 45 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+
+If the section crop is off, adjust the grid rectangle with `--grid-pct left,top,right,bottom`, for example `--grid-pct 8,15,92,87`.

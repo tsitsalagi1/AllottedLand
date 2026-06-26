@@ -1,8 +1,32 @@
 # Changelog
 
+## v0.11 — Tile Review Upgrade
+
+- Improved the local OCR candidate review page.
+- Added tile-image preview for candidate rows using the saved OCR tile path.
+- Added a bounding-box overlay where Tesseract coordinates are available.
+- Added filters for likely map-label noise, rejected rows, and minimum confidence.
+- Added reject/hide and quick-mark review buttons so OCR candidates can be screened before any public record is drafted.
+
+
 All notable public changes to AllottedLand.com will be documented here.
 
 The format follows the spirit of Keep a Changelog: versions are grouped by release and changes are written in plain language for users, families, researchers, and volunteers.
+
+
+## [0.12] - 2026-06
+
+### Added
+- Added section-first OCR mode to `tools/map_indexing_agent.py`.
+- Added `--mode sections`, `--sections`, `--grid-pct`, and `--section-padding`.
+- Added section crop images under `data/ocr_runs/page_XXX_sections/`.
+- Added section metadata to candidate rows: `section`, `section_source`, `section_image_path`, and `section_grid`.
+
+### Why
+- The fixed PLSS grid is more stable than OCRing names first. The agent can now pin every OCR lead to a township/range/section before a reviewer decides whether the text is a name, allotment number, status note, or map label.
+
+### Safety
+- Section-first output is still candidate data only. Human review against the original map remains required before publishing any row.
 
 ## [0.8] - 2026-06
 
