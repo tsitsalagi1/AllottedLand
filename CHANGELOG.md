@@ -70,3 +70,14 @@ The format follows the spirit of Keep a Changelog: versions are grouped by relea
 - Created the first public static site foundation.
 - Added homepage, guided finder, search prototype, county request builder, privacy policy, terms of use, and submission consent page.
 - Started the data layer with the Library of Congress Cherokee Nation atlas map index.
+
+
+## v0.10 Windows Tesseract path helper
+
+If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+
+The agent also now checks common Windows install locations automatically.

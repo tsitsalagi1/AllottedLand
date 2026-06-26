@@ -133,3 +133,14 @@ For each possible row:
 - `--preprocess all` — tries soft, threshold, and invert.
 - `--append` — append candidates instead of replacing the local candidate file.
 - `--clear-candidates` — reset `data/allotment_records_candidates.json` to an empty list.
+
+
+## v0.10 Windows Tesseract path helper
+
+If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+
+The agent also now checks common Windows install locations automatically.

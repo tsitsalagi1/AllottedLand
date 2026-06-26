@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.9
+AllottedLand.com Map Indexing Agent v0.10
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.10:
+  - Auto-detects common Windows Tesseract install paths.
+  - Adds --tesseract-cmd so Windows users can point directly to tesseract.exe if PATH fails.
 
 What changed in v0.9:
   - Replaces the candidate file by default instead of endlessly appending noisy rows.
@@ -16,7 +20,7 @@ What changed in v0.9:
 
 Install:
   pip install -r tools/requirements.txt
-  Also install the Tesseract OCR engine and confirm `tesseract -v` works.
+  Also install the Tesseract OCR engine. If `tesseract -v` does not work, use --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe".
 
 Good first command:
   python tools/map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 45 --preprocess threshold
@@ -91,13 +95,44 @@ def find_page(page_no: int) -> dict[str, Any]:
     raise ValueError(f"Page {page_no} not found in data/map_index.json")
 
 
-def check_tesseract() -> None:
-    if not shutil.which("tesseract"):
-        raise RuntimeError(
-            "Tesseract OCR engine was not found on PATH. Install Tesseract first, "
-            "then confirm `tesseract -v` works in a terminal."
-        )
-    subprocess.run(["tesseract", "--version"], check=True, capture_output=True, text=True)
+def resolve_tesseract(tesseract_cmd: str | None = None) -> str:
+    """Return a usable tesseract command/path and configure pytesseract.
+
+    Windows often installs Tesseract correctly but does not add it to PATH.
+    This function first respects --tesseract-cmd, then PATH, then common
+    Windows installation folders.
+    """
+    candidates: list[str] = []
+    if tesseract_cmd:
+        candidates.append(tesseract_cmd)
+
+    found = shutil.which("tesseract")
+    if found:
+        candidates.append(found)
+
+    candidates.extend([
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    ])
+
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate)
+        if shutil.which(candidate) or path.exists():
+            pytesseract.pytesseract.tesseract_cmd = str(candidate)
+            return str(candidate)
+
+    raise RuntimeError(
+        "Tesseract OCR engine was not found. Install Tesseract first, or run with "
+        "--tesseract-cmd \"C:\\Program Files\\Tesseract-OCR\\tesseract.exe\"."
+    )
+
+
+def check_tesseract(tesseract_cmd: str | None = None) -> None:
+    cmd = resolve_tesseract(tesseract_cmd)
+    subprocess.run([cmd, "--version"], check=True, capture_output=True, text=True)
+    print(f"Using Tesseract: {cmd}")
 
 
 def download_image(page_no: int, image_url: str | None = None, overwrite: bool = False) -> Path:
@@ -106,7 +141,7 @@ def download_image(page_no: int, image_url: str | None = None, overwrite: bool =
     if out_path.exists() and not overwrite:
         return out_path
     url = image_url or COMMONS_URL_TEMPLATE.format(page=page_no)
-    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.9 (+https://allottedland.com)"}
+    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.10 (+https://allottedland.com)"}
     resp = requests.get(url, headers=headers, timeout=120, allow_redirects=True)
     if resp.status_code != 200 or not resp.content:
         raise RuntimeError(f"Could not download image for page {page_no}: HTTP {resp.status_code} from {url}")
@@ -393,6 +428,7 @@ def main() -> None:
     parser.add_argument("--overlap", type=int, default=220, help="Overlap between tiles in pixels. Default: 220")
     parser.add_argument("--psm", default="11", help="Tesseract PSM mode(s), e.g. 11 or 11,6. Default: 11")
     parser.add_argument("--preprocess", choices=["soft", "threshold", "invert", "all"], default="threshold", help="Preprocessing mode. Default: threshold")
+    parser.add_argument("--tesseract-cmd", default=None, help="Optional full path to tesseract.exe, useful on Windows if PATH fails.")
     parser.add_argument("--min-conf", type=float, default=45.0, help="Minimum average OCR confidence. Default: 45")
     parser.add_argument("--max-tiles", type=int, default=0, help="Limit tile count for quick testing. 0 means no limit.")
     parser.add_argument("--append", action="store_true", help="Append to data/allotment_records_candidates.json instead of replacing it.")
@@ -406,7 +442,7 @@ def main() -> None:
     if not args.page:
         raise SystemExit("Error: --page is required unless using --clear-candidates")
 
-    check_tesseract()
+    check_tesseract(args.tesseract_cmd)
     page = find_page(args.page)
     run_id = f"loc{args.page:03}_{time.strftime('%Y%m%d_%H%M%S')}"
     print(f"Run: {run_id}")
