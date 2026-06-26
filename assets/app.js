@@ -52,6 +52,18 @@ function getFilters(){
   };
 }
 
+function hasAnyFilter(f){
+  return Object.values(f).some(v => !!v);
+}
+
+function hasPersonOrNumberFilter(f){
+  return !!(f.givenName || f.surname || f.roll || f.allotment);
+}
+
+function hasMapFilter(f){
+  return !!(f.township || f.range || f.townshipRange || f.keyword);
+}
+
 function recordMatches(r,f){
   if(f.givenName && !norm(r.given_name).includes(f.givenName) && !norm(r.verified_name).includes(f.givenName) && !norm(r.possible_ocr_name).includes(f.givenName)) return false;
   if(f.surname && !norm(r.surname).includes(f.surname) && !norm(r.verified_name).includes(f.surname) && !norm(r.possible_ocr_name).includes(f.surname)) return false;
@@ -66,7 +78,9 @@ function recordMatches(r,f){
 }
 
 function mapMatches(m,f){
-  if(f.givenName || f.surname || f.roll || f.allotment || f.section) return false;
+  // The map index can search only map-level data right now.
+  // Name/roll/allotment searches require verified rows in data/allotment_records.json.
+  if(!hasMapFilter(f)) return false;
   if(f.township && digits(m.township) !== f.township) return false;
   if(f.range && digits(m.range) !== f.range) return false;
   if(f.townshipRange && !compact(m.township_range).includes(compact(f.townshipRange))) return false;
@@ -85,7 +99,8 @@ function renderCard(item){
   if(item.section) parts.push(`<span class="pill">Section ${escapeHtml(item.section)}</span>`);
   if(item.county) parts.push(`<span class="pill">${escapeHtml(item.county)} County</span>`);
   if(item.status_restriction_notation) parts.push(`<span class="pill">${escapeHtml(item.status_restriction_notation)}</span>`);
-  const desc = [item.legal_description, item.notes, item.ocr_status].filter(Boolean).join(' · ');
+  const status = item.ocr_status && norm(item.ocr_status) === 'not ocred' ? 'Indexing status: names on this map have not yet been transcribed.' : item.ocr_status;
+  const desc = [item.legal_description, item.notes, status].filter(Boolean).join(' · ');
   return `<article class="card">
     <h3>${escapeHtml(title)}</h3>
     <div class="meta"><span class="pill">${type}</span><span class="pill">LOC page ${escapeHtml(page)}</span>${parts.join('')}</div>
@@ -99,11 +114,26 @@ function renderCard(item){
 
 function runSearch(){
   const f = getFilters();
+  if(!hasAnyFilter(f)){
+    $('count').textContent = '0 results';
+    $('results').innerHTML = '<p class="hint">Enter a township/range, keyword, or verified record clue to search. The current public index starts with map pages; name, roll, and allotment-number search will grow as verified rows are added.</p>';
+    return;
+  }
+
   let hits = records.filter(r=>recordMatches(r,f));
   hits = hits.concat(maps.filter(m=>mapMatches(m,f)));
   hits = hits.slice(0,200);
   $('count').textContent = `${hits.length} result${hits.length===1?'':'s'}`;
-  $('results').innerHTML = hits.length ? hits.map(renderCard).join('') : '<p class="hint">No results yet. Try township/range, or add OCR/verified name rows to <code>data/allotment_records.json</code>.</p>';
+
+  if(hits.length){
+    $('results').innerHTML = hits.map(renderCard).join('');
+    return;
+  }
+
+  const personMsg = hasPersonOrNumberFilter(f) && records.length === 0
+    ? 'No verified name, roll-number, or allotment-number rows are loaded yet. Those searches are coming as records are transcribed and verified. '
+    : '';
+  $('results').innerHTML = `<p class="hint">${personMsg}Try a township/range search such as <code>T21N R12E</code>, or add verified rows to <code>data/allotment_records.json</code>.</p>`;
 }
 
 function showMap(page){
@@ -114,11 +144,12 @@ function showMap(page){
   const img = iiifImageUrl(page);
   if(img){
     viewer.className = '';
-    viewer.innerHTML = `<img class="viewer-image" src="${img}" alt="LOC map page ${page}">`;
+    viewer.innerHTML = `<img class="viewer-image" src="${img}" alt="LOC map page ${page}" onerror="this.parentElement.className='viewer-empty';this.parentElement.innerHTML='Preview could not load in this browser. <a href=&quot;${locPageUrl(page)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open LOC page ${page}</a>.';">`;
   }else{
     viewer.className = 'viewer-empty';
     viewer.innerHTML = `Preview not available here. <a href="${locPageUrl(page)}" target="_blank" rel="noopener">Open LOC page ${page}</a>.`;
   }
+  document.querySelector('.viewer-panel')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function getWizard(){
@@ -217,17 +248,11 @@ function buildResearchPath(e){
 }
 
 function fillExample(){
+  clearWizard();
   $('wizTribe').value = 'Cherokee Nation';
-  $('wizFirst').value = 'Claudie';
-  $('wizLast').value = 'Ketcher';
-  $('wizVariants').value = 'Claude Ketcher';
-  $('wizRoll').value = '1637';
-  $('wizAllotment').value = '';
-  $('wizPlace').value = 'Craig County';
-  $('wizTownship').value = '26';
-  $('wizRange').value = '21';
-  $('wizSection').value = '9';
-  $('wizStory').value = 'Family allotment land; later title-chain search may include mortgage, sheriff sale, oil and gas lease, tax record, or release.';
+  $('wizTownship').value = '21';
+  $('wizRange').value = '12';
+  $('wizStory').value = "Map-only sample: use township/range when a family does not yet know an ancestor's roll number or allotment number.";
 }
 
 function clearWizard(){
