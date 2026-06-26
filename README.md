@@ -1,4 +1,6 @@
-# AllottedLand.com v0.4
+# AllottedLand.com
+
+Project contact: allottedland@gmail.com
 
 AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from partial clues such as name, tribe, roll/enrollment number, township/range/section, county, town, cemetery, or family story.
 
@@ -6,14 +8,13 @@ AllottedLand.com is a free public research-tool prototype for helping Native fam
 
 Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
 
-## v0.4 changes
+## v0.5 changes
 
-- Added a clearer Phase 1 data-status section.
-- Added `transcribe.html` explaining the safe map-indexing workflow.
-- Added non-personal sample map data.
-- Added transcription queue template.
-- Improved map preview loading/fallback behavior.
-- Updated navigation/footer links to include Help Index Maps.
+- Added public project email: `allottedland@gmail.com`.
+- Updated `contact.html` with general question, correction/removal, and volunteer mailto links.
+- Added contact email to footers and policy pages.
+- Added a reminder not to email sensitive private family documents unless redacted and permitted.
+- Added basic Organization structured data on the homepage with project URL and contact email.
 
 ## Site pages
 

@@ -85,3 +85,8 @@ Non-personal map-only examples used for testing and documentation. These records
 
 ### data/transcription_queue_template.csv
 Template for future map transcription work. Public upload/intake is not open until privacy and review processes are finalized.
+
+
+## Project contact
+
+Public project email: `allottedland@gmail.com`. Do not send private family documents or sensitive living-person information unless redacted and permission has been obtained.
