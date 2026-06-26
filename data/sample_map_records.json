@@ -1,0 +1,12 @@
+[
+  {
+    "sample_type": "map_only_non_personal",
+    "label": "Sample map search: Township 21 North, Range 12 East",
+    "township": "21",
+    "range": "12",
+    "township_range": "T21N R12E",
+    "loc_page": 4,
+    "source_link": "https://www.loc.gov/resource/g4021gm.gla00497/?sp=4&st=image",
+    "note": "This is a map-only sample. It does not use any family name or private information."
+  }
+]

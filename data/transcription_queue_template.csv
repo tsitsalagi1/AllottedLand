@@ -1,0 +1,1 @@
+loc_page,township,range,section,name_as_written,name_variant,allotment_number,status_restriction_notation,legal_description,source_link,review_status,confidence,review_notes
