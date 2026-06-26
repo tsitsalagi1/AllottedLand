@@ -1,0 +1,32 @@
+[
+  {
+    "tribe": "Cherokee Nation",
+    "township": "26",
+    "range": "21",
+    "section": "9",
+    "township_range": "T26N R21E",
+    "county": "Craig",
+    "state": "Oklahoma",
+    "basis": "Seed example from known Cherokee allotment research; verify against official PLSS/county boundary records before relying on it."
+  },
+  {
+    "tribe": "Cherokee Nation",
+    "township": "18",
+    "range": "23",
+    "section": "4",
+    "township_range": "T18N R23E",
+    "county": "Cherokee",
+    "state": "Oklahoma",
+    "basis": "Seed example from known Cherokee allotment research; verify against official PLSS/county boundary records before relying on it."
+  },
+  {
+    "tribe": "Cherokee Nation",
+    "township": "20",
+    "range": "23",
+    "section": "17",
+    "township_range": "T20N R23E",
+    "county": "Tulsa",
+    "state": "Oklahoma",
+    "basis": "Seed example from known Cherokee allotment research; verify against official PLSS/county boundary records before relying on it."
+  }
+]
