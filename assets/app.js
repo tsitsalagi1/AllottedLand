@@ -116,7 +116,7 @@ function runSearch(){
   const f = getFilters();
   if(!hasAnyFilter(f)){
     $('count').textContent = '0 results';
-    $('results').innerHTML = '<p class="hint">Enter a township/range, keyword, or verified record clue to search. The current public index starts with map pages; name, roll, and allotment-number search will grow as verified rows are added.</p>';
+    $('results').innerHTML = '<p class="hint">Enter a township/range, keyword, or verified record clue to search. Phase 1 searches map pages first. Name, roll, and allotment-number searching will grow as rows are transcribed, reviewed, and source-linked.</p>';
     return;
   }
 
@@ -139,15 +139,22 @@ function runSearch(){
 function showMap(page){
   const viewer = $('viewer');
   const open = $('openLoc');
-  open.href = locPageUrl(page);
+  const loc = locPageUrl(page);
+  open.href = loc;
   open.classList.remove('hidden');
+  viewer.className = 'viewer-loading';
+  viewer.innerHTML = `Loading LOC map preview for page ${escapeHtml(page)}…<br><a href="${loc}" target="_blank" rel="noopener">Open at Library of Congress</a>`;
   const img = iiifImageUrl(page);
   if(img){
-    viewer.className = '';
-    viewer.innerHTML = `<img class="viewer-image" src="${img}" alt="LOC map page ${page}" onerror="this.parentElement.className='viewer-empty';this.parentElement.innerHTML='Preview could not load in this browser. <a href=&quot;${locPageUrl(page)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open LOC page ${page}</a>.';">`;
+    const image = new Image();
+    image.className = 'viewer-image';
+    image.alt = `LOC map page ${page}`;
+    image.onload = () => { viewer.className = ''; viewer.innerHTML = ''; viewer.appendChild(image); };
+    image.onerror = () => { viewer.className = 'viewer-empty'; viewer.innerHTML = `Preview could not load in this browser. <a href="${loc}" target="_blank" rel="noopener">Open LOC page ${escapeHtml(page)}</a>.`; };
+    image.src = img;
   }else{
     viewer.className = 'viewer-empty';
-    viewer.innerHTML = `Preview not available here. <a href="${locPageUrl(page)}" target="_blank" rel="noopener">Open LOC page ${page}</a>.`;
+    viewer.innerHTML = `Preview not available here. <a href="${loc}" target="_blank" rel="noopener">Open LOC page ${escapeHtml(page)}</a>.`;
   }
   document.querySelector('.viewer-panel')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
