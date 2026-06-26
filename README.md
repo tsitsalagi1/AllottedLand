@@ -1,69 +1,40 @@
-# AllottedLand.com v0.1
+# AllottedLand.com v0.3
 
-AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from partial clues such as name, roll/enrollment number, tribe, county, township/range/section, or family stories.
+AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from partial clues such as name, tribe, roll/enrollment number, township/range/section, county, town, cemetery, or family story.
 
-## What this version includes
+## Current status
 
-- AllottedLand.com homepage and mission.
-- Guided “I don’t know where to start” family-land finder.
-- Cherokee Nation LOC atlas map search by township/range.
-- Map preview using LOC source links / IIIF when the browser permits.
-- County record request builder.
-- Evidence checklist.
-- Testimonials and land-loss data project placeholder.
-- Privacy Policy starter page.
-- Terms of Use starter page.
-- Submission Consent Policy starter page.
-- Data templates for verified records and future land-loss submissions.
+Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county routing, testimonial, and land-loss datasets will expand as verified records are added.
 
-## Important limitation
+## Site pages
 
-The Library of Congress atlas pages are image-based. Name, roll number, and allotment-number search will only work after names and allotment data are OCRed or manually verified into `data/allotment_records.json`.
+- `index.html` — homepage, guided finder, search, process guide, request builder, stories/data preview
+- `about.html` — mission and beta scope
+- `sources.html` — source-record explanation and official source links
+- `contact.html` — contact/correction guidance and privacy warning
+- `privacy.html` — starter privacy policy
+- `terms.html` — starter terms of use
+- `submission-policy.html` — starter submission consent policy
+- `sitemap.xml` — sitemap for search engines
+- `robots.txt` — crawl rules and sitemap location
 
-Roll/enrollment numbers generally require a Dawes/NARA crosswalk. LOC maps may show names and allotment numbers, but Dawes roll/enrollment numbers come from Dawes enrollment and allotment records.
+## Data files
 
-## Files
+- `data/map_index.json` — LOC map-page index
+- `data/allotment_records.json` — verified name/roll/allotment records, currently empty
+- `data/county_routes.json` — starter county-route examples
+- `data/land_loss_categories.json` — future voluntary land-loss categories
 
-- `index.html` — main website.
-- `privacy.html` — starter privacy policy.
-- `terms.html` — starter terms of use.
-- `submission-policy.html` — starter consent policy.
-- `assets/styles.css` — styling.
-- `assets/app.js` — search, wizard, county request builder, LOC map preview.
-- `data/map_index.json` — LOC Cherokee Nation atlas page index.
-- `data/allotment_records.json` — verified person/allotment rows; currently empty.
-- `data/allotment_records_template.csv` — data-entry template for person/allotment rows.
-- `data/county_routes.json` — township/range/section-to-county routing examples.
-- `data/county_routes_template.csv` — data-entry template for county routing rows.
-- `data/land_loss_categories.json` — future dashboard categories.
-- `data/submission_intake_template.csv` — future voluntary submission template.
-- `schema.md` — recommended data schema.
-- `docs/deployment-checklist.md` — GitHub + Cloudflare deployment checklist.
+## Safety rule
 
-## Local testing
+Do not accept uploads, testimonials, corrections, or family documents until Privacy, Terms, Submission Consent, and a review/removal process are finalized.
 
-From inside this folder, run:
+## Deployment
 
-```bash
-python -m http.server 8000
-```
+Static site for GitHub + Cloudflare Pages.
 
-Then open:
+Suggested Cloudflare Pages settings:
 
-```text
-http://localhost:8000
-```
-
-## Cloudflare Pages settings
-
-Recommended project settings:
-
-```text
-Framework preset: None
-Build command: leave blank
-Build output directory: /
-```
-
-## Legal/research disclaimer
-
-This site is a free research index. It does not determine ownership, title, heirship, citizenship, enrollment, land recovery claims, or legal rights. Verify all results against original records, county records, tribal records, BIA/LTRO records, and National Archives records.
+- Framework preset: None
+- Build command: blank
+- Build output directory: `/` or `.`
