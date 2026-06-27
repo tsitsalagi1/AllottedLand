@@ -158,5 +158,14 @@ When the local OCR agent is run with `--mode sections`, candidate rows may also 
 These fields are review aids only. A section-first candidate is not a verified allotment record until a human checks the crop and original map source.
 
 
-## v0.13 Review Tool Note
+## v0.15 Review Tool Note
 The local review tool can display section/tile images by relative path, direct file link, or manual File input. This avoids browser file:// path problems during local review.
+
+
+## v0.15 review-loader note
+
+The local review helper accepts candidate JSON either as a raw array or as an object containing an array under `candidates`, `rows`, `records`, `data`, `results`, or `items`.
+
+
+## Review/export workflow
+`tools/review_candidates.html` can queue human-corrected approved rows in browser local storage and export them as a JSON array. The exported file should be reviewed before replacing or merging into `data/allotment_records.json`.

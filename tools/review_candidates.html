@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand OCR Candidate Review v0.14</title>
+  <title>AllottedLand OCR Candidate Review v0.15</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f7f4ed; color: #1d1b18; }
     header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
@@ -39,11 +39,14 @@
     .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .toolbar label { margin: 0; font-weight: 600; }
     .toolbar input { width: auto; }
+    .approved-list { max-height: 360px; overflow: auto; border: 1px solid #eadfcd; border-radius: 12px; background: #fffaf0; padding: 10px; }
+    .approved-item { border-bottom: 1px solid #eadfcd; padding: 10px 0; }
+    .approved-item:last-child { border-bottom: 0; }
   </style>
 </head>
 <body>
 <header><div>
-  <h1>AllottedLand OCR Candidate Review v0.14</h1>
+  <h1>AllottedLand OCR Candidate Review v0.15</h1>
   <p>Local helper for reviewing machine-extracted candidate rows before any record becomes public/searchable.</p>
 </div></header>
 <main>
@@ -109,14 +112,31 @@
       <div><label>Needs human review</label><input id="needs_human_review" value="no" /></div>
     </div>
     <label>Notes</label><textarea id="notes" rows="3"></textarea>
-    <p><button class="copy" id="copyJson">Copy approved JSON object</button></p>
+    <p>
+      <button class="copy" id="copyJson">Copy approved JSON object</button>
+      <button class="copy" id="addApproved">Add corrected row to approved export list</button>
+    </p>
     <pre id="approvedJson">No candidate selected.</pre>
+  </section>
+
+  <section class="panel">
+    <h2>Approved rows export list</h2>
+    <p class="muted">After you correct and verify a row, click <strong>Add corrected row to approved export list</strong>. This page still does not write to your computer automatically. It builds a JSON download that you can save and then copy into <code>data/allotment_records.json</code>.</p>
+    <div class="toolbar">
+      <button class="copy" id="downloadApproved">Download approved rows JSON</button>
+      <button class="secondary" id="copyApprovedArray">Copy approved rows array</button>
+      <button class="reject" id="clearApproved">Clear approved list</button>
+    </div>
+    <p id="approvedCount" class="muted">0 approved rows queued.</p>
+    <div class="approved-list" id="approvedList">No approved rows queued yet.</div>
+    <pre id="approvedArrayPreview">[]</pre>
   </section>
 </main>
 <script>
 let rows = [];
 let selected = null;
 let rejected = new Set();
+let approvedQueue = loadApprovedQueue();
 const $ = (id) => document.getElementById(id);
 function norm(v){ return String(v ?? '').toLowerCase(); }
 function escapeHtml(v){ return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
@@ -264,7 +284,7 @@ function approvedObject(){
     section: $('section').value.trim(),
     county: '',
     state: selected.state || 'Oklahoma',
-    legal_description: '',
+    legal_description: $('section').value.trim() && selected.township_range ? `Section ${$('section').value.trim()}, ${selected.township_range}` : '',
     source_link: selected.source_link || '',
     confidence: $('confidence').value.trim(),
     needs_human_review: $('needs_human_review').value.trim(),
@@ -301,6 +321,100 @@ function setFileStatus(message, isError=false){
   const el = $('fileStatus');
   el.innerHTML = message;
   el.style.color = isError ? '#8b1d13' : '';
+}
+
+function loadApprovedQueue(){
+  try { return JSON.parse(localStorage.getItem('allottedlandApprovedRows') || '[]'); }
+  catch { return []; }
+}
+function saveApprovedQueue(){
+  localStorage.setItem('allottedlandApprovedRows', JSON.stringify(approvedQueue));
+}
+function rowKey(obj){
+  return [obj.verified_name, obj.allotment_number, obj.loc_page, obj.township_range, obj.section].map(v => String(v || '').trim().toLowerCase()).join('|');
+}
+function addApprovedRow(){
+  const obj = approvedObject();
+  if (!obj) return alert('Select a candidate first.');
+  if (!obj.verified_name || !obj.allotment_number || !obj.section) {
+    const ok = confirm('This row is missing a verified name, allotment number, or section. Add it anyway?');
+    if (!ok) return;
+  }
+  const key = rowKey(obj);
+  const idx = approvedQueue.findIndex(existing => rowKey(existing) === key);
+  if (idx >= 0) {
+    const ok = confirm('A similar approved row is already in the export list. Replace it with this corrected version?');
+    if (!ok) return;
+    approvedQueue[idx] = obj;
+  } else {
+    approvedQueue.push(obj);
+  }
+  saveApprovedQueue();
+  renderApprovedQueue();
+  alert('Corrected row added to approved export list.');
+}
+function renderApprovedQueue(){
+  const count = approvedQueue.length;
+  const countEl = $('approvedCount');
+  const list = $('approvedList');
+  const preview = $('approvedArrayPreview');
+  if (!countEl || !list || !preview) return;
+  countEl.textContent = `${count} approved row${count === 1 ? '' : 's'} queued.`;
+  preview.textContent = JSON.stringify(approvedQueue, null, 2);
+  if (!count) {
+    list.textContent = 'No approved rows queued yet.';
+    return;
+  }
+  list.innerHTML = '';
+  approvedQueue.forEach((obj, idx) => {
+    const div = document.createElement('div');
+    div.className = 'approved-item';
+    div.innerHTML = `<strong>${escapeHtml(obj.verified_name || '(no name)')}</strong><br>
+      <span class="muted">Allotment # ${escapeHtml(obj.allotment_number || '')} · ${escapeHtml(obj.township_range || '')} · Section ${escapeHtml(obj.section || '')}</span><br>
+      <button type="button" class="secondary" data-act="load">Load back into draft</button>
+      <button type="button" class="reject" data-act="remove">Remove</button>`;
+    div.querySelector('[data-act="load"]').addEventListener('click', () => loadApprovedIntoDraft(obj));
+    div.querySelector('[data-act="remove"]').addEventListener('click', () => {
+      approvedQueue.splice(idx, 1);
+      saveApprovedQueue();
+      renderApprovedQueue();
+    });
+    list.appendChild(div);
+  });
+}
+function loadApprovedIntoDraft(obj){
+  selected = selected || {
+    candidate_id: obj.review_trace?.candidate_id || 'approved-row',
+    tribe: obj.tribe,
+    loc_page: obj.loc_page,
+    township_range: obj.township_range,
+    township: obj.township,
+    range: obj.range,
+    section: obj.section,
+    source_link: obj.source_link,
+    possible_ocr_name: obj.possible_ocr_name
+  };
+  $('verified_name').value = obj.verified_name || '';
+  $('given_name').value = obj.given_name || '';
+  $('surname').value = obj.surname || '';
+  $('allotment_number').value = obj.allotment_number || '';
+  $('section').value = obj.section || '';
+  $('status_restriction_notation').value = obj.status_restriction_notation || '';
+  $('confidence').value = obj.confidence || 'human-reviewed';
+  $('needs_human_review').value = obj.needs_human_review || 'no';
+  $('notes').value = obj.notes || '';
+  updateJson();
+}
+function downloadJsonFile(filename, data){
+  const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 $('file').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -354,6 +468,23 @@ $('copyJson').addEventListener('click', async () => {
   await navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
   alert('Approved JSON object copied.');
 });
+$('addApproved').addEventListener('click', addApprovedRow);
+$('downloadApproved').addEventListener('click', () => {
+  if (!approvedQueue.length) return alert('No approved rows queued yet.');
+  downloadJsonFile('approved_allotment_records.json', approvedQueue);
+});
+$('copyApprovedArray').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(JSON.stringify(approvedQueue, null, 2));
+  alert('Approved rows array copied.');
+});
+$('clearApproved').addEventListener('click', () => {
+  if (!approvedQueue.length) return;
+  if (!confirm('Clear all approved rows from this browser review list?')) return;
+  approvedQueue = [];
+  saveApprovedQueue();
+  renderApprovedQueue();
+});
+renderApprovedQueue();
 </script>
 </body>
 </html>

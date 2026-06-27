@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.15 — Candidate loader fix
+
+- Improved `tools/review_candidates.html` so the file loader reports how many rows were found.
+- Added support for candidate JSON stored as an array or wrapped inside keys like `candidates`, `rows`, `records`, `data`, or `results`.
+- Added a clearer warning when the selected file is empty and directs reviewers to choose a run-specific JSON under `data/ocr_runs/`.
+
+# Changelog
+
 ## v0.11 — Tile Review Upgrade
 
 - Improved the local OCR candidate review page.
