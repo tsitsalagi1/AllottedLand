@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.21
+AllottedLand.com Map Indexing Agent v0.22
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.22:
+  - Adds --output-layout workbook for a simpler township/range work folder.
+  - Writes a township workbook folder with source image, section folders, manifest, and section status.
+  - Supports tools/township_workbench.html for one-folder human transcription.
 
 What changed in v0.21:
   - Adds --manual-grid-json so a human can calibrate the outside and internal section lines visually.
@@ -486,8 +491,10 @@ def make_section_crops(
     tr_slug = slug(township_range)
     legacy_dir = RUNS_DIR / f"page_{page_no:03}_sections" / preprocess
     trs_root = RUNS_DIR / "by_township_range" / tr_slug
+    workbook_root = RUNS_DIR / "township_workbooks" / tr_slug
     legacy_dir.mkdir(parents=True, exist_ok=True)
     trs_root.mkdir(parents=True, exist_ok=True)
+    workbook_root.mkdir(parents=True, exist_ok=True)
     w, h = img.size
     gl, gt, gr, gb = parse_grid_pct(grid_pct, w, h)
     gl, gt = max(0, gl), max(0, gt)
@@ -556,11 +563,15 @@ def make_section_crops(
             section_dir = trs_root / f"section_{section:02}"
             section_dir.mkdir(parents=True, exist_ok=True)
             crop_path = section_dir / f"{tile_id}_review.jpg"
+        elif output_layout == "workbook":
+            section_dir = workbook_root / "sections" / f"section_{section:02}"
+            section_dir.mkdir(parents=True, exist_ok=True)
+            crop_path = section_dir / f"{tile_id}_review.jpg"
         else:
             crop_path = legacy_dir / f"{tile_id}.jpg"
         img.crop((left, top, right, bottom)).save(crop_path, quality=94)
         # Also keep a legacy-compatible copy when using the new organized layout.
-        if output_layout == "trs":
+        if output_layout in {"trs", "workbook"}:
             legacy_copy = legacy_dir / f"{tile_id}.jpg"
             if not legacy_copy.exists():
                 img.crop((left, top, right, bottom)).save(legacy_copy, quality=94)
@@ -849,6 +860,52 @@ def merge_section_status(manifest_rows: list[dict[str, Any]]) -> None:
     SECTION_STATUS_PATH.write_text(json.dumps(list(by_key.values()), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def copy_source_to_workbook(image_path: Path, page: dict[str, Any]) -> Path:
+    """Copy the full source image into the township workbook folder."""
+    tr_slug = slug(page.get("township_range", ""))
+    source_dir = RUNS_DIR / "township_workbooks" / tr_slug / "source"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    ext = image_path.suffix or ".jpg"
+    out = source_dir / f"p{int(page.get('loc_page',0)):03}_source{ext}"
+    shutil.copy2(image_path, out)
+    return out
+
+def write_workbook_files(manifest_rows: list[dict[str, Any]], page: dict[str, Any], image_path: Path) -> None:
+    """Write one-folder township/range workbench files for humans."""
+    if not manifest_rows:
+        return
+    tr_slug = slug(page.get("township_range", ""))
+    root = RUNS_DIR / "township_workbooks" / tr_slug
+    root.mkdir(parents=True, exist_ok=True)
+    source_copy = copy_source_to_workbook(image_path, page)
+    # Keep image paths relative to the workbook folder when useful.
+    for row in manifest_rows:
+        row["workbook_root"] = str(root.relative_to(PROJECT_ROOT))
+        row["workbook_source_image"] = str(source_copy.relative_to(PROJECT_ROOT))
+    write_json(root / "manifest.json", manifest_rows)
+    status_rows = []
+    for row in manifest_rows:
+        status_rows.append({
+            "loc_page": row.get("loc_page", ""),
+            "township_range": row.get("township_range", ""),
+            "township": row.get("township", ""),
+            "range": row.get("range", ""),
+            "section": row.get("section", ""),
+            "review_status": "not-started",
+            "row_count": 0,
+            "completed": False,
+            "section_image_path": row.get("section_image_path", ""),
+            "source_link": row.get("source_link", ""),
+            "notes": "Workbook seed row."
+        })
+    write_json(root / "section_status.json", status_rows)
+    (root / "approved_rows.json").write_text("[]\n", encoding="utf-8")
+    print(f"Wrote township workbook folder: {root.relative_to(PROJECT_ROOT)}")
+    print(f"  - source image: {source_copy.relative_to(PROJECT_ROOT)}")
+    print(f"  - manifest: {(root / 'manifest.json').relative_to(PROJECT_ROOT)}")
+    print(f"  - section status: {(root / 'section_status.json').relative_to(PROJECT_ROOT)}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="OCR one LOC allotment map page into human-review candidate records.")
     parser.add_argument("--page", type=int, required=False, help="LOC sequence page number, e.g. 29")
@@ -859,7 +916,7 @@ def main() -> None:
     parser.add_argument("--sections", default="", help="Section-first mode: e.g. 24, 24,25, 19-24, or all")
     parser.add_argument("--grid-pct", default="7,12,93,88", help="Section grid left,top,right,bottom as percent/fraction/pixels. Default: 7,12,93,88")
     parser.add_argument("--section-padding", type=int, default=180, help="Extra pixels around each section crop after scaling. Higher values prevent clipped section edges. Default: 180")
-    parser.add_argument("--output-layout", choices=["trs", "legacy"], default="trs", help="Where to save section crops. trs groups by township/range/section; legacy uses page_###_sections. Default: trs")
+    parser.add_argument("--output-layout", choices=["trs", "workbook", "legacy"], default="trs", help="Where to save section crops. trs groups by township/range/section; workbook creates one importable township folder; legacy uses page_###_sections. Default: trs")
     parser.add_argument("--grid-method", choices=["percent", "lines"], default="percent", help="Section crop method. percent uses a 6x6 percent box; lines detects actual map section lines with OpenCV. Default: percent")
     parser.add_argument("--manual-grid-lines-x", default="", help="Optional 7 comma-separated x pixel coordinates for section grid lines after scaling, overriding detection.")
     parser.add_argument("--manual-grid-lines-y", default="", help="Optional 7 comma-separated y pixel coordinates for section grid lines after scaling, overriding detection.")
@@ -946,10 +1003,15 @@ def main() -> None:
         merge_section_status(manifest_rows)
         print(f"Wrote section manifest: {manifest_path.relative_to(PROJECT_ROOT)}")
         print(f"Merged section status seed: {SECTION_STATUS_PATH.relative_to(PROJECT_ROOT)}")
+        if args.output_layout == "workbook":
+            write_workbook_files(manifest_rows, page, image_path)
 
     if args.crops_only:
         print(f"Section crop units created: {processed_count}")
-        print("Next: open tools/section_entry.html locally, load the section manifest, and enter rows by section.")
+        if args.output_layout == "workbook":
+            print("Next: open tools/township_workbench.html locally, import the township workbook folder, and enter rows by section.")
+        else:
+            print("Next: open tools/section_entry.html locally, load the section manifest, and enter rows by section.")
         return
 
     all_raw_lines = dedupe_lines(all_raw_lines)

@@ -211,3 +211,24 @@ These fields document how a section crop was produced. They are not proof of all
 
 The agent converts `source-image` coordinates into scaled/preprocessed coordinates using the current `--scale` value and the preprocessing border. This lets a human align section boundaries visually before generating section crops.
 
+
+
+## v0.22 township workbook folder
+
+Local working folders may be generated under:
+
+```text
+data/ocr_runs/township_workbooks/<TOWNSHIP_RANGE>/
+  source/
+    p###_source.jpg
+  sections/
+    section_01/
+      p###_soft_s01_review.jpg
+    section_02/
+      p###_soft_s02_review.jpg
+  manifest.json
+  section_status.json
+  approved_rows.json
+```
+
+These folders are designed for local human transcription. Public website data should still be merged into `data/allotment_records.json` after review.

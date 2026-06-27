@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.22 — One-folder Township Workbench
+
+- Added `tools/township_workbench.html` for the simplified human workflow.
+- Added `--output-layout workbook` to generate one importable township/range folder.
+- Workbook folder contains `source/`, `sections/section_##/`, `manifest.json`, `section_status.json`, and `approved_rows.json`.
+- Workbench imports the whole township/range folder at once, shows all 36 sections, prevents obvious duplicate rows, tracks section status, and exports approved rows/status JSON.
+
+
 ## v0.21 — Manual Grid Calibration
 
 - Added `tools/grid_calibrator.html`, a local visual tool for aligning township/range section grid lines by hand.
@@ -30,6 +38,14 @@
 - Upgraded section entry helper with township/range/section picker, duplicate detection, existing-records duplicate checks, and a 36-section progress tracker.
 
 # Changelog
+
+## v0.22 — One-folder Township Workbench
+
+- Added `tools/township_workbench.html` for the simplified human workflow.
+- Added `--output-layout workbook` to generate one importable township/range folder.
+- Workbook folder contains `source/`, `sections/section_##/`, `manifest.json`, `section_status.json`, and `approved_rows.json`.
+- Workbench imports the whole township/range folder at once, shows all 36 sections, prevents obvious duplicate rows, tracks section status, and exports approved rows/status JSON.
+
 
 ## v0.17 — Human Section Entry Helper
 

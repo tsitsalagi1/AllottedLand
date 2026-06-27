@@ -70,6 +70,7 @@
     <h2>Human section-entry workflow</h2>
     <p>The OCR helper is now treated as optional. The preferred accuracy workflow is section-first and human-reviewed: create or open a section crop, read the names and allotment numbers from the image, then use the local Section Entry Helper to build approved JSON rows.</p>
     <div class="action-grid">
+      <a class="link-button secondary" href="tools/township_workbench.html">Open Township Workbench</a>
       <a class="link-button secondary" href="tools/section_entry.html">Open Section Entry Helper</a>
       <a class="link-button secondary" href="tools/grid_calibrator.html">Open Grid Calibrator</a>
       <a class="link-button secondary" href="tools/review_candidates.html">Open OCR Candidate Review</a>
@@ -86,6 +87,8 @@
 <section class="panel"><h2>Generate organized crops</h2><p>For human transcription, use the v0.19 command to generate all 36 section crops organized by township/range/section: <code>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 240 --crops-only --output-layout trs</code>.</p></section>
 
 <section class="panel"><h2>v0.21 manual grid calibration</h2><p>If section crops are shifted or missing part of the section, use <code>tools/grid_calibrator.html</code>. Load the full source map image, drag the outside grid lines first, distribute the internal lines, then export the calibration JSON.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80 --save-grid-debug</pre></section>
+
+<section class="panel"><h2>v0.22 one-folder township workbench</h2><p>The easier workflow is now: calibrate once, generate one township/range workbook folder, then import that folder into <code>tools/township_workbench.html</code>. The workbench shows the source map, all 36 sections, duplicate checks, section status, and approved-row export from one page.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout workbook --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80</pre></section>
 </main>
 <footer class="site-footer">
   <p><a href="index.html">Home</a> · <a href="sources.html">Source records</a> · <a href="contact.html">Contact</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>

@@ -162,3 +162,21 @@ python tools\map_indexing_agent.py --page 29 --mode sections --sections all --pr
 ```
 
 Only upload verified JSON/search data to GitHub by default. Keep generated working crop images local unless they are small, final, and necessary.
+
+
+## v0.22 one-folder township workflow
+
+Use this when the manual grid has been calibrated and you want the simplest human transcription workflow.
+
+1. Calibrate the full map in `tools/grid_calibrator.html` and save the grid JSON under `data/grid_calibrations/`.
+2. Generate one township/range workbook folder:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout workbook --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80
+```
+
+3. Open `tools/township_workbench.html`.
+4. Import the folder under `data/ocr_runs/township_workbooks/T24N_R14E/`.
+5. Pick a section, read the image, add verified rows, mark the section status, and export approved JSON.
+
+The public GitHub/Cloudflare site should keep the verified JSON and code. The working crop images should usually stay local unless a later storage plan is adopted.
