@@ -190,3 +190,24 @@ Section crop manifest records may include the following crop-calibration fields 
 - `line_meta`: diagnostic line-detection metadata.
 
 These fields document how a section crop was produced. They are not proof of allotment ownership; they support human transcription and review.
+
+## Grid calibration JSON
+
+`tools/grid_calibrator.html` exports a local calibration file, usually saved under `data/grid_calibrations/`:
+
+```json
+{
+  "tool": "AllottedLand Grid Calibrator",
+  "version": "0.21",
+  "loc_page": 29,
+  "township_range": "T24N R14E",
+  "coordinate_space": "source-image",
+  "image_width": 6300,
+  "image_height": 4800,
+  "x_lines": [100, 200, 300, 400, 500, 600, 700],
+  "y_lines": [100, 200, 300, 400, 500, 600, 700]
+}
+```
+
+The agent converts `source-image` coordinates into scaled/preprocessed coordinates using the current `--scale` value and the preprocessing border. This lets a human align section boundaries visually before generating section crops.
+

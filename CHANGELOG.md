@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.21 — Manual Grid Calibration
+
+- Added `tools/grid_calibrator.html`, a local visual tool for aligning township/range section grid lines by hand.
+- Added `--manual-grid-json` to `tools/map_indexing_agent.py` so calibrated grid JSON can drive section crops.
+- Human workflow now calibrates outside section boundaries first, distributes internal lines, then lets the user adjust individual section lines.
+- This replaces blind padding/percent-grid guesses for maps whose printed grids are shifted, warped, or scanned differently.
+
 ## v0.20 — Line-Detected Section Crops
 
 - Added `--grid-method lines` to detect actual map section boundary lines with OpenCV instead of only using a percent-based 6x6 grid.

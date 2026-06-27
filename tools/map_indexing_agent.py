@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.20
+AllottedLand.com Map Indexing Agent v0.21
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.21:
+  - Adds --manual-grid-json so a human can calibrate the outside and internal section lines visually.
+  - Supports coordinates exported from tools/grid_calibrator.html.
+  - Converts source-image grid coordinates into scaled/preprocessed crop coordinates.
 
 What changed in v0.20:
   - Adds line-detected section grid cropping so section crops follow actual map section lines.
@@ -60,6 +65,8 @@ CANDIDATES_PATH = PROJECT_ROOT / "data" / "allotment_records_candidates.json"
 SECTION_STATUS_PATH = PROJECT_ROOT / "data" / "section_status.json"
 RUNS_DIR = PROJECT_ROOT / "data" / "ocr_runs"
 IMAGE_DIR = RUNS_DIR / "source_images"
+GRID_CALIBRATIONS_DIR = PROJECT_ROOT / "data" / "grid_calibrations"
+PREPROCESS_BORDER = 25
 
 COMMONS_URL_TEMPLATE = "https://commons.wikimedia.org/wiki/Special:FilePath/Cherokee_Nation_LOC_2011585467-{page}.jpg"
 LOC_VIEW_TEMPLATE = "https://www.loc.gov/resource/g4021gm.gla00497/?sp={page}&st=image"
@@ -151,7 +158,7 @@ def download_image(page_no: int, image_url: str | None = None, overwrite: bool =
     if out_path.exists() and not overwrite:
         return out_path
     url = image_url or COMMONS_URL_TEMPLATE.format(page=page_no)
-    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.20 (+https://allottedland.com)"}
+    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.21 (+https://allottedland.com)"}
     resp = requests.get(url, headers=headers, timeout=120, allow_redirects=True)
     if resp.status_code != 200 or not resp.content:
         raise RuntimeError(f"Could not download image for page {page_no}: HTTP {resp.status_code} from {url}")
@@ -172,19 +179,19 @@ def preprocess_image(img: Image.Image, mode: str) -> Image.Image:
     out = img.copy()
     if mode == "soft":
         out = out.filter(ImageFilter.SHARPEN)
-        out = ImageOps.expand(out, border=25, fill=255)
+        out = ImageOps.expand(out, border=PREPROCESS_BORDER, fill=255)
         return out
     if mode == "threshold":
         out = out.filter(ImageFilter.SHARPEN)
         out = out.point(lambda p: 255 if p > 178 else 0)
-        out = ImageOps.expand(out, border=25, fill=255)
+        out = ImageOps.expand(out, border=PREPROCESS_BORDER, fill=255)
         return out
     if mode == "invert":
         out = ImageOps.invert(out)
         out = out.filter(ImageFilter.SHARPEN)
         out = out.point(lambda p: 255 if p > 170 else 0)
         out = ImageOps.invert(out)
-        out = ImageOps.expand(out, border=25, fill=255)
+        out = ImageOps.expand(out, border=PREPROCESS_BORDER, fill=255)
         return out
     raise ValueError(f"Unknown preprocess mode: {mode}")
 
@@ -287,6 +294,54 @@ def parse_number_list(value: str | None) -> list[int]:
             continue
         out.append(int(float(part)))
     return sorted(out)
+
+def resolve_project_path(value: str | None) -> Path | None:
+    """Resolve a user-supplied path relative to the project root when needed."""
+    if not value:
+        return None
+    p = Path(value.strip().strip('"'))
+    if not p.is_absolute():
+        p = PROJECT_ROOT / p
+    return p
+
+
+def load_manual_grid_json(path_value: str | None, scale: float, preprocess_border: int = PREPROCESS_BORDER) -> tuple[list[int], list[int], dict[str, Any]]:
+    """Load grid-line coordinates exported by tools/grid_calibrator.html.
+
+    The browser calibrator exports coordinates in the original/source image's natural
+    pixel space. The agent crops from the scaled/preprocessed image, so those source
+    coordinates must be multiplied by --scale and shifted by the preprocessing border.
+
+    The function also accepts already-scaled coordinates when coordinate_space is
+    "agent-image" or "scaled-image".
+    """
+    p = resolve_project_path(path_value)
+    if not p or not p.exists():
+        return [], [], {}
+    data = json.loads(p.read_text(encoding="utf-8"))
+    x_lines = [float(v) for v in data.get("x_lines", [])]
+    y_lines = [float(v) for v in data.get("y_lines", [])]
+    if len(x_lines) != 7 or len(y_lines) != 7:
+        raise ValueError(f"Manual grid JSON must contain exactly 7 x_lines and 7 y_lines: {p}")
+    space = str(data.get("coordinate_space") or "source-image").lower().strip()
+    if space in {"source", "source-image", "original", "original-image", "natural-image"}:
+        x_lines = [int(round((x * scale) + preprocess_border)) for x in x_lines]
+        y_lines = [int(round((y * scale) + preprocess_border)) for y in y_lines]
+    else:
+        x_lines = [int(round(x)) for x in x_lines]
+        y_lines = [int(round(y)) for y in y_lines]
+    meta = {
+        "manual_grid_json": str(p.relative_to(PROJECT_ROOT)) if str(p).startswith(str(PROJECT_ROOT)) else str(p),
+        "coordinate_space": space,
+        "source_image_width": data.get("image_width", ""),
+        "source_image_height": data.get("image_height", ""),
+        "calibrated_loc_page": data.get("loc_page", ""),
+        "calibrated_township_range": data.get("township_range", ""),
+        "converted_with_scale": scale,
+        "preprocess_border": preprocess_border,
+        "notes": data.get("notes", ""),
+    }
+    return sorted(x_lines), sorted(y_lines), meta
 
 
 def cluster_positions(values: list[int], tolerance: int = 28) -> list[int]:
@@ -421,6 +476,8 @@ def make_section_crops(
     grid_method: str = "percent",
     manual_x_lines: str | None = None,
     manual_y_lines: str | None = None,
+    manual_grid_json: str | None = None,
+    scale: float = 3.0,
     line_cluster_tolerance: int = 40,
     line_min_length_frac: float = 0.50,
     save_grid_debug: bool = False,
@@ -442,9 +499,14 @@ def make_section_crops(
     line_meta: dict[str, Any] = {}
     used_method = grid_method
 
+    json_x, json_y, json_meta = load_manual_grid_json(manual_grid_json, scale)
     manual_x = parse_number_list(manual_x_lines)
     manual_y = parse_number_list(manual_y_lines)
-    if len(manual_x) == 7 and len(manual_y) == 7:
+    if len(json_x) == 7 and len(json_y) == 7:
+        x_lines, y_lines = json_x, json_y
+        used_method = "manual-grid-json"
+        line_meta = {"selected_x_lines": x_lines, "selected_y_lines": y_lines, "manual": True, **json_meta}
+    elif len(manual_x) == 7 and len(manual_y) == 7:
         x_lines, y_lines = manual_x, manual_y
         used_method = "manual-lines"
         line_meta = {"selected_x_lines": x_lines, "selected_y_lines": y_lines, "manual": True}
@@ -801,6 +863,7 @@ def main() -> None:
     parser.add_argument("--grid-method", choices=["percent", "lines"], default="percent", help="Section crop method. percent uses a 6x6 percent box; lines detects actual map section lines with OpenCV. Default: percent")
     parser.add_argument("--manual-grid-lines-x", default="", help="Optional 7 comma-separated x pixel coordinates for section grid lines after scaling, overriding detection.")
     parser.add_argument("--manual-grid-lines-y", default="", help="Optional 7 comma-separated y pixel coordinates for section grid lines after scaling, overriding detection.")
+    parser.add_argument("--manual-grid-json", default="", help="Path to JSON exported by tools/grid_calibrator.html. Coordinates are usually source-image pixels and are converted using --scale.")
     parser.add_argument("--line-cluster-tolerance", type=int, default=40, help="Line-detection clustering tolerance in scaled pixels. Default: 40")
     parser.add_argument("--line-min-length-frac", type=float, default=0.50, help="Line detection minimum length as fraction of rough grid width/height. Default: 0.50")
     parser.add_argument("--save-grid-debug", action="store_true", help="Save an overlay image showing the detected/manual grid lines.")
@@ -849,6 +912,8 @@ def main() -> None:
                 grid_method=args.grid_method,
                 manual_x_lines=args.manual_grid_lines_x,
                 manual_y_lines=args.manual_grid_lines_y,
+                manual_grid_json=args.manual_grid_json,
+                scale=args.scale,
                 line_cluster_tolerance=args.line_cluster_tolerance,
                 line_min_length_frac=args.line_min_length_frac,
                 save_grid_debug=args.save_grid_debug,
@@ -901,7 +966,7 @@ def main() -> None:
     print(f"Wrote CSV: data/ocr_runs/{suffix}_candidates.csv")
     print(f"Wrote run JSON: data/ocr_runs/{run_id}_candidates.json")
     if args.mode == "sections":
-        print("Next: review section crop images under data/ocr_runs/page_XXX_sections/ and adjust --grid-pct if section boxes are off.")
+        print("Next: review section crop images. If section boxes are off, use tools/grid_calibrator.html and rerun with --manual-grid-json.")
     print("Next: open tools/review_candidates.html locally and review candidates before publishing any row.")
 
 

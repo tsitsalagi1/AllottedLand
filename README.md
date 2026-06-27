@@ -4,6 +4,25 @@ Project contact: allottedland@gmail.com
 
 AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from partial clues such as name, tribe, roll/enrollment number, township/range/section, county, town, cemetery, or family story.
 
+## v0.21 Manual grid calibration workflow
+
+When section crops are shifted or clipped, do not keep increasing padding. Calibrate the section grid manually:
+
+1. Open `tools/grid_calibrator.html` locally.
+2. Load the full source map image, usually `data/ocr_runs/source_images/cherokee_nation_loc_page_029.jpg`.
+3. Drag the four outside boundary lines onto the outside township section grid.
+4. Click **Distribute internal lines**.
+5. Move any internal section lines that are off.
+6. Download the grid JSON and save it under `data/grid_calibrations/`, for example `p029_T24N_R14E_grid.json`.
+7. Run:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80 --save-grid-debug
+```
+
+Then open `tools/section_entry.html`, load the section manifest, and transcribe section by section.
+
+
 ## Current status
 
 Beta / Phase 1. Current public version: v0.9. See `CHANGELOG.md` and `changelog.html` for project updates.
