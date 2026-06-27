@@ -79,6 +79,10 @@ The agent also now checks common Windows install locations automatically.
 The local OCR review helper now shows saved tile images beside candidate OCR rows, includes a bounding-box overlay where available, and adds filters/reject buttons so noisy map-label text can be screened before any row is drafted for `data/allotment_records.json`.
 
 
-## v0.16 — Human Section Entry Helper
+## v0.17 — Human Section Entry Helper
 
 Added `tools/section_entry.html`, a local browser tool for manually entering verified allotment rows from a section crop image. This shifts the workflow from OCR-first to section-first/human-reviewed: use township, range, and section as the stable legal anchor; let a human read the names and allotment numbers; then export approved JSON rows for `data/allotment_records.json`.
+
+
+### v0.17 note
+The section-entry workflow is now the primary production workflow: human reviewers read one PLSS section crop at a time and export verified JSON rows. OCR remains optional and should not be treated as proof.

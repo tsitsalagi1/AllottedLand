@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.16 — Human Section Entry Helper
+## v0.17 — Human Section Entry Helper
 
 - Added `tools/section_entry.html`, a local manual transcription tool for entering rows from section crop images.
 - Shifted the recommended workflow from OCR-first to section-first/human-reviewed.

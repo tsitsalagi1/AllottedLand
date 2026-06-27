@@ -146,6 +146,10 @@ The agent also now checks common Windows install locations automatically.
 Approved rows may include a `review_trace` object showing the original OCR candidate ID, tile ID, tile path, raw OCR line, and OCR confidence. This is optional but useful for auditability while records are still being reviewed.
 
 
-## v0.16 human section-entry workflow
+## v0.17 human section-entry workflow
 
 `tools/section_entry.html` creates approved JSON rows from human reading of section crop images. Rows should keep the stable land fields (`loc_page`, `township_range`, `township`, `range`, `section`, `legal_description`, `source_link`) and add variable fields (`verified_name`, `given_name`, `surname`, `allotment_number`, `status_restriction_notation`) only after human review.
+
+
+## v0.17 human section entry
+Rows exported from tools/section_entry.html should represent human-read records from a section crop. Use `review_trace.method = "human-section-entry"` and leave Dawes roll/enrollment/census-card fields blank unless separately verified.
