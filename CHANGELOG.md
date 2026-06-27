@@ -1,27 +1,16 @@
 # Changelog
 
-## v0.25 — Cleanup and production-tool focus
+## v0.26 — Online submission backend starter
 
-- Confirmed that the OCR agent is no longer part of the active production workflow.
-- Declared `tools/map_workbench.html` the primary data-entry tool.
-- Added cleanup guidance for deleting deprecated OCR, crop, and review-helper files.
-- Added `.gitignore` rules to keep generated crops, OCR runs, Python caches, and downloaded exports out of the public repository.
-- Kept public repository focused on code, verified records JSON, section progress JSON, source links, and documentation.
+- Added Cloudflare Pages Functions for submitting workbench records.
+- Added Cloudflare D1 schema for approved records, pending records, section status, grid calibrations, and submission logs.
+- Added submit-first workbench behavior.
+- Added trusted reviewer key flow for direct approved-record submission.
+- Added pending-review flow for public submissions without a reviewer key.
+- Added setup documentation for D1 and Pages Functions.
 
-## v0.24 — Data-entry guide and safer map-number fields
+## v0.25 — Workflow cleanup
 
-- Added a beginner guide explaining how to read LOC map labels.
-- Added first, middle, and last name fields.
-- Added `number_shown_on_map`, `map_number`, and `number_type` so map numbers are not forced into roll/allotment fields prematurely.
-
-## v0.23 — Full Map Workbench / No crop files
-
-- Added `tools/map_workbench.html`.
-- Human loads one LOC source map image, calibrates the grid, selects a section, and enters human-reviewed records.
-- Selected sections are zoomed live from the full image instead of requiring saved crop folders.
-
-## Earlier experimental phases
-
-- v0.8–v0.15 tested OCR candidates, Tesseract, tile review, and candidate export.
-- v0.16–v0.22 tested section-entry, crop generation, township/range folders, and manual calibration.
-- Those experiments informed the current full-map workbench but are now deprecated for production use.
+- Marked OCR/crop workflow as deprecated.
+- Made `tools/map_workbench.html` the primary production tool.
+- Added cleanup documentation.

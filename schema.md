@@ -1,58 +1,53 @@
-# AllottedLand.com data schema
+# AllottedLand data schema
 
-## Core production files
+## Public approved records
 
-### `data/map_index.json`
+Approved records are stored in Cloudflare D1 table `approved_records` and may also be exported as JSON.
 
-One row per Library of Congress map page.
+Core fields:
 
-Recommended fields: `type`, `loc_page`, `sheet_title`, `township`, `range`, `township_range`, `loc_image_view`, `loc_item_page`, `ocr_status`, `notes`.
+```json
+{
+  "verified_name": "Sarah R. Gourd",
+  "first_name": "Sarah",
+  "middle_name": "R.",
+  "last_name": "Gourd",
+  "tribe": "Cherokee Nation",
+  "map_number": "18338",
+  "number_shown_on_map": "18338",
+  "number_type": "unknown_map_number",
+  "roll_number": "",
+  "enrollment_number": "",
+  "census_card_number": "",
+  "allotment_number": "",
+  "loc_page": 29,
+  "township_range": "T24N R14E",
+  "township": "24",
+  "range": "14",
+  "section": "24",
+  "legal_description": "Section 24, T24N R14E",
+  "source_link": "https://www.loc.gov/resource/g4021gm.gla00497/?sp=29&st=image",
+  "confidence": "human-reviewed",
+  "needs_human_review": "no"
+}
+```
 
-### `data/allotment_records.json`
+## Number type rule
 
-One row per approved public person/map record. Rows should come from human-reviewed transcription, not raw OCR.
+Numbers seen on the LOC map should default to:
 
-Recommended fields:
+```text
+unknown_map_number
+```
 
-- `verified_name`
-- `first_name`
-- `middle_name`
-- `last_name`
-- `surname`
-- `given_name`
-- `tribe`
-- `map_number`
-- `number_shown_on_map`
-- `number_type` — default: `unknown_map_number`
-- `roll_number` — only if separately verified
-- `enrollment_number` — only if separately verified
-- `census_card_number` — only if separately verified
-- `allotment_number` — only if the reviewer is confident the number is an allotment number or a later source verifies it
-- `status_restriction_notation`
-- `loc_page`
-- `township_range`
-- `township`
-- `range`
-- `section`
-- `county`
-- `state`
-- `legal_description`
-- `source_link`
-- `confidence` — `human-reviewed`, `needs-review`, `uncertain`, or `source-verified`
-- `needs_human_review` — `yes` or `no`
-- `notes`
-- `review_trace` — optional information from the map workbench
+Do not force a visible map number into `roll_number`, `enrollment_number`, `census_card_number`, or `allotment_number` unless separately verified.
 
-### `data/section_status.json`
+## D1 tables
 
-Tracks transcription progress by township/range and section. Suggested status values:
+The SQL tables are defined in `schema.sql`:
 
-- `not_started`
-- `has_rows`
-- `complete`
-- `needs_review`
-- `no_records`
-
-## Deprecated files
-
-`data/allotment_records_candidates.json` and OCR candidate outputs are deprecated. Do not use raw OCR candidates as public records.
+- `approved_records`
+- `pending_records`
+- `section_status`
+- `grid_calibrations`
+- `submission_log`
