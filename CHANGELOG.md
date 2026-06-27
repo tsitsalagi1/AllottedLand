@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.23 — Full Map Workbench / No Crop Files
+
+- Added `tools/map_workbench.html`, a local full-map transcription workbench.
+- Human loads one LOC source map image and adjusts section grid lines directly over the map.
+- Selected sections are zoomed live from the full image instead of requiring saved crop folders.
+- Added first/middle/last name fields and duplicate-safe human entry.
+- Added section status tracking and exports for approved rows, grid calibration, section status, and a full workbench save.
+
+
 ## v0.22 — One-folder Township Workbench
 
 - Added `tools/township_workbench.html` for the simplified human workflow.
@@ -38,6 +47,15 @@
 - Upgraded section entry helper with township/range/section picker, duplicate detection, existing-records duplicate checks, and a 36-section progress tracker.
 
 # Changelog
+
+## v0.23 — Full Map Workbench / No Crop Files
+
+- Added `tools/map_workbench.html`, a local full-map transcription workbench.
+- Human loads one LOC source map image and adjusts section grid lines directly over the map.
+- Selected sections are zoomed live from the full image instead of requiring saved crop folders.
+- Added first/middle/last name fields and duplicate-safe human entry.
+- Added section status tracking and exports for approved rows, grid calibration, section status, and a full workbench save.
+
 
 ## v0.22 — One-folder Township Workbench
 

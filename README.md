@@ -180,3 +180,21 @@ python tools\map_indexing_agent.py --page 29 --mode sections --sections all --pr
 5. Pick a section, read the image, add verified rows, mark the section status, and export approved JSON.
 
 The public GitHub/Cloudflare site should keep the verified JSON and code. The working crop images should usually stay local unless a later storage plan is adopted.
+
+
+## v0.23 full-map human workbench
+
+`tools/map_workbench.html` is the preferred local human transcription workflow. It does not require saved section crop folders. Load one full LOC township/range map image, drag the section grid lines into place, select a section, read the zoomed section view, and enter human-reviewed records.
+
+Recommended workflow:
+
+1. Open `tools/map_workbench.html`.
+2. Load the full LOC source map image.
+3. Drag the outside grid boundary onto the township/range section boundary.
+4. Click **Distribute internal lines** and adjust any internal lines that are off.
+5. Select a section from the 36-section grid.
+6. Enter First name, Middle name, Last name, allotment number, and any visible status notes.
+7. Mark the section complete, needs review, or no records.
+8. Export approved rows JSON and merge reviewed rows into `data/allotment_records.json`.
+
+The tool runs locally in the browser and does not upload records or images.

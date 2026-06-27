@@ -89,6 +89,11 @@
 <section class="panel"><h2>v0.21 manual grid calibration</h2><p>If section crops are shifted or missing part of the section, use <code>tools/grid_calibrator.html</code>. Load the full source map image, drag the outside grid lines first, distribute the internal lines, then export the calibration JSON.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80 --save-grid-debug</pre></section>
 
 <section class="panel"><h2>v0.22 one-folder township workbench</h2><p>The easier workflow is now: calibrate once, generate one township/range workbook folder, then import that folder into <code>tools/township_workbench.html</code>. The workbench shows the source map, all 36 sections, duplicate checks, section status, and approved-row export from one page.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout workbook --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80</pre></section>
+
+<section class="card">
+  <h2>Full-map human workbench v0.23</h2>
+  <p>The preferred local workflow is now <code>tools/map_workbench.html</code>: load one full LOC map image, adjust the grid over the map, zoom to sections live, enter first/middle/last names, track section status, and export verified JSON.</p>
+</section>
 </main>
 <footer class="site-footer">
   <p><a href="index.html">Home</a> · <a href="sources.html">Source records</a> · <a href="contact.html">Contact</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>

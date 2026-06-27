@@ -232,3 +232,23 @@ data/ocr_runs/township_workbooks/<TOWNSHIP_RANGE>/
 ```
 
 These folders are designed for local human transcription. Public website data should still be merged into `data/allotment_records.json` after review.
+
+
+## v0.23 approved row additions
+
+Human-reviewed rows may now include separate name fields:
+
+```json
+{
+  "verified_name": "Sarah R. Gourd",
+  "first_name": "Sarah",
+  "middle_name": "R.",
+  "last_name": "Gourd",
+  "surname": "Gourd",
+  "given_name": "Sarah"
+}
+```
+
+`verified_name` remains the display/search name. `first_name`, `middle_name`, and `last_name` support cleaner human entry and duplicate checks.
+
+`review_trace.grid` may store the human-calibrated grid used by `tools/map_workbench.html`; it should be treated as review metadata, not as an official source record.
