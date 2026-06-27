@@ -1,1 +1,76 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Transcribe Allotment Records</title></head><body><main><h1>Transcribe Allotment Records</h1><p>Use the online workbench to submit human-reviewed rows. Trusted reviewer submissions go directly to approved records; public submissions go to pending review.</p><p><a href="/workbench.html">Open Map Workbench</a></p><p><a href="/admin.html">Open Admin Review</a></p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Help Index Maps — AllottedLand.com</title>
+  <meta name="description" content="How AllottedLand.com will turn allotment map images into verified searchable name, allotment, township, range, and source records." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <nav class="topnav" aria-label="Main navigation">
+      <a class="brand-link" href="index.html">AllottedLand.com</a>
+      <a href="index.html">Home</a>
+      <a href="workbench.html">Help index maps</a>
+      <a href="sources.html">Source records</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  <div class="hero doc-hero">
+    <p class="eyebrow">AllottedLand.com · Beta / Phase 1</p>
+    <h1>Help index the maps</h1>
+    <p class="subtitle">The next goal is to turn public map images into verified searchable records without exposing private family information.</p>
+  </div>
+</header>
+<main class="doc-main">
+  <section class="panel">
+    <h2>Why indexing is needed</h2>
+    <p>The Phase 1 source is the 1909 Library of Congress Cherokee Nation atlas. The maps can show names, statuses, and allotment numbers, but those details are in map images. To search by family name or allotment number, the map text has to be transcribed, checked, and tied back to the original map page.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Safe online workbench workflow</h2>
+    <ol class="steps">
+      <li><strong>Choose a map page.</strong> Start with township and range, such as T21N R12E.</li>
+      <li><strong>Open the original source.</strong> Review the map at the Library of Congress.</li>
+      <li><strong>Transcribe only what appears on the historical public record.</strong> Do not add private family stories or living-person information.</li>
+      <li><strong>Record uncertainty.</strong> Use question marks, notes, and confidence levels when handwriting or map text is unclear.</li>
+      <li><strong>Review before publishing.</strong> A row should not become a public searchable family result until it has source links and review status.</li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <h2>Fields to capture</h2>
+    <div class="field-list">
+      <span>Map page</span><span>Township</span><span>Range</span><span>Section</span><span>Name as written</span><span>Name variant</span><span>Allotment number</span><span>Status/restriction note</span><span>Legal description</span><span>Source link</span><span>Reviewer</span><span>Confidence level</span>
+    </div>
+    <p class="hint">Roll/enrollment numbers should be added only when supported by Dawes/NARA, allotment jacket, or other source-linked records. The LOC map layer alone should not pretend to be a complete roll-number database.</p>
+  </section>
+
+
+  <section class="panel">
+    <h2>Map Indexing Agent starter kit</h2>
+    <p>Version 0.9 improves the local OCR helper by reducing low-confidence junk rows, replacing the candidate file by default, supporting multiple Tesseract page-segmentation modes, and adding preprocessing options for old map images. It does not publish records automatically.</p>
+    <div class="action-grid">
+      <a class="link-button" href="docs/ocr-workflow.md">Read OCR workflow</a>
+      <a class="link-button secondary" href="tools/map_indexing_agent.py">Download indexing agent</a>
+      <a class="link-button secondary" href="tools/review_candidates.html">Open review helper</a>
+      <a class="link-button secondary" href="tools/requirements.txt">Python requirements</a>
+    </div>
+    <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record. If a run creates mostly gibberish, rerun with a higher confidence threshold or a different PSM/preprocessing option.</p>
+  </section>
+
+  <section class="panel disclaimer">
+    <h2>No public upload form yet</h2>
+    <p>Public submissions remain closed until privacy, consent, review, and removal processes are finalized. For now, this page explains the data plan so the project can grow carefully.</p>
+    <p><a class="link-button" href="data/transcription_queue_template.csv">Download transcription queue template</a></p>
+  </section>
+</main>
+<footer class="site-footer">
+  <p><a href="index.html">Home</a> · <a href="sources.html">Source records</a> · <a href="contact.html">Contact</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>
+<p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p></footer>
+</body>
+</html>
+
+<!-- v0.11 note: local review helper now supports tile-image preview, likely-noise filtering, reject/hide controls, and bounding-box overlays for candidate OCR rows. -->

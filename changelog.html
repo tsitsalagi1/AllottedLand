@@ -1,1 +1,140 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AllottedLand Changelog</title></head><body><main><h1>AllottedLand.com Changelog</h1><h2>v0.27 — Admin Review Panel</h2><p>Added an admin panel for loading pending submissions, inspecting records, saving obvious corrections, approving verified rows, and rejecting mistakes or duplicates.</p><p><a href="/admin.html">Open Admin Review</a></p><p><a href="/workbench.html">Open Workbench</a></p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project updates — AllottedLand.com</title>
+  <meta name="description" content="Version history and public project updates for AllottedLand.com." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <nav class="topnav" aria-label="Main navigation">
+      <a class="brand-link" href="index.html">AllottedLand.com</a>
+      <a href="index.html">Home</a>
+      <a href="workbench.html">Help index maps</a>
+      <a href="sources.html">Source records</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  <div class="hero doc-hero">
+    <p class="eyebrow">AllottedLand.com · Project history</p>
+    <h1>Project updates</h1>
+    <p class="subtitle">A public change log so families, volunteers, and researchers can see what changed and what is coming next.</p>
+  </div>
+</header>
+
+<section class="panel">
+  <p class="eyebrow">v0.11</p>
+  <h2>Tile Review Upgrade</h2>
+  <p>Improved the local OCR review helper with tile-image preview, bounding-box overlay, likely-noise filters, reject/hide controls, and better review trace output before any candidate becomes a public searchable row.</p>
+</section>
+
+
+<main class="doc-main">
+  <section class="panel">
+    <h2>Current version: v0.7</h2>
+    <p>AllottedLand.com is still in Beta / Phase 1. The public site currently indexes Library of Congress Cherokee Nation atlas map pages and explains the research process. Verified public name, roll-number, allotment-number, testimonial, and land-loss datasets are not open yet.</p>
+    <p class="small-note">This page is a plain-language project update. For the technical file history, see the GitHub repository commit history.</p>
+  </section>
+
+
+  <section class="panel">
+    <h2>v0.8 — Map Indexing Agent starter kit</h2>
+    <ul>
+      <li>Added a local OCR agent for testing one LOC map page at a time.</li>
+      <li>Added candidate-row output in <code>data/allotment_records_candidates.json</code>.</li>
+      <li>Added a local review helper so OCR candidates can be checked before publishing.</li>
+      <li>Added OCR workflow documentation and Python requirements.</li>
+      <li>Kept OCR results as unverified leads only; human review remains required.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.7 — Project updates and version tracking</h2>
+    <p class="small-note">Added June 2026</p>
+    <ul>
+      <li>Added this Project Updates page.</li>
+      <li>Added <code>CHANGELOG.md</code> for GitHub version tracking.</li>
+      <li>Added project-update links in navigation/footer areas.</li>
+      <li>Updated the sitemap so search engines can discover the updates page.</li>
+      <li>Kept the upload/submission system closed until privacy, consent, and review rules are finalized.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.6 — Contact button fix</h2>
+    <ul>
+      <li>Replaced primary contact buttons with Gmail web-compose links.</li>
+      <li>Kept a default email-app fallback for visitors who prefer another email app.</li>
+      <li>Added a copy-email button for <strong>allottedland@gmail.com</strong>.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.5 — Project contact email</h2>
+    <ul>
+      <li>Added <strong>allottedland@gmail.com</strong> across the site.</li>
+      <li>Updated the Contact page for questions, corrections, removal requests, and volunteer indexing.</li>
+      <li>Added reminders not to email sensitive private family documents unless redacted and permitted.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.4 — Data and search improvement</h2>
+    <ul>
+      <li>Added Phase 1 data-status language.</li>
+      <li>Added the Help Index Maps page.</li>
+      <li>Added a safe transcription workflow and templates.</li>
+      <li>Improved map preview behavior.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.3 — Trust and source pages</h2>
+    <ul>
+      <li>Added About, Source Records, and Contact pages.</li>
+      <li>Added sitemap and robots.txt updates.</li>
+      <li>Added Beta / Phase 1 language and footer links.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.2 — Privacy fix and search cleanup</h2>
+    <ul>
+      <li>Removed personal family sample data from the public example text.</li>
+      <li>Changed the search page so it starts with no results until a user searches.</li>
+      <li>Clarified map transcription/indexing status.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>v0.1 — Public foundation</h2>
+    <ul>
+      <li>Created the first public static site foundation.</li>
+      <li>Added homepage, guided finder, search prototype, request builder, privacy, terms, and submission consent pages.</li>
+      <li>Started with the Library of Congress Cherokee Nation atlas map index.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <strong>AllottedLand.com</strong>
+      <p>Free public research tool helping Native families follow allotment records, maps, county records, BIA/LTRO records, and documented land history.</p>
+    </div>
+    <div>
+      <strong>Project</strong>
+      <p><a href="about.html">About</a> · <a href="sources.html">Source records</a> · <a href="workbench.html">Help index maps</a> · <a href="changelog.html">Updates</a> · <a href="contact.html">Contact</a></p>
+      <p class="small-note"><a href="contact.html">allottedland@gmail.com</a></p>
+    </div>
+    <div>
+      <strong>Protection</strong>
+      <p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>
+    </div>
+  </div>
+  <p class="small-note">This site is a free research index and does not determine title, ownership, heirship, citizenship, enrollment, or legal rights.</p>
+</footer>
+</body>
+</html>

@@ -25,19 +25,11 @@
   <header class="site-header">
     <nav class="topnav" aria-label="Main navigation">
       <a class="brand-link" href="index.html">AllottedLand.com</a>
-      <a href="#start">Start here</a>
-      <a href="#search">Search</a>
-      <a href="#process">Process</a>
-      <a href="#requests">Request builder</a>
-      <a href="#stories">Stories & data</a>
-      <a href="about.html">About</a>
+      <a href="index.html">Home</a>
+      <a href="workbench.html">Help index maps</a>
       <a href="sources.html">Source records</a>
-      <a href="transcribe.html">Help index maps</a>
-      <a href="changelog.html">Updates</a>
+      <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="terms.html">Terms</a>
-      <a href="submission-policy.html">Submission consent</a>
     </nav>
     <div class="hero">
       <p class="eyebrow">AllottedLand.com · Beta / Phase 1</p>
@@ -46,7 +38,7 @@
       <div class="hero-actions">
         <a class="button" href="#start">I don’t know where to start</a>
         <a class="button secondary" href="#search">Search township/range</a>
-        <a class="button tertiary" href="transcribe.html">Help index maps</a>
+        <a class="button tertiary" href="workbench.html">Help index maps</a>
       </div>
     </div>
   </header>
@@ -77,13 +69,22 @@
     <section class="section status-grid" aria-label="Phase 1 data status">
       <div class="panel status-card">
         <p class="eyebrow dark">Phase 1 data status</p>
-        <h2>Map index live. Name index coming next.</h2>
-        <p>The public search currently starts with the Library of Congress Cherokee Nation atlas map pages. Name, roll/enrollment-number, allotment-number, and section-level records will be added only after transcription and verification.</p>
+        <h2>Reviewed records now connected.</h2>
+        <p>Approved records are now pulled from the website database after admin review. Pending submissions stay out of public search until they are approved.</p>
       </div>
       <div class="panel stat-row" aria-label="Current dataset counts">
-        <div><strong>238</strong><span>LOC atlas map pages indexed</span></div>
-        <div><strong>0</strong><span>public verified name rows loaded yet</span></div>
-        <div><strong>Closed</strong><span>public submissions until policies/review are finalized</span></div>
+        <div><strong id="statMapPages">238</strong><span>LOC atlas map pages indexed</span></div>
+        <div><strong id="statApprovedRecords">Loading…</strong><span>approved public record rows</span></div>
+        <div><strong id="statPendingRecords">Loading…</strong><span>pending rows awaiting admin review</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Latest approved records">
+      <div class="panel feature-panel">
+        <p class="eyebrow dark">Public database</p>
+        <h2>Latest approved records</h2>
+        <p>These rows come from the approved-records database after admin review. Pending rows are not shown here.</p>
+        <div id="latestApprovedRecords" class="results compact-results">Loading approved records…</div>
       </div>
     </section>
 
@@ -224,10 +225,10 @@
 
     <section id="help-index" class="section two-col">
       <div class="panel feature-panel">
-        <p class="eyebrow dark">Volunteer indexing — coming next</p>
+        <p class="eyebrow dark">Volunteer indexing</p>
         <h2>Help turn map images into searchable family clues.</h2>
-        <p>The LOC atlas is public and powerful, but the names on the map images are not yet a verified searchable database here. The next buildout is a careful transcription workflow: map page → name/allotment text → human review → source-linked search row.</p>
-        <p><a class="link-button" href="transcribe.html">View the indexing plan</a></p>
+        <p>The LOC atlas is public and powerful. The workbench lets trusted reviewers use a full source map image, calibrate the grid, zoom into a section, and submit human-reviewed rows to the website database.</p>
+        <p><a class="link-button" href="workbench.html">Open the map workbench</a></p>
       </div>
       <div class="panel">
         <h2>Verification rule</h2>
@@ -265,8 +266,8 @@
     <section class="section two-col">
       <div class="panel feature-panel">
         <p class="eyebrow dark">Phase 1 data notice</p>
-        <h2>Current data starts with Cherokee Nation map pages.</h2>
-        <p>The live search currently indexes the 1909 Library of Congress Cherokee Nation atlas by township/range. Name, roll-number, allotment-number, and land-loss searches will become stronger as verified records are added.</p>
+        <h2>Current data starts with Cherokee Nation map pages and approved human-reviewed rows.</h2>
+        <p>The live search combines the 1909 Library of Congress Cherokee Nation atlas map pages with approved human-reviewed rows submitted through the workbench.</p>
         <p><a class="link-button" href="sources.html">View source records</a></p>
       </div>
       <div class="panel feature-panel">
@@ -297,7 +298,7 @@
       </div>
       <div>
         <strong>Project</strong>
-        <p><a href="about.html">About</a> · <a href="sources.html">Source records</a> · <a href="transcribe.html">Help index maps</a>
+        <p><a href="about.html">About</a> · <a href="sources.html">Source records</a> · <a href="workbench.html">Help index maps</a>
       <a href="changelog.html">Updates</a> · <a href="contact.html">Contact</a></p><p class="small-note"><a href="contact.html">allottedland@gmail.com</a></p>
       </div>
       <div>
@@ -308,6 +309,99 @@
     <p class="small-note">Phase 1 source item: <a href="https://www.loc.gov/resource/g4021gm.gla00497/?st=gallery" target="_blank" rel="noopener">Library of Congress, “Cherokee Nation,” Indian Territory Map Co., 1909</a>. This site links to public source images and does not host high-resolution LOC map files.</p>
   </footer>
 
+
   <script src="assets/app.js"></script>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const clean = (v) => String(v || '').trim();
+    const lower = (v) => clean(v).toLowerCase();
+    async function getJSON(url) {
+      const res = await fetch(url, { headers: { 'accept': 'application/json' } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function recordCard(r) {
+      const name = clean(r.verified_name) || [r.first_name, r.middle_name, r.last_name].filter(Boolean).join(' ') || 'Unnamed record';
+      const num = clean(r.number_shown_on_map || r.map_number || r.allotment_number || r.roll_number);
+      const numberType = clean(r.number_type || 'map number');
+      const tr = clean(r.township_range);
+      const sec = clean(r.section);
+      const source = clean(r.source_link);
+      return `<article class="result-card record-result">
+        <h3>${escapeHTML(name)}</h3>
+        <p><strong>Map number:</strong> ${escapeHTML(num || 'not entered')} ${numberType ? '· ' + escapeHTML(numberType) : ''}</p>
+        <p><strong>Location:</strong> ${escapeHTML([tr, sec ? 'Section ' + sec : ''].filter(Boolean).join(' · ') || 'not entered')}</p>
+        ${source ? `<p><a href="${escapeAttr(source)}" target="_blank" rel="noopener">Open source map</a></p>` : ''}
+      </article>`;
+    }
+    function escapeHTML(s) {
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeAttr(s) { return escapeHTML(s).replace(/`/g, '&#96;'); }
+    function matchesFilters(r) {
+      const first = lower($('givenName')?.value);
+      const last = lower($('surname')?.value);
+      const num = lower($('allotmentNumber')?.value || $('rollNumber')?.value);
+      const keyword = lower($('keyword')?.value);
+      if (first && !lower(r.first_name || r.given_name || r.verified_name).includes(first)) return false;
+      if (last && !lower(r.last_name || r.surname || r.verified_name).includes(last)) return false;
+      if (num && !lower([r.number_shown_on_map, r.map_number, r.allotment_number, r.roll_number].join(' ')).includes(num)) return false;
+      if (keyword && !lower(JSON.stringify(r)).includes(keyword)) return false;
+      return true;
+    }
+    async function loadStats() {
+      try {
+        const data = await getJSON('/api/stats');
+        if ($('statApprovedRecords')) $('statApprovedRecords').textContent = data.approved_records ?? 0;
+        if ($('statPendingRecords')) $('statPendingRecords').textContent = data.pending_records ?? 0;
+      } catch (e) {
+        if ($('statApprovedRecords')) $('statApprovedRecords').textContent = '—';
+        if ($('statPendingRecords')) $('statPendingRecords').textContent = '—';
+      }
+    }
+    async function loadLatest() {
+      const box = $('latestApprovedRecords');
+      if (!box) return;
+      try {
+        const data = await getJSON('/api/records');
+        const records = Array.isArray(data.records) ? data.records.slice(0, 12) : [];
+        box.innerHTML = records.length ? records.map(recordCard).join('') : '<p class="muted">No approved public records are showing yet. Approve pending rows in the admin panel, then refresh this page.</p>';
+      } catch (e) {
+        box.innerHTML = '<p class="muted">The approved-records API is not reachable yet. Check Cloudflare Pages deployment and D1 binding.</p>';
+      }
+    }
+    async function runRecordSearch(event) {
+      if (event) event.preventDefault();
+      const results = $('results');
+      const status = $('status');
+      const count = $('count');
+      if (!results) return;
+      const params = new URLSearchParams();
+      const tr = clean($('townshipRange')?.value);
+      const sec = clean($('section')?.value);
+      if (tr) params.set('township_range', tr);
+      if (sec) params.set('section', sec);
+      if (status) status.textContent = 'Searching approved records…';
+      try {
+        const data = await getJSON('/api/records' + (params.toString() ? '?' + params.toString() : ''));
+        const records = (Array.isArray(data.records) ? data.records : []).filter(matchesFilters);
+        results.innerHTML = records.length ? records.map(recordCard).join('') : '<p class="muted">No approved public records matched that search yet. Try township/range, or check pending records in the admin panel.</p>';
+        if (count) count.textContent = records.length + ' approved record' + (records.length === 1 ? '' : 's');
+        if (status) status.textContent = 'Approved-record search connected to website database.';
+      } catch (e) {
+        if (status) status.textContent = 'Could not reach approved-records API. Check deployment, Functions, and D1 binding.';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      loadStats();
+      loadLatest();
+      const btn = $('searchBtn');
+      if (btn) btn.addEventListener('click', runRecordSearch);
+      const clear = $('clearBtn');
+      if (clear) clear.addEventListener('click', function () { setTimeout(runRecordSearch, 0); });
+    });
+  })();
+  </script>
 </body>
 </html>
