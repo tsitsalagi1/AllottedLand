@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand OCR Candidate Review v0.13</title>
+  <title>AllottedLand OCR Candidate Review v0.14</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f7f4ed; color: #1d1b18; }
     header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
@@ -43,7 +43,7 @@
 </head>
 <body>
 <header><div>
-  <h1>AllottedLand OCR Candidate Review v0.13</h1>
+  <h1>AllottedLand OCR Candidate Review v0.14</h1>
   <p>Local helper for reviewing machine-extracted candidate rows before any record becomes public/searchable.</p>
 </div></header>
 <main>
@@ -51,6 +51,7 @@
     <h2>Load candidate JSON</h2>
     <p class="muted">Choose <code>data/allotment_records_candidates.json</code> from your local project folder after running the indexing agent. This page runs in your browser only; it does not upload records anywhere.</p>
     <input type="file" id="file" accept="application/json,.json" />
+    <p id="fileStatus" class="muted">No candidate JSON loaded yet. If the main candidate file is empty, choose the run-specific JSON under <code>data/ocr_runs/</code>.</p>
     <label for="filter">Filter candidates</label>
     <input type="search" id="filter" placeholder="Search name, page, township/range, OCR text..." />
     <div class="toolbar" style="margin-top:12px">
@@ -284,13 +285,42 @@ function updateJson(){
   const obj = approvedObject();
   $('approvedJson').textContent = obj ? JSON.stringify(obj, null, 2) : 'No candidate selected.';
 }
+function normalizeCandidateRows(parsed){
+  if (Array.isArray(parsed)) return parsed;
+  if (!parsed || typeof parsed !== 'object') return [];
+  const knownKeys = ['candidates','rows','records','data','results','items'];
+  for (const key of knownKeys) {
+    if (Array.isArray(parsed[key])) return parsed[key];
+  }
+  for (const value of Object.values(parsed)) {
+    if (Array.isArray(value) && value.some(item => item && typeof item === 'object')) return value;
+  }
+  return [];
+}
+function setFileStatus(message, isError=false){
+  const el = $('fileStatus');
+  el.innerHTML = message;
+  el.style.color = isError ? '#8b1d13' : '';
+}
 $('file').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  rows = JSON.parse(await file.text());
-  rejected = new Set();
-  selected = null;
-  render();
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text || '[]');
+    rows = normalizeCandidateRows(parsed);
+    rejected = new Set();
+    selected = null;
+    setFileStatus(`Loaded <strong>${escapeHtml(file.name)}</strong>. Candidate rows found: <strong>${rows.length}</strong>.` +
+      (rows.length === 0 ? ' This file is empty or has no candidate array. Try choosing the run-specific JSON under <code>data/ocr_runs/</code>, such as <code>loc029_sections_..._candidates.json</code>.' : ''));
+    render();
+  } catch (err) {
+    rows = [];
+    rejected = new Set();
+    selected = null;
+    setFileStatus(`Could not read JSON from <strong>${escapeHtml(file.name)}</strong>: ${escapeHtml(err.message || err)}`, true);
+    render();
+  }
 });
 ['filter','hideLikelyNoise','hideRejected','minConf'].forEach(id => $(id).addEventListener('input', render));
 $('resetHidden').addEventListener('click', () => { rejected = new Set(); render(); });
