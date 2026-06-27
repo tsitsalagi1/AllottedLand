@@ -81,3 +81,13 @@ The local OCR review helper now shows saved tile images beside candidate OCR row
 
 ## v0.28 homepage behavior
 The public home page now reads approved records from `/api/records` and database counts from `/api/stats`. Pending records remain hidden from public search until approved through `admin.html`. The top navigation now links only to full pages instead of internal home-page anchors.
+
+### v0.29 admin/homepage cleanup
+
+`admin.html` is now the place for internal counts, latest approved records, pending records, and review workflow. The public homepage no longer displays latest approved records or Phase 1 data-status cards.
+
+The admin page does not load database content until the `ADMIN_KEY` is entered and verified through `/api/admin-dashboard`. The D1 APIs still enforce the key server-side. For stronger page-level protection, place `/admin.html` behind Cloudflare Access / Zero Trust.
+
+
+### v0.29b navigation note
+The Workbench header now includes a direct Admin link for trusted reviewers. The admin page still requires the ADMIN_KEY before database data loads.

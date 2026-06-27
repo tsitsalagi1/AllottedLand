@@ -57,34 +57,12 @@
       </div>
       <div class="panel warning-panel">
         <h2>Launch rule: protect families first.</h2>
-        <p>Before public submissions open, this site includes Privacy, Terms, and Submission Consent pages. The first version does not collect uploads or private family documents.</p>
+        <p>Public records are shown only after review. The workbench does not upload source map images; it submits human-entered record data for review.</p>
         <ul class="checklist">
           <li>Do not publish living-person private information.</li>
-          <li>Do not treat unverified matches as proof.</li>
+          <li>Do not treat unverified matches or pending submissions as proof.</li>
           <li>Use original records, county records, BIA/LTRO records, tribal records, and NARA records for verification.</li>
         </ul>
-      </div>
-    </section>
-
-    <section class="section status-grid" aria-label="Phase 1 data status">
-      <div class="panel status-card">
-        <p class="eyebrow dark">Phase 1 data status</p>
-        <h2>Reviewed records now connected.</h2>
-        <p>Approved records are now pulled from the website database after admin review. Pending submissions stay out of public search until they are approved.</p>
-      </div>
-      <div class="panel stat-row" aria-label="Current dataset counts">
-        <div><strong id="statMapPages">238</strong><span>LOC atlas map pages indexed</span></div>
-        <div><strong id="statApprovedRecords">Loading…</strong><span>approved public record rows</span></div>
-        <div><strong id="statPendingRecords">Loading…</strong><span>pending rows awaiting admin review</span></div>
-      </div>
-    </section>
-
-    <section class="section" aria-label="Latest approved records">
-      <div class="panel feature-panel">
-        <p class="eyebrow dark">Public database</p>
-        <h2>Latest approved records</h2>
-        <p>These rows come from the approved-records database after admin review. Pending rows are not shown here.</p>
-        <div id="latestApprovedRecords" class="results compact-results">Loading approved records…</div>
       </div>
     </section>
 
@@ -350,27 +328,6 @@
       if (keyword && !lower(JSON.stringify(r)).includes(keyword)) return false;
       return true;
     }
-    async function loadStats() {
-      try {
-        const data = await getJSON('/api/stats');
-        if ($('statApprovedRecords')) $('statApprovedRecords').textContent = data.approved_records ?? 0;
-        if ($('statPendingRecords')) $('statPendingRecords').textContent = data.pending_records ?? 0;
-      } catch (e) {
-        if ($('statApprovedRecords')) $('statApprovedRecords').textContent = '—';
-        if ($('statPendingRecords')) $('statPendingRecords').textContent = '—';
-      }
-    }
-    async function loadLatest() {
-      const box = $('latestApprovedRecords');
-      if (!box) return;
-      try {
-        const data = await getJSON('/api/records');
-        const records = Array.isArray(data.records) ? data.records.slice(0, 12) : [];
-        box.innerHTML = records.length ? records.map(recordCard).join('') : '<p class="muted">No approved public records are showing yet. Approve pending rows in the admin panel, then refresh this page.</p>';
-      } catch (e) {
-        box.innerHTML = '<p class="muted">The approved-records API is not reachable yet. Check Cloudflare Pages deployment and D1 binding.</p>';
-      }
-    }
     async function runRecordSearch(event) {
       if (event) event.preventDefault();
       const results = $('results');
@@ -394,8 +351,6 @@
       }
     }
     document.addEventListener('DOMContentLoaded', function () {
-      loadStats();
-      loadLatest();
       const btn = $('searchBtn');
       if (btn) btn.addEventListener('click', runRecordSearch);
       const clear = $('clearBtn');

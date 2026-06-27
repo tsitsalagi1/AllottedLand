@@ -148,3 +148,7 @@ Approved rows may include a `review_trace` object showing the original OCR candi
 
 ## v0.28 API additions
 `/api/stats` returns approved record count, pending record count, and section-status counts for homepage display.
+
+## Admin dashboard API
+
+`/api/admin-dashboard` requires the `X-Admin-Key` header matching `ADMIN_KEY`. It returns approved/pending counts, section-status counts, and recent approved records for the admin panel.

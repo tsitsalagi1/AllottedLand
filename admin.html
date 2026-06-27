@@ -3,108 +3,140 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand Admin Review v0.27</title>
+  <title>AllottedLand Admin Review v0.29</title>
   <style>
     :root {
       --green:#173f35; --green2:#235b4e; --cream:#f6f1e9; --paper:#fffdf8;
-      --line:#d8cbb8; --ink:#102033; --muted:#667085; --danger:#9f2f23;
+      --line:#d8cbb8; --ink:#102033; --muted:#667085; --danger:#9f2f23; --gold:#c9a45a;
     }
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink)}
-    header{background:var(--green);color:white;padding:28px 20px} header .wrap{max-width:1180px;margin:auto} h1{margin:0;font-size:clamp(26px,4vw,44px)}
-    h2{margin:0 0 12px}.sub{opacity:.9;margin:.4rem 0 0}.wrap{max-width:1180px;margin:0 auto;padding:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 10px rgba(17,24,39,.05)}
-    label{display:block;font-weight:700;margin:10px 0 5px} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:white} textarea{min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}.grid{display:grid;gap:12px}.grid.cols{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:900px){.grid.cols{grid-template-columns:1fr 1fr}}@media(max-width:650px){.grid.cols{grid-template-columns:1fr}}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+    header{background:var(--green);color:white;padding:28px 20px} header .wrap{max-width:1180px;margin:auto}
+    h1{margin:0;font-size:clamp(26px,4vw,44px)} h2{margin:0 0 12px}.sub{opacity:.9;margin:.4rem 0 0}
+    .wrap{max-width:1180px;margin:0 auto;padding:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 10px rgba(17,24,39,.05)}
+    label{display:block;font-weight:700;margin:10px 0 5px} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:white} textarea{min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+    .grid{display:grid;gap:12px}.grid.cols{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:#efe6d8;border-radius:14px;padding:14px}.stat strong{display:block;font-size:32px;color:var(--green)}
+    @media(max-width:900px){.grid.cols,.stats{grid-template-columns:1fr 1fr}}@media(max-width:650px){.grid.cols,.stats{grid-template-columns:1fr}}
     button{border:0;border-radius:999px;background:var(--green);color:white;font-weight:800;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0}button.secondary{background:#eee5d7;color:var(--ink)}button.danger{background:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}.row-actions{white-space:nowrap}.status{padding:10px;border-radius:10px;background:#e7f5ef;color:#123d32;margin-top:10px}.status.error{background:#fde8e4;color:#7a1d13}.muted{color:var(--muted)}
     table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}th{background:#efe6d8}.pill{display:inline-block;border-radius:999px;background:#efe6d8;padding:4px 8px;font-size:12px;font-weight:700}.split{display:grid;grid-template-columns:1.25fr .95fr;gap:16px}@media(max-width:1000px){.split{grid-template-columns:1fr}}
-    .record-list{max-height:620px;overflow:auto}.details pre{white-space:pre-wrap;background:#111827;color:#f9fafb;border-radius:10px;padding:12px;max-height:280px;overflow:auto}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.checkbox-cell{width:36px}.selected{outline:3px solid #c9a45a}.small{font-size:12px}.topnav a{color:white;margin-right:12px}.warning{background:#fff4d6;border:1px solid #ead192;padding:10px;border-radius:10px;margin-top:10px}
+    .record-list{max-height:620px;overflow:auto}.details pre{white-space:pre-wrap;background:#111827;color:#f9fafb;border-radius:10px;padding:12px;max-height:280px;overflow:auto}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.checkbox-cell{width:36px}.selected{outline:3px solid var(--gold)}.small{font-size:12px}.topnav a{color:white;margin-right:12px}.warning{background:#fff4d6;border:1px solid #ead192;padding:10px;border-radius:10px;margin-top:10px}.latest-list{display:grid;gap:8px}.latest-item{border:1px solid var(--line);background:white;border-radius:12px;padding:10px}.hidden{display:none !important}.lock-card{max-width:720px;margin:28px auto}.lock-title{font-size:22px;font-weight:900}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <div class="topnav"><a href="/">AllottedLand.com</a><a href="/workbench.html">Workbench</a></div>
-    <h1>Admin Review v0.27</h1>
-    <p class="sub">Inspect pending human-submitted records, edit obvious corrections, approve verified rows, or reject bad duplicates.</p>
+    <h1>Admin Review v0.29</h1>
+    <p class="sub">Private review area for pending submissions, latest approved records, and extraction progress.</p>
   </div>
 </header>
+
 <main class="wrap">
-  <section class="card">
-    <h2>1. Admin access</h2>
-    <p class="muted">This page talks to Cloudflare Pages Functions. Your admin key is sent only as an <code>X-Admin-Key</code> request header and is not placed in the URL.</p>
-    <div class="grid cols">
-      <div style="grid-column:span 2">
-        <label for="adminKey">Admin key</label>
-        <input id="adminKey" type="password" placeholder="ADMIN_KEY from Cloudflare Pages variables" autocomplete="off" />
-      </div>
-      <div>
-        <label for="trFilter">Township/Range filter</label>
-        <input id="trFilter" placeholder="Example: T24N R14E" />
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <button id="loadBtn">Load pending records</button>
-      </div>
-    </div>
+  <section id="loginPanel" class="card lock-card">
+    <p class="lock-title">Admin key required</p>
+    <p class="muted">Nothing loads from the admin database until the admin key is entered and verified. The key is sent only as an <code>X-Admin-Key</code> request header.</p>
+    <label for="loginAdminKey">Admin key</label>
+    <input id="loginAdminKey" type="password" placeholder="ADMIN_KEY from Cloudflare Pages variables" autocomplete="off" />
     <label><input id="rememberKey" type="checkbox" style="width:auto"> Remember key in this browser</label>
-    <div id="status" class="status" hidden></div>
+    <button id="unlockBtn">Unlock admin panel</button>
+    <a class="button secondary" style="display:inline-block;text-decoration:none" href="/">Back to home</a>
+    <div id="loginStatus" class="status" hidden></div>
+    <div class="warning"><strong>Security note:</strong> this page hides the admin interface until your key is verified. The database APIs still enforce the key server-side. For stronger page-level protection, put <code>/admin.html</code> behind Cloudflare Access.</div>
   </section>
 
-  <section class="split">
-    <div class="card">
-      <h2>2. Pending records</h2>
-      <p class="muted"><span id="count">0</span> pending rows loaded. Select rows, inspect details, then approve or reject.</p>
-      <button id="approveSelectedBtn" disabled>Approve selected</button>
-      <button id="rejectSelectedBtn" class="danger" disabled>Reject selected</button>
-      <button id="clearSelectionBtn" class="secondary">Clear selection</button>
-      <div class="record-list">
-        <table>
-          <thead><tr><th class="checkbox-cell"></th><th>Name</th><th>Map #</th><th>TR/Sec</th><th>Submitted</th><th>Actions</th></tr></thead>
-          <tbody id="pendingBody"><tr><td colspan="6" class="muted">No pending records loaded yet.</td></tr></tbody>
-        </table>
+  <div id="adminApp" class="hidden">
+    <section class="card">
+      <div class="toolbar" style="justify-content:space-between">
+        <div>
+          <h2>Admin dashboard</h2>
+          <p class="muted">Phase status and latest approved records live here now, not on the public home page.</p>
+        </div>
+        <div><button id="refreshDashboardBtn" class="secondary">Refresh dashboard</button><button id="logoutBtn" class="danger">Lock admin panel</button></div>
       </div>
-    </div>
-    <div class="card details">
-      <h2>3. Inspect / edit selected record</h2>
-      <p class="muted">Use this for spelling cleanup before approval. Do not guess. If a record is uncertain, leave it pending or reject it.</p>
-      <div id="detailEmpty" class="warning">Select a pending row to inspect it.</div>
-      <div id="detailPanel" hidden>
-        <div class="fieldrow">
-          <div><label>First name</label><input id="editFirst"></div>
-          <div><label>Middle name / initial</label><input id="editMiddle"></div>
-        </div>
-        <div class="fieldrow">
-          <div><label>Last name</label><input id="editLast"></div>
-          <div><label>Verified / full name</label><input id="editVerified"></div>
-        </div>
-        <div class="fieldrow">
-          <div><label>Number shown on map</label><input id="editMapNumber"></div>
-          <div><label>Number type</label><select id="editNumberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option></select></div>
-        </div>
-        <div class="fieldrow">
-          <div><label>Township/Range</label><input id="editTR"></div>
-          <div><label>Section</label><input id="editSection"></div>
-        </div>
-        <div class="fieldrow">
-          <div><label>Status / restriction note</label><input id="editStatusNote"></div>
-          <div><label>Confidence</label><select id="editConfidence"><option value="human-reviewed">human-reviewed</option><option value="needs-review">needs-review</option><option value="uncertain">uncertain</option></select></div>
-        </div>
-        <label>Notes</label><textarea id="editNotes" style="min-height:90px"></textarea>
-        <button id="saveEditBtn">Save edits to pending row</button>
-        <button id="approveOneBtn">Approve this record</button>
-        <button id="rejectOneBtn" class="danger">Reject this record</button>
-        <h3>Raw record JSON</h3>
-        <pre id="rawJson"></pre>
+      <div class="stats" aria-label="Admin counts">
+        <div class="stat"><strong id="dashApproved">—</strong><span>approved public rows</span></div>
+        <div class="stat"><strong id="dashPending">—</strong><span>pending rows</span></div>
+        <div class="stat"><strong id="dashComplete">—</strong><span>sections complete</span></div>
+        <div class="stat"><strong id="dashNeedsReview">—</strong><span>sections needing review</span></div>
       </div>
-    </div>
-  </section>
+      <h3>Latest approved records</h3>
+      <div id="latestApproved" class="latest-list"><p class="muted">Unlock to load approved rows.</p></div>
+    </section>
+
+    <section class="card">
+      <h2>Pending-review controls</h2>
+      <div class="grid cols">
+        <div style="grid-column:span 2">
+          <label for="trFilter">Township/Range filter</label>
+          <input id="trFilter" placeholder="Example: T24N R14E" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="loadBtn">Load pending records</button>
+        </div>
+      </div>
+      <div id="status" class="status" hidden></div>
+    </section>
+
+    <section class="split">
+      <div class="card">
+        <h2>Pending records</h2>
+        <p class="muted"><span id="count">0</span> pending rows loaded. Select rows, inspect details, then approve or reject.</p>
+        <button id="approveSelectedBtn" disabled>Approve selected</button>
+        <button id="rejectSelectedBtn" class="danger" disabled>Reject selected</button>
+        <button id="clearSelectionBtn" class="secondary">Clear selection</button>
+        <div class="record-list">
+          <table>
+            <thead><tr><th class="checkbox-cell"></th><th>Name</th><th>Map #</th><th>TR/Sec</th><th>Submitted</th><th>Actions</th></tr></thead>
+            <tbody id="pendingBody"><tr><td colspan="6" class="muted">No pending records loaded yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card details">
+        <h2>Inspect / edit selected record</h2>
+        <p id="detailEmpty" class="muted">Choose a record to inspect it.</p>
+        <div id="detailPanel" hidden>
+          <div class="fieldrow">
+            <div><label>First name</label><input id="editFirst"></div>
+            <div><label>Middle</label><input id="editMiddle"></div>
+          </div>
+          <div class="fieldrow">
+            <div><label>Last name</label><input id="editLast"></div>
+            <div><label>Verified full name</label><input id="editVerified"></div>
+          </div>
+          <div class="fieldrow">
+            <div><label>Number shown on map</label><input id="editMapNumber"></div>
+            <div><label>Number type</label><select id="editNumberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option></select></div>
+          </div>
+          <div class="fieldrow">
+            <div><label>Township/Range</label><input id="editTR"></div>
+            <div><label>Section</label><input id="editSection"></div>
+          </div>
+          <div class="fieldrow">
+            <div><label>Status / restriction note</label><input id="editStatusNote"></div>
+            <div><label>Confidence</label><select id="editConfidence"><option value="human-reviewed">human-reviewed</option><option value="needs-review">needs-review</option><option value="uncertain">uncertain</option></select></div>
+          </div>
+          <label>Notes</label><textarea id="editNotes" style="min-height:90px"></textarea>
+          <button id="saveEditBtn">Save edits to pending row</button>
+          <button id="approveOneBtn">Approve this record</button>
+          <button id="rejectOneBtn" class="danger">Reject this record</button>
+          <h3>Raw record JSON</h3>
+          <pre id="rawJson"></pre>
+        </div>
+      </div>
+    </section>
+  </div>
 </main>
 <script>
 const $ = (id) => document.getElementById(id);
 let pending = [];
 let selected = new Set();
 let activeId = null;
+let adminKey = '';
 
 function showStatus(msg, isError=false){ const el=$('status'); el.hidden=false; el.textContent=msg; el.className='status'+(isError?' error':''); }
-function key(){ return $('adminKey').value.trim(); }
+function showLogin(msg, isError=false){ const el=$('loginStatus'); el.hidden=false; el.textContent=msg; el.className='status'+(isError?' error':''); }
+function key(){ return adminKey || $('loginAdminKey').value.trim(); }
 function headers(extra={}){ return { 'content-type':'application/json', 'X-Admin-Key': key(), ...extra }; }
 function safeParse(s){ try{return JSON.parse(s||'{}')}catch{return {}} }
 function recOf(row){ return safeParse(row.record_json); }
@@ -118,9 +150,32 @@ async function api(path, opts={}){
   return data;
 }
 
+async function unlockAdmin(){
+  if(!$('loginAdminKey').value.trim()) return showLogin('Enter the admin key first.', true);
+  try{
+    showLogin('Checking admin key...');
+    const dashboard=await api('/api/admin-dashboard',{headers:headers()});
+    adminKey=$('loginAdminKey').value.trim();
+    if($('rememberKey').checked) localStorage.setItem('allottedland_admin_key', adminKey); else localStorage.removeItem('allottedland_admin_key');
+    $('loginPanel').classList.add('hidden');
+    $('adminApp').classList.remove('hidden');
+    renderDashboard(dashboard);
+    await loadPending();
+  }catch(err){ showLogin(err.message || 'Could not unlock admin panel.', true); }
+}
+function logout(){ adminKey=''; sessionStorage.removeItem('allottedland_admin_unlocked'); $('loginAdminKey').value=''; $('adminApp').classList.add('hidden'); $('loginPanel').classList.remove('hidden'); }
+async function refreshDashboard(){ try{ renderDashboard(await api('/api/admin-dashboard',{headers:headers()})); }catch(err){ showStatus(err.message,true); } }
+function renderDashboard(data){
+  $('dashApproved').textContent=data.approved_records ?? 0;
+  $('dashPending').textContent=data.pending_records ?? 0;
+  $('dashComplete').textContent=(data.section_status && data.section_status.complete) || 0;
+  $('dashNeedsReview').textContent=(data.section_status && data.section_status['needs-review']) || 0;
+  const latest=Array.isArray(data.latest_approved)?data.latest_approved:[];
+  $('latestApproved').innerHTML=latest.length?latest.map(r=>`<div class="latest-item"><strong>${escapeHtml(r.verified_name||'Unnamed')}</strong><br><span class="muted">Map # ${escapeHtml(r.number_shown_on_map||'')} · ${escapeHtml(r.number_type||'')} · ${escapeHtml(r.township_range||'')} · Section ${escapeHtml(r.section||'')} · ${escapeHtml(r.created_at||'')}</span></div>`).join(''):'<p class="muted">No approved records yet.</p>';
+}
+
 async function loadPending(){
-  if(!key()) return showStatus('Enter ADMIN_KEY first.', true);
-  if($('rememberKey').checked) localStorage.setItem('allottedland_admin_key', key());
+  if(!key()) return showStatus('Admin key required.', true);
   const tr=$('trFilter').value.trim();
   const url='/api/pending-records'+(tr?'?township_range='+encodeURIComponent(tr):'');
   try{
@@ -129,6 +184,7 @@ async function loadPending(){
     pending=data.pending || [];
     selected.clear(); activeId=null; render();
     showStatus(`Loaded ${pending.length} pending record(s).`);
+    await refreshDashboard();
   }catch(err){ showStatus(err.message, true); }
 }
 function render(){
@@ -178,7 +234,8 @@ async function saveEdit(){
     const record=editedRecord();
     await api('/api/admin-update-pending',{method:'POST',headers:headers(),body:JSON.stringify({id:activeId,record})});
     showStatus('Saved edits to pending record.');
-    await loadPending(); selectRecord(activeId);
+    const keepId=activeId;
+    await loadPending(); selectRecord(keepId);
   }catch(err){ showStatus(err.message,true); }
 }
 async function approveIds(ids){
@@ -193,6 +250,10 @@ async function rejectIds(ids){
   catch(err){ showStatus(err.message,true); }
 }
 
+$('unlockBtn').addEventListener('click',unlockAdmin);
+$('loginAdminKey').addEventListener('keydown',e=>{ if(e.key==='Enter') unlockAdmin(); });
+$('logoutBtn').addEventListener('click',logout);
+$('refreshDashboardBtn').addEventListener('click',refreshDashboard);
 $('loadBtn').addEventListener('click',loadPending);
 $('approveSelectedBtn').addEventListener('click',()=>approveIds([...selected]));
 $('rejectSelectedBtn').addEventListener('click',()=>rejectIds([...selected]));
@@ -201,7 +262,7 @@ $('saveEditBtn').addEventListener('click',saveEdit);
 $('approveOneBtn').addEventListener('click',()=>approveIds([activeId]));
 $('rejectOneBtn').addEventListener('click',()=>rejectIds([activeId]));
 ['editFirst','editMiddle','editLast'].forEach(id=>$(id).addEventListener('input',()=>{ if(!$('editVerified').value.trim()){ $('editVerified').value=[$('editFirst').value.trim(),$('editMiddle').value.trim(),$('editLast').value.trim()].filter(Boolean).join(' '); }}));
-const saved=localStorage.getItem('allottedland_admin_key'); if(saved){$('adminKey').value=saved;$('rememberKey').checked=true;}
+const saved=localStorage.getItem('allottedland_admin_key'); if(saved){$('loginAdminKey').value=saved;$('rememberKey').checked=true;}
 </script>
 </body>
 </html>

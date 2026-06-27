@@ -1,3 +1,8 @@
+## v0.29b — Workbench admin navigation
+
+- Adds an Admin link to the Workbench header so trusted reviewers can move from data entry to review without typing the URL.
+- Keeps v0.29 admin lock/home cleanup changes.
+
 # Changelog
 
 ## v0.11 — Tile Review Upgrade
@@ -98,3 +103,10 @@ The agent also now checks common Windows install locations automatically.
 - Added pending-record count so admins can see review backlog.
 - Added a latest-approved-records panel.
 - Added homepage search wiring to `/api/records`.
+
+## v0.29 — Locked admin panel and cleaner home page
+
+- Adds an admin-key gate to `admin.html` so pending/admin data does not load until the key is entered and verified.
+- Adds `functions/api/admin-dashboard.js` for admin-only dashboard counts and latest approved records.
+- Moves latest-approved-record display and Phase 1 data status off the public home page and into the admin panel.
+- Keeps the public home page focused on search, guidance, source records, and the volunteer workbench.
