@@ -55,18 +55,25 @@
 
   <section class="panel">
     <h2>Map Indexing Agent starter kit</h2>
-    <p>Version 0.12 adds a section-first workflow. Instead of OCRing random parts of a map first, the agent can crop a fixed PLSS section, save the section image, and attach every OCR lead to a stable township/range/section before human review. It does not publish records automatically.</p>
+    <p>Version 0.9 improves the local OCR helper by reducing low-confidence junk rows, replacing the candidate file by default, supporting multiple Tesseract page-segmentation modes, and adding preprocessing options for old map images. It does not publish records automatically.</p>
     <div class="action-grid">
       <a class="link-button" href="docs/ocr-workflow.md">Read OCR workflow</a>
       <a class="link-button secondary" href="tools/map_indexing_agent.py">Download indexing agent</a>
       <a class="link-button secondary" href="tools/review_candidates.html">Open review helper</a>
       <a class="link-button secondary" href="tools/requirements.txt">Python requirements</a>
     </div>
-    
-    <div class="code-card"><pre><code>python tools\map_indexing_agent.py --clear-candidates
-python tools\map_indexing_agent.py --page 29 --mode sections --sections 24 --psm 11 --min-conf 45 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"</code></pre></div>
-    <p class="hint">If the section crop is off, adjust <code>--grid-pct left,top,right,bottom</code>. Example: <code>--grid-pct 8,15,92,87</code>. Start with one section before scaling to all 36 sections.</p>
     <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record. If a run creates mostly gibberish, rerun with a higher confidence threshold or a different PSM/preprocessing option.</p>
+  </section>
+
+
+  <section class="panel">
+    <h2>Human section-entry workflow</h2>
+    <p>The OCR helper is now treated as optional. The preferred accuracy workflow is section-first and human-reviewed: create or open a section crop, read the names and allotment numbers from the image, then use the local Section Entry Helper to build approved JSON rows.</p>
+    <div class="action-grid">
+      <a class="link-button secondary" href="tools/section_entry.html">Open Section Entry Helper</a>
+      <a class="link-button secondary" href="tools/review_candidates.html">Open OCR Candidate Review</a>
+    </div>
+    <p class="hint">This approach keeps the fixed legal land unit — township, range, and section — as the anchor. Humans read the variable text inside each section before anything becomes public/searchable.</p>
   </section>
 
   <section class="panel disclaimer">
@@ -81,6 +88,4 @@ python tools\map_indexing_agent.py --page 29 --mode sections --sections 24 --psm
 </body>
 </html>
 
-<!-- v0.15 note: local agent now supports section-first PLSS section crops. -->
-
-<!-- v0.15: local review tool supports direct/manual tile image preview fallback. -->
+<!-- v0.11 note: local review helper now supports tile-image preview, likely-noise filtering, reject/hide controls, and bounding-box overlays for candidate OCR rows. -->

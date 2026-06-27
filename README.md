@@ -6,7 +6,7 @@ AllottedLand.com is a free public research-tool prototype for helping Native fam
 
 ## Current status
 
-Beta / Phase 1. Current public version: v0.15. See `CHANGELOG.md` and `changelog.html` for project updates.
+Beta / Phase 1. Current public version: v0.9. See `CHANGELOG.md` and `changelog.html` for project updates.
 
 Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
 
@@ -78,21 +78,7 @@ The agent also now checks common Windows install locations automatically.
 
 The local OCR review helper now shows saved tile images beside candidate OCR rows, includes a bounding-box overlay where available, and adds filters/reject buttons so noisy map-label text can be screened before any row is drafted for `data/allotment_records.json`.
 
-## v0.15 — Section-First Agent
 
-The local indexing agent now supports section-first OCR. Instead of OCRing random map tiles first, it can crop a fixed PLSS section, save the section image, and attach every OCR candidate to a stable township/range/section value. Example:
+## v0.16 — Human Section Entry Helper
 
-```cmd
-python tools\map_indexing_agent.py --clear-candidates
-python tools\map_indexing_agent.py --page 29 --mode sections --sections 24 --psm 11 --min-conf 45 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
-
-If the section crop is off, adjust the grid rectangle with `--grid-pct left,top,right,bottom`, for example `--grid-pct 8,15,92,87`.
-
-
-### v0.15 local review note
-If the View tile button does not display an image, click Open tile image directly or use Manual tile/image load and choose the matching image under data/ocr_runs/.
-
-
-## v0.15 Approved Rows Export
-The local OCR review helper now has an approved rows export list. After correcting and verifying a candidate against the tile/source map, use “Add corrected row to approved export list,” then download `approved_allotment_records.json` and merge/copy into `data/allotment_records.json`.
+Added `tools/section_entry.html`, a local browser tool for manually entering verified allotment rows from a section crop image. This shifts the workflow from OCR-first to section-first/human-reviewed: use township, range, and section as the stable legal anchor; let a human read the names and allotment numbers; then export approved JSON rows for `data/allotment_records.json`.

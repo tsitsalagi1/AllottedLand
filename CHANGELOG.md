@@ -1,12 +1,12 @@
 # Changelog
 
-## v0.15 — Candidate loader fix
+## v0.16 — Human Section Entry Helper
 
-- Improved `tools/review_candidates.html` so the file loader reports how many rows were found.
-- Added support for candidate JSON stored as an array or wrapped inside keys like `candidates`, `rows`, `records`, `data`, or `results`.
-- Added a clearer warning when the selected file is empty and directs reviewers to choose a run-specific JSON under `data/ocr_runs/`.
+- Added `tools/section_entry.html`, a local manual transcription tool for entering rows from section crop images.
+- Shifted the recommended workflow from OCR-first to section-first/human-reviewed.
+- Added export buttons for approved rows so humans can build `data/allotment_records.json` more accurately.
+- Kept OCR as an optional clue source, not proof.
 
-# Changelog
 
 ## v0.11 — Tile Review Upgrade
 
@@ -20,21 +20,6 @@
 All notable public changes to AllottedLand.com will be documented here.
 
 The format follows the spirit of Keep a Changelog: versions are grouped by release and changes are written in plain language for users, families, researchers, and volunteers.
-
-
-## [0.12] - 2026-06
-
-### Added
-- Added section-first OCR mode to `tools/map_indexing_agent.py`.
-- Added `--mode sections`, `--sections`, `--grid-pct`, and `--section-padding`.
-- Added section crop images under `data/ocr_runs/page_XXX_sections/`.
-- Added section metadata to candidate rows: `section`, `section_source`, `section_image_path`, and `section_grid`.
-
-### Why
-- The fixed PLSS grid is more stable than OCRing names first. The agent can now pin every OCR lead to a township/range/section before a reviewer decides whether the text is a name, allotment number, status note, or map label.
-
-### Safety
-- Section-first output is still candidate data only. Human review against the original map remains required before publishing any row.
 
 ## [0.8] - 2026-06
 

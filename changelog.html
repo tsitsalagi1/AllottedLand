@@ -36,14 +36,12 @@
 
 
 <main class="doc-main">
-
   <section class="panel">
-    <h2>v0.12 — Section-first map agent</h2>
+    <h2>v0.16 — Human Section Entry Helper</h2>
     <ul>
-      <li>Added section-first OCR mode so the agent can crop a specific PLSS section instead of OCRing random map tiles first.</li>
-      <li>Added commands for <code>--mode sections</code>, <code>--sections</code>, <code>--grid-pct</code>, and <code>--section-padding</code>.</li>
-      <li>Added section crop paths and section metadata to candidate rows.</li>
-      <li>Kept all OCR output as unverified candidate data until human review against the original source map.</li>
+      <li>Added a local Section Entry Helper for human-reviewed transcription from section crop images.</li>
+      <li>Changed the preferred workflow to section-first: township/range/section first, human-entered names and allotment numbers second.</li>
+      <li>Kept OCR as an optional clue source only.</li>
     </ul>
   </section>
 

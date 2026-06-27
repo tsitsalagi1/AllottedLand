@@ -146,26 +146,6 @@ The agent also now checks common Windows install locations automatically.
 Approved rows may include a `review_trace` object showing the original OCR candidate ID, tile ID, tile path, raw OCR line, and OCR confidence. This is optional but useful for auditability while records are still being reviewed.
 
 
-## v0.12 section-first candidate fields
+## v0.16 human section-entry workflow
 
-When the local OCR agent is run with `--mode sections`, candidate rows may also include:
-
-- `section_source` — usually `plss-grid-crop`, meaning the row came from a calculated section crop.
-- `section_image_path` — local path to the saved section crop image under `data/ocr_runs/`.
-- `section_grid` — grid rectangle and row/column metadata used to create the section crop.
-- `legal_description` — may be prefilled as `Section X, T##N R##E` for review convenience.
-
-These fields are review aids only. A section-first candidate is not a verified allotment record until a human checks the crop and original map source.
-
-
-## v0.15 Review Tool Note
-The local review tool can display section/tile images by relative path, direct file link, or manual File input. This avoids browser file:// path problems during local review.
-
-
-## v0.15 review-loader note
-
-The local review helper accepts candidate JSON either as a raw array or as an object containing an array under `candidates`, `rows`, `records`, `data`, `results`, or `items`.
-
-
-## Review/export workflow
-`tools/review_candidates.html` can queue human-corrected approved rows in browser local storage and export them as a JSON array. The exported file should be reviewed before replacing or merging into `data/allotment_records.json`.
+`tools/section_entry.html` creates approved JSON rows from human reading of section crop images. Rows should keep the stable land fields (`loc_page`, `township_range`, `township`, `range`, `section`, `legal_description`, `source_link`) and add variable fields (`verified_name`, `given_name`, `surname`, `allotment_number`, `status_restriction_notation`) only after human review.
