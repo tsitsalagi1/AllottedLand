@@ -1,37 +1,33 @@
 # AllottedLand.com data schema
 
-## `data/map_index.json`
+## Core production files
+
+### `data/map_index.json`
 
 One row per Library of Congress map page.
 
-Recommended fields:
+Recommended fields: `type`, `loc_page`, `sheet_title`, `township`, `range`, `township_range`, `loc_image_view`, `loc_item_page`, `ocr_status`, `notes`.
 
-- `type` — usually `map`.
-- `loc_page` — LOC sequence page number.
-- `sheet_title` — map sheet title or township label.
-- `township` — numeric township, without `T` or `N`.
-- `range` — numeric range, without `R` or `E`.
-- `township_range` — normalized string, for example `T21N R12E`.
-- `loc_image_view` — public LOC image-view URL.
-- `loc_item_page` — main LOC item URL.
-- `ocr_status` — not OCRed, OCRed, verified, etc.
-- `notes` — processing notes.
+### `data/allotment_records.json`
 
-## `data/allotment_records.json`
-
-One row per searchable person/allotment entry.
+One row per approved public person/map record. Rows should come from human-reviewed transcription, not raw OCR.
 
 Recommended fields:
 
 - `verified_name`
-- `possible_ocr_name`
+- `first_name`
+- `middle_name`
+- `last_name`
 - `surname`
 - `given_name`
 - `tribe`
-- `roll_number`
-- `enrollment_number`
-- `census_card_number`
-- `allotment_number`
+- `map_number`
+- `number_shown_on_map`
+- `number_type` — default: `unknown_map_number`
+- `roll_number` — only if separately verified
+- `enrollment_number` — only if separately verified
+- `census_card_number` — only if separately verified
+- `allotment_number` — only if the reviewer is confident the number is an allotment number or a later source verifies it
 - `status_restriction_notation`
 - `loc_page`
 - `township_range`
@@ -42,234 +38,21 @@ Recommended fields:
 - `state`
 - `legal_description`
 - `source_link`
-- `confidence` — suggested values: `unverified`, `ocr-low`, `ocr-medium`, `human-reviewed`, `source-verified`.
-- `needs_human_review` — `yes` or `no`.
+- `confidence` — `human-reviewed`, `needs-review`, `uncertain`, or `source-verified`
+- `needs_human_review` — `yes` or `no`
 - `notes`
+- `review_trace` — optional information from the map workbench
 
-Keep **roll/enrollment number** and **allotment number** separate. They are not automatically the same thing.
+### `data/section_status.json`
 
-## `data/county_routes.json`
+Tracks transcription progress by township/range and section. Suggested status values:
 
-One row per township/range/section-to-county route.
+- `not_started`
+- `has_rows`
+- `complete`
+- `needs_review`
+- `no_records`
 
-Recommended fields:
+## Deprecated files
 
-- `tribe`
-- `township`
-- `range`
-- `section` — optional but preferred because county lines can cut through township/range areas.
-- `township_range`
-- `county`
-- `state`
-- `basis` — how the county route was verified.
-- `notes`
-
-The county route file is critical for the “what county do I contact?” feature. Treat unverified rows as leads until checked against official PLSS/county-boundary sources.
-
-## Suggested verification statuses
-
-- `unverified` — imported lead, no review.
-- `ocr-low` — OCR text likely has mistakes.
-- `ocr-medium` — OCR text looks plausible but not confirmed.
-- `human-reviewed` — checked by a reviewer against map image.
-- `source-verified` — checked against original map plus Dawes/NARA/county/BIA source record.
-
-
-## v0.4 added files
-
-### data/map_review_status.json
-Project-level status fields for the current public index, including map pages indexed, verified name rows, public submission status, and next data goal.
-
-### data/sample_map_records.json
-Non-personal map-only examples used for testing and documentation. These records should not contain family names or private information.
-
-### data/transcription_queue_template.csv
-Template for future map transcription work. Public upload/intake is not open until privacy and review processes are finalized.
-
-
-## Project contact
-
-Public project email: `allottedland@gmail.com`. Do not send private family documents or sensitive living-person information unless redacted and permission has been obtained.
-
-
-## Project update files
-
-- `changelog.html` — public project updates page for site visitors.
-- `CHANGELOG.md` — GitHub-facing version history for maintainers.
-
-
-## `data/allotment_records_candidates.json`
-
-Holding file for machine-extracted OCR candidate rows. These are not verified public records.
-
-Additional candidate-only fields may include:
-
-- `record_type` — usually `ocr-candidate`.
-- `run_id` — unique OCR run identifier.
-- `candidate_id` — unique row identifier.
-- `sheet_title` — map sheet title from `map_index.json`.
-- `image_source` — downloaded image URL used by the OCR agent.
-- `tile_id` — source tile identifier.
-- `tile_path` — local tile image path.
-- `tile_box` — tile position on the processed source image.
-- `bbox_in_tile` — OCR line bounding box within the tile.
-- `raw_ocr_line` — full OCR line as read by the machine.
-- `ocr_confidence_percent` — Tesseract confidence when available.
-- `review_status` — `not-reviewed`, `needs-second-review`, `approved`, or `rejected`.
-
-Candidate rows should be copied into `data/allotment_records.json` only after human review and cleanup.
-
-## `tools/` OCR helper files
-
-- `tools/map_indexing_agent.py` — local OCR candidate generator.
-- `tools/review_candidates.html` — local candidate review helper.
-- `tools/requirements.txt` — Python dependencies for the OCR agent.
-
-## `data/ocr_runs/`
-
-Local output folder for OCR run CSV files and tile images. Most generated run files should be reviewed before being committed to GitHub because they can become large.
-
-
-## v0.10 Windows Tesseract path helper
-
-If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
-
-The agent also now checks common Windows install locations automatically.
-
-
-## Review trace fields
-
-Approved rows may include a `review_trace` object showing the original OCR candidate ID, tile ID, tile path, raw OCR line, and OCR confidence. This is optional but useful for auditability while records are still being reviewed.
-
-
-## v0.17 human section-entry workflow
-
-`tools/section_entry.html` creates approved JSON rows from human reading of section crop images. Rows should keep the stable land fields (`loc_page`, `township_range`, `township`, `range`, `section`, `legal_description`, `source_link`) and add variable fields (`verified_name`, `given_name`, `surname`, `allotment_number`, `status_restriction_notation`) only after human review.
-
-
-## v0.17 human section entry
-Rows exported from tools/section_entry.html should represent human-read records from a section crop. Use `review_trace.method = "human-section-entry"` and leave Dawes roll/enrollment/census-card fields blank unless separately verified.
-
-
-## data/section_status.json
-
-Optional local/public progress-tracking rows for page/section review. Each row may include `loc_page`, `township_range`, `township`, `range`, `section`, `review_status`, `row_count`, `completed`, `reviewer`, `updated_at`, `section_image_path`, and `notes`. This file tracks transcription progress; it is not a title or ownership record.
-
-
-## v0.19 section crop manifest additions
-
-Section crop manifest rows may include:
-
-```json
-{
-  "loc_page": 29,
-  "township_range": "T24N R14E",
-  "section": "24",
-  "section_image_path": "data/ocr_runs/by_township_range/T24N_R14E/section_24/p029_soft_s24_review.jpg",
-  "storage_key": "T24N_R14E/section_24",
-  "duplicate_scope": "29|T24N R14E|section:24",
-  "review_status": "not-started"
-}
-```
-
-The final public record rows should still be exported into `data/allotment_records.json` or a future chunked record index.
-
-
-## v0.20 section crop metadata
-
-Section crop manifest records may include the following crop-calibration fields inside `section_grid`:
-
-- `grid_method`: `percent`, `percent-fallback`, `lines`, or `manual-lines`.
-- `x_lines`: seven x coordinates for the detected/manual section grid lines after scaling.
-- `y_lines`: seven y coordinates for the detected/manual section grid lines after scaling.
-- `grid_debug_path`: local path to the overlay image showing the grid lines used.
-- `line_meta`: diagnostic line-detection metadata.
-
-These fields document how a section crop was produced. They are not proof of allotment ownership; they support human transcription and review.
-
-## Grid calibration JSON
-
-`tools/grid_calibrator.html` exports a local calibration file, usually saved under `data/grid_calibrations/`:
-
-```json
-{
-  "tool": "AllottedLand Grid Calibrator",
-  "version": "0.21",
-  "loc_page": 29,
-  "township_range": "T24N R14E",
-  "coordinate_space": "source-image",
-  "image_width": 6300,
-  "image_height": 4800,
-  "x_lines": [100, 200, 300, 400, 500, 600, 700],
-  "y_lines": [100, 200, 300, 400, 500, 600, 700]
-}
-```
-
-The agent converts `source-image` coordinates into scaled/preprocessed coordinates using the current `--scale` value and the preprocessing border. This lets a human align section boundaries visually before generating section crops.
-
-
-
-## v0.22 township workbook folder
-
-Local working folders may be generated under:
-
-```text
-data/ocr_runs/township_workbooks/<TOWNSHIP_RANGE>/
-  source/
-    p###_source.jpg
-  sections/
-    section_01/
-      p###_soft_s01_review.jpg
-    section_02/
-      p###_soft_s02_review.jpg
-  manifest.json
-  section_status.json
-  approved_rows.json
-```
-
-These folders are designed for local human transcription. Public website data should still be merged into `data/allotment_records.json` after review.
-
-
-## v0.23 approved row additions
-
-Human-reviewed rows may now include separate name fields:
-
-```json
-{
-  "verified_name": "Sarah R. Gourd",
-  "first_name": "Sarah",
-  "middle_name": "R.",
-  "last_name": "Gourd",
-  "surname": "Gourd",
-  "given_name": "Sarah"
-}
-```
-
-`verified_name` remains the display/search name. `first_name`, `middle_name`, and `last_name` support cleaner human entry and duplicate checks.
-
-`review_trace.grid` may store the human-calibrated grid used by `tools/map_workbench.html`; it should be treated as review metadata, not as an official source record.
-
-## v0.24 map-number fields
-
-New human-review fields:
-
-- `first_name` — first name as read from the map.
-- `middle_name` — middle name or initial only if shown/readable.
-- `last_name` — surname as read from the map.
-- `map_number` / `number_shown_on_map` — the number exactly as shown beside the name on the map.
-- `number_type` — reviewer interpretation of the map number. Default should be `unknown_map_number`.
-
-Allowed `number_type` values:
-
-- `unknown_map_number`
-- `allotment_number`
-- `roll_number`
-- `enrollment_number`
-- `census_card_number`
-- `other`
-
-Do not populate roll, enrollment, or census-card fields unless separately verified or intentionally classified by the reviewer.
+`data/allotment_records_candidates.json` and OCR candidate outputs are deprecated. Do not use raw OCR candidates as public records.

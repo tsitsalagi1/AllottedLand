@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Help Index Maps — AllottedLand.com</title>
-  <meta name="description" content="How AllottedLand.com will turn allotment map images into verified searchable name, allotment, township, range, and source records." />
+  <meta name="description" content="Human-reviewed map transcription workflow for AllottedLand.com." />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     <a href="index.html#process">Process</a>
     <a href="sources.html">Source records</a>
     <a href="transcribe.html">Help index maps</a>
-      <a href="changelog.html">Updates</a>
+    <a href="changelog.html">Updates</a>
     <a href="contact.html">Contact</a>
     <a href="privacy.html">Privacy</a>
     <a href="terms.html">Terms</a>
@@ -24,81 +24,33 @@
   <div class="hero doc-hero">
     <p class="eyebrow">AllottedLand.com · Beta / Phase 1</p>
     <h1>Help index the maps</h1>
-    <p class="subtitle">The next goal is to turn public map images into verified searchable records without exposing private family information.</p>
+    <p class="subtitle">The production workflow is now human-reviewed full-map transcription. OCR candidates are deprecated.</p>
   </div>
 </header>
 <main class="doc-main">
   <section class="panel">
-    <h2>Why indexing is needed</h2>
-    <p>The Phase 1 source is the 1909 Library of Congress Cherokee Nation atlas. The maps can show names, statuses, and allotment numbers, but those details are in map images. To search by family name or allotment number, the map text has to be transcribed, checked, and tied back to the original map page.</p>
-  </section>
-
-  <section class="panel">
-    <h2>Safe transcription workflow</h2>
+    <h2>Current workflow</h2>
     <ol class="steps">
-      <li><strong>Choose a map page.</strong> Start with township and range, such as T21N R12E.</li>
-      <li><strong>Open the original source.</strong> Review the map at the Library of Congress.</li>
-      <li><strong>Transcribe only what appears on the historical public record.</strong> Do not add private family stories or living-person information.</li>
-      <li><strong>Record uncertainty.</strong> Use question marks, notes, and confidence levels when handwriting or map text is unclear.</li>
-      <li><strong>Review before publishing.</strong> A row should not become a public searchable family result until it has source links and review status.</li>
+      <li><strong>Open the Full Map Workbench.</strong> Use <code>tools/map_workbench.html</code>.</li>
+      <li><strong>Load one full LOC source image.</strong> The image stays in the browser session and is not stored by the website.</li>
+      <li><strong>Calibrate the township/range grid.</strong> Set the outside grid first, distribute internal lines, then adjust any line that is off.</li>
+      <li><strong>Select a section.</strong> The tool zooms into that section from the full map image.</li>
+      <li><strong>Human-enter records.</strong> Enter first, middle, and last name; number shown on map; status note; section; source link; and confidence.</li>
+      <li><strong>Export approved rows.</strong> Merge reviewed rows into <code>data/allotment_records.json</code>.</li>
+      <li><strong>Track section progress.</strong> Mark each section complete, needs review, no records, or not started.</li>
     </ol>
   </section>
 
   <section class="panel">
-    <h2>Fields to capture</h2>
-    <div class="field-list">
-      <span>Map page</span><span>Township</span><span>Range</span><span>Section</span><span>Name as written</span><span>Name variant</span><span>Allotment number</span><span>Status/restriction note</span><span>Legal description</span><span>Source link</span><span>Reviewer</span><span>Confidence level</span>
-    </div>
-    <p class="hint">Roll/enrollment numbers should be added only when supported by Dawes/NARA, allotment jacket, or other source-linked records. The LOC map layer alone should not pretend to be a complete roll-number database.</p>
+    <h2>Deprecated tools</h2>
+    <p>The OCR agent, candidate review page, section-crop workflow, and township folder workbench were experiments. They helped us learn the right structure, but they are no longer the production path.</p>
+    <p><a class="link-button secondary" href="docs/source-code-cleanup.md">Read source-code cleanup plan</a></p>
   </section>
-
 
   <section class="panel">
-    <h2>Map Indexing Agent starter kit</h2>
-    <p>Version 0.9 improves the local OCR helper by reducing low-confidence junk rows, replacing the candidate file by default, supporting multiple Tesseract page-segmentation modes, and adding preprocessing options for old map images. It does not publish records automatically.</p>
-    <div class="action-grid">
-      <a class="link-button" href="docs/ocr-workflow.md">Read OCR workflow</a>
-      <a class="link-button secondary" href="tools/map_indexing_agent.py">Download indexing agent</a>
-      <a class="link-button secondary" href="tools/review_candidates.html">Open review helper</a>
-      <a class="link-button secondary" href="tools/requirements.txt">Python requirements</a>
-    </div>
-    <p class="hint">Run the agent locally first. Public submissions and automatic publication remain closed. Every OCR candidate must be reviewed against the original source map before it becomes a searchable public record. If a run creates mostly gibberish, rerun with a higher confidence threshold or a different PSM/preprocessing option.</p>
+    <h2>Important data-entry rule</h2>
+    <p>Do not force a number into roll number, enrollment number, census-card number, or allotment number unless the source supports it. If the map only shows a number beside a name, enter it as <code>number_shown_on_map</code> / <code>map_number</code> and leave the specific Dawes/NARA fields blank until separately verified.</p>
   </section>
-
-
-  <section class="panel">
-    <h2>Human section-entry workflow</h2>
-    <p>The OCR helper is now treated as optional. The preferred accuracy workflow is section-first and human-reviewed: create or open a section crop, read the names and allotment numbers from the image, then use the local Section Entry Helper to build approved JSON rows.</p>
-    <div class="action-grid">
-      <a class="link-button secondary" href="tools/township_workbench.html">Open Township Workbench</a>
-      <a class="link-button secondary" href="tools/section_entry.html">Open Section Entry Helper</a>
-      <a class="link-button secondary" href="tools/grid_calibrator.html">Open Grid Calibrator</a>
-      <a class="link-button secondary" href="tools/review_candidates.html">Open OCR Candidate Review</a>
-    </div>
-    <p class="hint">This approach keeps the fixed legal land unit — township, range, and section — as the anchor. Humans read the variable text inside each section before anything becomes public/searchable.</p>
-  </section>
-
-  <section class="panel disclaimer">
-    <h2>No public upload form yet</h2>
-    <p>Public submissions remain closed until privacy, consent, review, and removal processes are finalized. For now, this page explains the data plan so the project can grow carefully.</p>
-    <p><a class="link-button" href="data/transcription_queue_template.csv">Download transcription queue template</a></p>
-  </section>
-<section class="panel"><h2>Human section entry is now the preferred workflow</h2><p>Use <code>tools/section_entry.html</code> locally to load one section crop, read the names and allotment numbers by eye, and export verified rows for <code>data/allotment_records.json</code>.</p></section><section class="panel"><h2>v0.19 human section workflow</h2><p>Generate all 36 section crops from one LOC page without OCR, then use the local Section Entry Workbench to enter verified rows section by section.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 90 --crops-only</pre><p>Open <code>tools/section_entry.html</code>, load the section manifest, select township/range/section, load the crop, and export approved rows.</p></section>
-<section class="panel"><h2>Generate organized crops</h2><p>For human transcription, use the v0.19 command to generate all 36 section crops organized by township/range/section: <code>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 240 --crops-only --output-layout trs</code>.</p></section>
-
-<section class="panel"><h2>v0.21 manual grid calibration</h2><p>If section crops are shifted or missing part of the section, use <code>tools/grid_calibrator.html</code>. Load the full source map image, drag the outside grid lines first, distribute the internal lines, then export the calibration JSON.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80 --save-grid-debug</pre></section>
-
-<section class="panel"><h2>v0.22 one-folder township workbench</h2><p>The easier workflow is now: calibrate once, generate one township/range workbook folder, then import that folder into <code>tools/township_workbench.html</code>. The workbench shows the source map, all 36 sections, duplicate checks, section status, and approved-row export from one page.</p><pre>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout workbook --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80</pre></section>
-
-<section class="card">
-  <h2>Full-map human workbench v0.24</h2>
-  <p>The preferred local workflow is now <code>tools/map_workbench.html</code>: load one full LOC map image, adjust the grid over the map, zoom to sections live, enter first/middle/last names, track section status, and export verified JSON.</p>
-</section>
 </main>
-<footer class="site-footer">
-  <p><a href="index.html">Home</a> · <a href="sources.html">Source records</a> · <a href="contact.html">Contact</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>
-<p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p></footer>
 </body>
 </html>
-
-<!-- v0.11 note: local review helper now supports tile-image preview, likely-noise filtering, reject/hide controls, and bounding-box overlays for candidate OCR rows. -->

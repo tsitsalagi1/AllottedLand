@@ -1,174 +1,27 @@
 # Changelog
 
-## v0.23 — Full Map Workbench / No Crop Files
+## v0.25 — Cleanup and production-tool focus
 
-- Added `tools/map_workbench.html`, a local full-map transcription workbench.
-- Human loads one LOC source map image and adjusts section grid lines directly over the map.
+- Confirmed that the OCR agent is no longer part of the active production workflow.
+- Declared `tools/map_workbench.html` the primary data-entry tool.
+- Added cleanup guidance for deleting deprecated OCR, crop, and review-helper files.
+- Added `.gitignore` rules to keep generated crops, OCR runs, Python caches, and downloaded exports out of the public repository.
+- Kept public repository focused on code, verified records JSON, section progress JSON, source links, and documentation.
+
+## v0.24 — Data-entry guide and safer map-number fields
+
+- Added a beginner guide explaining how to read LOC map labels.
+- Added first, middle, and last name fields.
+- Added `number_shown_on_map`, `map_number`, and `number_type` so map numbers are not forced into roll/allotment fields prematurely.
+
+## v0.23 — Full Map Workbench / No crop files
+
+- Added `tools/map_workbench.html`.
+- Human loads one LOC source map image, calibrates the grid, selects a section, and enters human-reviewed records.
 - Selected sections are zoomed live from the full image instead of requiring saved crop folders.
-- Added first/middle/last name fields and duplicate-safe human entry.
-- Added section status tracking and exports for approved rows, grid calibration, section status, and a full workbench save.
 
+## Earlier experimental phases
 
-## v0.22 — One-folder Township Workbench
-
-- Added `tools/township_workbench.html` for the simplified human workflow.
-- Added `--output-layout workbook` to generate one importable township/range folder.
-- Workbook folder contains `source/`, `sections/section_##/`, `manifest.json`, `section_status.json`, and `approved_rows.json`.
-- Workbench imports the whole township/range folder at once, shows all 36 sections, prevents obvious duplicate rows, tracks section status, and exports approved rows/status JSON.
-
-
-## v0.21 — Manual Grid Calibration
-
-- Added `tools/grid_calibrator.html`, a local visual tool for aligning township/range section grid lines by hand.
-- Added `--manual-grid-json` to `tools/map_indexing_agent.py` so calibrated grid JSON can drive section crops.
-- Human workflow now calibrates outside section boundaries first, distributes internal lines, then lets the user adjust individual section lines.
-- This replaces blind padding/percent-grid guesses for maps whose printed grids are shifted, warped, or scanned differently.
-
-## v0.20 — Line-Detected Section Crops
-
-- Added `--grid-method lines` to detect actual map section boundary lines with OpenCV instead of only using a percent-based 6x6 grid.
-- Added `--save-grid-debug` to export an overlay showing the detected section grid lines.
-- Added manual calibration overrides: `--manual-grid-lines-x` and `--manual-grid-lines-y`.
-- Added `tools/requirements.txt` update for `opencv-python` and `numpy`.
-- Keeps township/range/section crop organization under `data/ocr_runs/by_township_range/T##_R##/section_##/`.
-
-
-## v0.19 — T/R/S organized section crops and safer hosting plan
-
-- Adds township/range/section organized section-crop output folders.
-- Raises the default section padding to reduce clipped section edges.
-- Adds `--output-layout trs` so local crops are grouped like `data/ocr_runs/by_township_range/T24N_R14E/section_24/`.
-- Adds storage keys and duplicate-scope metadata to the section manifest.
-- Keeps public hosting focused on JSON/index data, not large crop-image collections.
-## v0.18 - Section tracker and duplicate-safe human entry
-
-- Added section-crop-only workflow for generating all 36 section images from one LOC map page.
-- Added section manifest/status output for page-level human transcription.
-- Upgraded section entry helper with township/range/section picker, duplicate detection, existing-records duplicate checks, and a 36-section progress tracker.
-
-# Changelog
-
-## v0.23 — Full Map Workbench / No Crop Files
-
-- Added `tools/map_workbench.html`, a local full-map transcription workbench.
-- Human loads one LOC source map image and adjusts section grid lines directly over the map.
-- Selected sections are zoomed live from the full image instead of requiring saved crop folders.
-- Added first/middle/last name fields and duplicate-safe human entry.
-- Added section status tracking and exports for approved rows, grid calibration, section status, and a full workbench save.
-
-
-## v0.22 — One-folder Township Workbench
-
-- Added `tools/township_workbench.html` for the simplified human workflow.
-- Added `--output-layout workbook` to generate one importable township/range folder.
-- Workbook folder contains `source/`, `sections/section_##/`, `manifest.json`, `section_status.json`, and `approved_rows.json`.
-- Workbench imports the whole township/range folder at once, shows all 36 sections, prevents obvious duplicate rows, tracks section status, and exports approved rows/status JSON.
-
-
-## v0.17 — Human Section Entry Helper
-
-- Added `tools/section_entry.html`, a local manual transcription tool for entering rows from section crop images.
-- Shifted the recommended workflow from OCR-first to section-first/human-reviewed.
-- Added export buttons for approved rows so humans can build `data/allotment_records.json` more accurately.
-- Kept OCR as an optional clue source, not proof.
-
-
-## v0.11 — Tile Review Upgrade
-
-- Improved the local OCR candidate review page.
-- Added tile-image preview for candidate rows using the saved OCR tile path.
-- Added a bounding-box overlay where Tesseract coordinates are available.
-- Added filters for likely map-label noise, rejected rows, and minimum confidence.
-- Added reject/hide and quick-mark review buttons so OCR candidates can be screened before any public record is drafted.
-
-
-All notable public changes to AllottedLand.com will be documented here.
-
-The format follows the spirit of Keep a Changelog: versions are grouped by release and changes are written in plain language for users, families, researchers, and volunteers.
-
-## [0.8] - 2026-06
-
-### Added
-- Added the local Map Indexing Agent starter kit in `tools/map_indexing_agent.py`.
-- Added `tools/review_candidates.html` for local human review of OCR candidate rows.
-- Added `data/allotment_records_candidates.json` as a holding file for unverified OCR leads.
-- Added `docs/ocr-workflow.md` with installation, running, review, and safety instructions.
-- Added `tools/requirements.txt` for Python dependencies.
-
-### Safety
-- OCR results remain candidate leads only. Human review is required before any row is moved into `data/allotment_records.json`.
-- Public submissions and automatic publication remain closed.
-
-## [0.7] - 2026-06
-
-### Added
-- Added `changelog.html` as a public Project Updates page.
-- Added `CHANGELOG.md` for GitHub version tracking.
-- Added project-update links in navigation/footer areas.
-- Added `changelog.html` to `sitemap.xml`.
-
-### Kept closed
-- Public uploads, testimonials, corrections, and land-loss submissions remain closed until privacy, consent, and review rules are finalized.
-
-## [0.6] - 2026-06
-
-### Fixed
-- Replaced primary contact buttons with Gmail web-compose links.
-- Added a copy-email button for `allottedland@gmail.com`.
-- Kept a default email-app fallback link.
-
-## [0.5] - 2026-06
-
-### Added
-- Added the project email address: `allottedland@gmail.com`.
-- Updated Contact page buttons for questions, corrections/removal requests, and volunteer indexing.
-- Added contact email to footers and policy pages.
-
-## [0.4] - 2026-06
-
-### Added
-- Added Phase 1 data-status language.
-- Added `transcribe.html` for the safe map-indexing workflow.
-- Added map review status and transcription queue templates.
-- Improved map preview fallback behavior.
-
-## [0.3] - 2026-06
-
-### Added
-- Added About, Source Records, and Contact pages.
-- Added sitemap and robots.txt updates.
-- Added footer links and Beta / Phase 1 language.
-
-## [0.2] - 2026-06
-
-### Fixed
-- Removed personal family sample data from public example text.
-- Changed search behavior so the page starts with no results until a user searches.
-- Clarified untranscribed map status language.
-
-## [0.1] - 2026-06
-
-### Added
-- Created the first public static site foundation.
-- Added homepage, guided finder, search prototype, county request builder, privacy policy, terms of use, and submission consent page.
-- Started the data layer with the Library of Congress Cherokee Nation atlas map index.
-
-
-## v0.10 Windows Tesseract path helper
-
-If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
-
-The agent also now checks common Windows install locations automatically.
-
-## v0.24 — Beginner data-entry guide and safer map-number fields
-
-- Added a “How to read the LOC map labels” guide inside the Full Map Workbench.
-- Changed the entry form to First name, Middle name / initial, Last name, and Full name preview.
-- Replaced the forced “Allotment #” entry with “Number shown on map” plus a “Number type” selector.
-- Preserves the exact map number as `map_number` / `number_shown_on_map` so reviewers do not accidentally mislabel a number as a roll, enrollment, census-card, or allotment number.
-- Only populates `allotment_number`, `roll_number`, `enrollment_number`, or `census_card_number` when the reviewer intentionally selects that number type.
-- Updated duplicate checking to use the safest available number field.
+- v0.8–v0.15 tested OCR candidates, Tesseract, tile review, and candidate export.
+- v0.16–v0.22 tested section-entry, crop generation, township/range folders, and manual calibration.
+- Those experiments informed the current full-map workbench but are now deprecated for production use.

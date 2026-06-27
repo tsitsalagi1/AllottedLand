@@ -2,205 +2,50 @@
 
 Project contact: allottedland@gmail.com
 
-AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from partial clues such as name, tribe, roll/enrollment number, township/range/section, county, town, cemetery, or family story.
+AllottedLand.com is a free public research-tool prototype for helping Native families find allotted land from public map and record sources.
 
-## v0.21 Manual grid calibration workflow
+## Current production workflow — v0.25
 
-When section crops are shifted or clipped, do not keep increasing padding. Calibrate the section grid manually:
+The active data-entry workflow is now **human-reviewed full-map transcription** using:
 
-1. Open `tools/grid_calibrator.html` locally.
-2. Load the full source map image, usually `data/ocr_runs/source_images/cherokee_nation_loc_page_029.jpg`.
-3. Drag the four outside boundary lines onto the outside township section grid.
-4. Click **Distribute internal lines**.
-5. Move any internal section lines that are off.
-6. Download the grid JSON and save it under `data/grid_calibrations/`, for example `p029_T24N_R14E_grid.json`.
-7. Run:
+- `tools/map_workbench.html`
+- `data/allotment_records.json`
+- `data/section_status.json` or future township/range section-status JSON files
+- `data/map_index.json`
 
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80 --save-grid-debug
-```
+The reviewer loads one full LOC source map image in the browser, calibrates the township/range grid, selects a section, enters human-reviewed rows, marks section progress, and exports JSON. The source image is not stored by the website.
 
-Then open `tools/section_entry.html`, load the section manifest, and transcribe section by section.
+## Deprecated local tools
 
+The early OCR/crop tools were useful experiments, but they are no longer the production path. OCR candidates were too noisy for reliable public records. These can be deleted from the public repo after confirming `tools/map_workbench.html` works:
 
-## Current status
+- `tools/map_indexing_agent.py`
+- `tools/review_candidates.html`
+- `tools/section_entry.html`
+- `tools/grid_calibrator.html`
+- `tools/township_workbench.html`
+- `tools/requirements.txt`
+- `docs/ocr-workflow.md`
+- `data/allotment_records_candidates.json`
+- `data/ocr_runs/`
+- `tools/__pycache__/`
 
-Beta / Phase 1. Current public version: v0.9. See `CHANGELOG.md` and `changelog.html` for project updates.
+See `docs/source-code-cleanup.md` for the safe cleanup plan.
 
-Beta / Phase 1. The current live search starts with the Library of Congress 1909 Cherokee Nation atlas map index. Name, roll-number, allotment-number, county-routing, testimonial, and land-loss datasets will expand only as verified records are added.
+## Public data files
 
-## v0.5 changes
+- `data/map_index.json` — LOC map-page index.
+- `data/allotment_records.json` — approved, human-reviewed searchable records.
+- `data/section_status.json` — section progress/status data.
+- `data/county_routes.json` — future county-record routing data.
 
-- Added public project email: `allottedland@gmail.com`.
-- Updated `contact.html` with general question, correction/removal, and volunteer mailto links.
-- Added contact email to footers and policy pages.
-- Added a reminder not to email sensitive private family documents unless redacted and permitted.
-- Added basic Organization structured data on the homepage with project URL and contact email.
+## Safety rules
 
-## Site pages
-
-- `index.html` — homepage, guided finder, search, process guide, request builder, stories/data preview
-- `about.html` — mission and beta scope
-- `sources.html` — source-record explanation and official source links
-- `transcribe.html` — indexing/transcription plan
-- `contact.html` — contact/correction guidance and privacy warning
-- `privacy.html` — starter privacy policy
-- `terms.html` — starter terms of use
-- `submission-policy.html` — starter submission consent policy
-- `sitemap.xml` — sitemap for search engines
-- `robots.txt` — crawl rules and sitemap location
-
-## Safety rule
-
-Do not accept uploads, testimonials, corrections, or family documents until Privacy, Terms, Submission Consent, and a review/removal process are finalized.
+- Do not publish living-person private information.
+- Do not treat OCR or map guesses as proof.
+- Keep roll, enrollment, census-card, allotment, and map-number fields separate unless verified.
+- Source images can be loaded by the browser for review, but they do not need to be stored in the repo.
 
 ## Deployment
 
 Static site for GitHub + Cloudflare Pages. Suggested Cloudflare Pages settings: Framework preset `None`, build command blank, build output directory `/` or `.`.
-
-
-## v0.6 update
-
-Replaced primary contact buttons with Gmail web compose links, kept a default-email-app fallback, and added a copy-email button so contact works even when mailto links are not configured in the visitor's browser or operating system.
-
-
-## v0.7 update
-
-Added public project-update tracking with `changelog.html` and `CHANGELOG.md`, updated navigation/footer links, and added the updates page to the sitemap.
-
-
-## v0.9 update
-
-Added a local Map Indexing Agent starter kit:
-
-- `tools/map_indexing_agent.py` — downloads one public LOC map image, tiles it, runs Tesseract OCR, and writes candidate rows.
-- `tools/review_candidates.html` — local browser review helper for OCR candidate rows.
-- `tools/requirements.txt` — Python package requirements.
-- `docs/ocr-workflow.md` — installation, running, review, and safety workflow.
-- `data/allotment_records_candidates.json` — unverified OCR candidate holding file.
-
-OCR candidates are not public verified records. Move rows into `data/allotment_records.json` only after human review against the original source image.
-
-
-## v0.10 Windows Tesseract path helper
-
-If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
-
-The agent also now checks common Windows install locations automatically.
-
-
-## v0.11 — Tile Review Upgrade
-
-The local OCR review helper now shows saved tile images beside candidate OCR rows, includes a bounding-box overlay where available, and adds filters/reject buttons so noisy map-label text can be screened before any row is drafted for `data/allotment_records.json`.
-
-
-## v0.17 — Human Section Entry Helper
-
-Added `tools/section_entry.html`, a local browser tool for manually entering verified allotment rows from a section crop image. This shifts the workflow from OCR-first to section-first/human-reviewed: use township, range, and section as the stable legal anchor; let a human read the names and allotment numbers; then export approved JSON rows for `data/allotment_records.json`.
-
-
-### v0.17 note
-The section-entry workflow is now the primary production workflow: human reviewers read one PLSS section crop at a time and export verified JSON rows. OCR remains optional and should not be treated as proof.
-
-
-## v0.19 section workflow
-
-Generate all 36 human-review section crops from one map page without OCR:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 90 --crops-only
-```
-
-Then open `tools/section_entry.html`, load `data/ocr_runs/page_029_sections_manifest.json`, pick township/range/section, enter rows by human reading, prevent duplicates by loading `data/allotment_records.json`, and export approved rows plus section status JSON.
-
-
-### v0.19 section-crop workflow
-
-For human transcription, generate organized section crops from one township/range map:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 240 --crops-only --output-layout trs
-```
-
-This writes a manifest and saves local review crops under:
-
-```text
-data/ocr_runs/by_township_range/T24N_R14E/section_24/
-```
-
-The public website should store searchable JSON/index data and source links. Do not commit thousands of large crop images unless intentionally creating a limited thumbnail set.
-
-
-## v0.20 line-detected section crops
-
-If percent-grid crops are shifted or missing part of a section, use line detection so the agent finds the actual black section boundary lines before cropping. Install the updated local dependencies first:
-
-```cmd
-python -m pip install -r tools\requirements.txt
-```
-
-Generate all 36 section crops using detected lines and a debug overlay:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --grid-method lines --section-padding 120 --save-grid-debug
-```
-
-Check the grid overlay in:
-
-```text
-data\ocr_runs\by_township_range\T24N_R14E\p029_soft_grid_lines.jpg
-```
-
-If the detected grid is wrong, use the overlay coordinates to manually set 7 vertical and 7 horizontal section lines:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --section-padding 120 --manual-grid-lines-x "100,500,900,1300,1700,2100,2500" --manual-grid-lines-y "120,520,920,1320,1720,2120,2520" --save-grid-debug
-```
-
-Only upload verified JSON/search data to GitHub by default. Keep generated working crop images local unless they are small, final, and necessary.
-
-
-## v0.22 one-folder township workflow
-
-Use this when the manual grid has been calibrated and you want the simplest human transcription workflow.
-
-1. Calibrate the full map in `tools/grid_calibrator.html` and save the grid JSON under `data/grid_calibrations/`.
-2. Generate one township/range workbook folder:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout workbook --manual-grid-json "data\grid_calibrations\p029_T24N_R14E_grid.json" --section-padding 80
-```
-
-3. Open `tools/township_workbench.html`.
-4. Import the folder under `data/ocr_runs/township_workbooks/T24N_R14E/`.
-5. Pick a section, read the image, add verified rows, mark the section status, and export approved JSON.
-
-The public GitHub/Cloudflare site should keep the verified JSON and code. The working crop images should usually stay local unless a later storage plan is adopted.
-
-
-## v0.23 full-map human workbench
-
-`tools/map_workbench.html` is the preferred local human transcription workflow. It does not require saved section crop folders. Load one full LOC township/range map image, drag the section grid lines into place, select a section, read the zoomed section view, and enter human-reviewed records.
-
-Recommended workflow:
-
-1. Open `tools/map_workbench.html`.
-2. Load the full LOC source map image.
-3. Drag the outside grid boundary onto the township/range section boundary.
-4. Click **Distribute internal lines** and adjust any internal lines that are off.
-5. Select a section from the 36-section grid.
-6. Enter First name, Middle name, Last name, allotment number, and any visible status notes.
-7. Mark the section complete, needs review, or no records.
-8. Export approved rows JSON and merge reviewed rows into `data/allotment_records.json`.
-
-The tool runs locally in the browser and does not upload records or images.
-
-### v0.24 data-entry rule
-
-The LOC map may show names, status marks, and numbers beside names. The workbench now records those numbers first as `map_number` / `number_shown_on_map`. A reviewer should only classify that number as an allotment number, roll number, enrollment number, or census card number when that interpretation is clear or verified from another source.
-
-For a name with no visible middle name or middle initial, leave the middle-name field blank. Use the notes field for uncertainty.
