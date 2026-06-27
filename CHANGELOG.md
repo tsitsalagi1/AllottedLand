@@ -1,3 +1,9 @@
+## v0.18 - Section tracker and duplicate-safe human entry
+
+- Added section-crop-only workflow for generating all 36 section images from one LOC map page.
+- Added section manifest/status output for page-level human transcription.
+- Upgraded section entry helper with township/range/section picker, duplicate detection, existing-records duplicate checks, and a 36-section progress tracker.
+
 # Changelog
 
 ## v0.17 — Human Section Entry Helper

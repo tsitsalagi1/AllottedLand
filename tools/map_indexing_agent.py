@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.12
+AllottedLand.com Map Indexing Agent v0.18
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.18:
+  - Adds section-crop-only mode so one township/range map can generate all 36 section images without OCR.
+  - Writes section manifest/status files to support human section entry and progress tracking.
+  - Keeps OCR as an optional clue, not the record-maker.
 
 What changed in v0.12:
   - Adds section-first extraction using the PLSS township section grid.
@@ -41,6 +46,7 @@ import pytesseract
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAP_INDEX_PATH = PROJECT_ROOT / "data" / "map_index.json"
 CANDIDATES_PATH = PROJECT_ROOT / "data" / "allotment_records_candidates.json"
+SECTION_STATUS_PATH = PROJECT_ROOT / "data" / "section_status.json"
 RUNS_DIR = PROJECT_ROOT / "data" / "ocr_runs"
 IMAGE_DIR = RUNS_DIR / "source_images"
 
@@ -511,6 +517,61 @@ def write_json(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def manifest_from_section_tiles(tiles: list[Tile], page: dict[str, Any], run_id: str) -> list[dict[str, Any]]:
+    """Build a section manifest for the human entry helper.
+
+    The manifest is not public proof. It is a local workbench index that tells the
+    browser which section crop image belongs to which township/range/section.
+    """
+    rows: list[dict[str, Any]] = []
+    for tile in tiles:
+        section = str(tile.section or "")
+        rows.append({
+            "status_record_type": "section-crop",
+            "run_id": run_id,
+            "loc_page": int(page.get("loc_page", 0)),
+            "sheet_title": page.get("sheet_title", ""),
+            "township_range": page.get("township_range", ""),
+            "township": page.get("township", ""),
+            "range": page.get("range", ""),
+            "section": section,
+            "section_image_path": tile.section_image_path or str(tile.path.relative_to(PROJECT_ROOT)),
+            "tile_id": tile.tile_id,
+            "preprocess": tile.preprocess,
+            "section_grid": tile.section_grid or {},
+            "source_link": page.get("loc_image_view") or LOC_VIEW_TEMPLATE.format(page=page.get("loc_page", "")),
+            "review_status": "not-started",
+            "row_count": 0,
+            "completed": False,
+            "notes": "Generated section crop for human transcription. Verify section boundaries before entry."
+        })
+    rows.sort(key=lambda r: int(r.get("section") or 0))
+    return rows
+
+
+def merge_section_status(manifest_rows: list[dict[str, Any]]) -> None:
+    """Merge generated section-crop rows into data/section_status.json without deleting existing status notes."""
+    SECTION_STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        existing = json.loads(SECTION_STATUS_PATH.read_text(encoding="utf-8")) if SECTION_STATUS_PATH.exists() else []
+        if not isinstance(existing, list):
+            existing = []
+    except Exception:
+        existing = []
+    def key(row: dict[str, Any]) -> str:
+        return "|".join(str(row.get(k, "")).strip().lower() for k in ("loc_page", "township_range", "section", "preprocess"))
+    by_key = {key(row): row for row in existing if isinstance(row, dict)}
+    for row in manifest_rows:
+        k = key(row)
+        if k in by_key:
+            merged = dict(row)
+            merged.update({kk: vv for kk, vv in by_key[k].items() if kk in {"review_status", "row_count", "completed", "reviewer", "completed_at", "notes"}})
+            by_key[k] = merged
+        else:
+            by_key[k] = row
+    SECTION_STATUS_PATH.write_text(json.dumps(list(by_key.values()), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="OCR one LOC allotment map page into human-review candidate records.")
     parser.add_argument("--page", type=int, required=False, help="LOC sequence page number, e.g. 29")
@@ -528,6 +589,7 @@ def main() -> None:
     parser.add_argument("--tesseract-cmd", default=None, help="Optional full path to tesseract.exe, useful on Windows if PATH fails.")
     parser.add_argument("--min-conf", type=float, default=45.0, help="Minimum average OCR confidence. Default: 45")
     parser.add_argument("--max-tiles", type=int, default=0, help="Limit tile/section count for quick testing. 0 means no limit.")
+    parser.add_argument("--crops-only", action="store_true", help="Section mode only: create section crop images and manifests without running OCR.")
     parser.add_argument("--append", action="store_true", help="Append to data/allotment_records_candidates.json instead of replacing it.")
     parser.add_argument("--clear-candidates", action="store_true", help="Clear data/allotment_records_candidates.json and exit.")
     args = parser.parse_args()
@@ -539,12 +601,13 @@ def main() -> None:
     if not args.page:
         raise SystemExit("Error: --page is required unless using --clear-candidates")
 
-    check_tesseract(args.tesseract_cmd)
+    if not args.crops_only:
+        check_tesseract(args.tesseract_cmd)
     page = find_page(args.page)
     run_id = f"loc{args.page:03}_{args.mode}_{time.strftime('%Y%m%d_%H%M%S')}"
     print(f"Run: {run_id}")
     print(f"Page: {page.get('loc_page')} — {page.get('sheet_title')}")
-    print(f"Mode: {args.mode} | PSM: {args.psm} | preprocess: {args.preprocess} | min_conf: {args.min_conf}")
+    print(f"Mode: {args.mode} | PSM: {args.psm} | preprocess: {args.preprocess} | min_conf: {args.min_conf} | crops_only: {args.crops_only}")
 
     image_path = download_image(args.page, args.image_url, overwrite=args.overwrite_image)
     base = base_image(image_path, scale=args.scale)
@@ -552,20 +615,25 @@ def main() -> None:
     psm_modes = parse_psm_list(args.psm)
 
     all_raw_lines: list[dict[str, Any]] = []
+    manifest_rows: list[dict[str, Any]] = []
     processed_count = 0
     for mode in preprocess_modes:
         img = preprocess_image(base, mode)
         if args.mode == "sections":
             sections = parse_sections(args.sections or "all")
             units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding)
+            manifest_rows.extend(manifest_from_section_tiles(units, page, run_id))
             label = "section crops"
         else:
             units = make_tiles(img, args.page, args.tile_size, args.overlap, mode)
             label = "tiles"
         if args.max_tiles and args.max_tiles > 0:
             units = units[: args.max_tiles]
-        print(f"{label.capitalize()} to OCR for {mode}: {len(units)}")
+        action_word = "created" if args.crops_only else "to OCR"
+        print(f"{label.capitalize()} {action_word} for {mode}: {len(units)}")
         processed_count += len(units)
+        if args.crops_only:
+            continue
         for unit in units:
             unit_lines: list[dict[str, Any]] = []
             for psm in psm_modes:
@@ -575,11 +643,23 @@ def main() -> None:
             unit_label = f"section {unit.section}" if unit.section else unit.tile_id
             print(f"{unit.tile_id} ({unit_label}): {len(unit_lines)} candidate lines")
 
+    suffix = f"page_{args.page:03}_{args.mode}"
+    if manifest_rows:
+        manifest_path = RUNS_DIR / f"{suffix}_manifest.json"
+        write_json(manifest_path, manifest_rows)
+        merge_section_status(manifest_rows)
+        print(f"Wrote section manifest: {manifest_path.relative_to(PROJECT_ROOT)}")
+        print(f"Merged section status seed: {SECTION_STATUS_PATH.relative_to(PROJECT_ROOT)}")
+
+    if args.crops_only:
+        print(f"Section crop units created: {processed_count}")
+        print("Next: open tools/section_entry.html locally, load the section manifest, and enter rows by section.")
+        return
+
     all_raw_lines = dedupe_lines(all_raw_lines)
     candidates = [candidate_from_line(line, page, run_id, i + 1) for i, line in enumerate(all_raw_lines)]
 
     write_candidates(candidates, append=args.append)
-    suffix = f"page_{args.page:03}_{args.mode}"
     write_csv(RUNS_DIR / f"{suffix}_candidates.csv", candidates)
     write_csv(RUNS_DIR / f"{suffix}_raw_lines.csv", all_raw_lines)
     write_json(RUNS_DIR / f"{run_id}_candidates.json", candidates)

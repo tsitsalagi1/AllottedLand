@@ -153,3 +153,8 @@ Approved rows may include a `review_trace` object showing the original OCR candi
 
 ## v0.17 human section entry
 Rows exported from tools/section_entry.html should represent human-read records from a section crop. Use `review_trace.method = "human-section-entry"` and leave Dawes roll/enrollment/census-card fields blank unless separately verified.
+
+
+## data/section_status.json
+
+Optional local/public progress-tracking rows for page/section review. Each row may include `loc_page`, `township_range`, `township`, `range`, `section`, `review_status`, `row_count`, `completed`, `reviewer`, `updated_at`, `section_image_path`, and `notes`. This file tracks transcription progress; it is not a title or ownership record.

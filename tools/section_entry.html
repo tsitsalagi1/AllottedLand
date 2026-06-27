@@ -1,135 +1,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand Section Entry Helper v0.17</title>
-  <style>
-    :root{--green:#19372d;--green2:#244e41;--cream:#f8f3ea;--paper:#fffdf8;--line:#dacdb9;--ink:#0b1b2b;--muted:#516273;--accent:#c79b4b;--danger:#9b2c1f;--ok:#1f5f49}
-    *{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45}.hero{background:var(--green);color:#fff;padding:30px 20px}.wrap{max-width:1500px;margin:0 auto}.hero h1{margin:.2rem 0;font-size:clamp(2rem,4vw,3.25rem)}.hero p{max-width:980px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;margin:18px auto;padding:20px;box-shadow:0 6px 18px rgba(0,0,0,.05)}
-    label{font-weight:800;font-size:.92rem}input,textarea,select{width:100%;padding:10px 12px;border:1px solid #cdbfa8;border-radius:10px;background:#fff;font:inherit}textarea{min-height:90px}button,.button{display:inline-block;border:0;border-radius:12px;padding:10px 14px;margin:4px 4px 4px 0;background:var(--green2);color:#fff;font-weight:800;cursor:pointer;text-decoration:none}.secondary{background:#eadfce;color:var(--ink)}.danger{background:var(--danger)}.ok{background:var(--ok)}.hint{color:var(--muted);font-size:.95rem}.small{font-size:.85rem;color:var(--muted)}.status{padding:8px 12px;border-radius:12px;background:#e9f3ef;color:#12372b;font-weight:700}.warn{background:#fff6da;color:#5c4110}.footer{padding:30px 20px;color:#596b78}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.zoomLabel{display:flex;gap:10px;align-items:center}.zoomLabel input{width:170px}
-    .workbench{display:grid;grid-template-columns:minmax(620px,1.55fr) minmax(420px,.95fr);gap:18px;align-items:start}.imagePanel{position:sticky;top:12px}.entryPanel{position:sticky;top:12px}.previewBox{border:1px solid var(--line);border-radius:14px;background:#f2eadc;padding:12px;min-height:650px;max-height:82vh;overflow:auto}.previewInner{transform-origin:top left;display:inline-block}.previewBox img{max-width:none;border:1px solid #b6aa98;background:#fff;display:block}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.rows{border:1px solid var(--line);border-radius:14px;overflow:hidden}.row{display:grid;grid-template-columns:1.5fr .8fr 1fr .7fr 1fr 1.2fr;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:10px;background:#fff}.row:nth-child(odd){background:#fbf7f0}.row.header{background:#efe6d7;font-weight:800}.badge{display:inline-block;background:#efe6d7;border-radius:999px;padding:3px 8px;font-size:.8rem;font-weight:800}pre{background:#0d1f1a;color:#eef7ef;padding:14px;border-radius:14px;overflow:auto;max-height:380px}.quickbar{background:#eef6f2;border:1px solid #cae1d5;border-radius:14px;padding:12px;margin:12px 0}.warnbox{background:#fff5df;border:1px solid #e8c779;border-radius:14px;padding:12px;margin:12px 0}.count{font-weight:900;color:#19372d}
-    @media(max-width:1100px){.workbench{grid-template-columns:1fr}.imagePanel,.entryPanel{position:static}.previewBox{max-height:none}.formgrid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.three{grid-template-columns:1fr}}
-    @media(max-width:700px){.formgrid{grid-template-columns:1fr}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AllottedLand Section Entry Workbench v0.18</title>
+<style>
+  :root{--green:#1f3b31;--green2:#254f42;--cream:#f7f2ea;--line:#d9cdbd;--gold:#d2b06a;--red:#9f2d20;--ok:#2f6f4e;--warn:#916c1f;--muted:#667085;--ink:#102033;}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+  .hero{background:var(--green);color:#fff;padding:44px 20px}.wrap{max-width:1380px;margin:0 auto}.eyebrow{letter-spacing:.12em;text-transform:uppercase;color:#f0dca2;font-weight:800;font-size:.82rem}.hero h1{font-size:clamp(2rem,4vw,3.8rem);margin:.25rem 0}.hero p{max-width:980px;font-size:1.05rem;line-height:1.55}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin:18px auto;box-shadow:0 5px 18px rgba(0,0,0,.05)}
+  h2{font-size:1.55rem;margin:.25rem 0 1rem}.hint{color:#5e687a;line-height:1.5}.tiny{font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1} label{font-weight:800;font-size:.88rem} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:#102033} textarea{min-height:76px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}.btn,button{border:0;border-radius:12px;padding:10px 14px;font-weight:800;background:var(--green);color:#fff;cursor:pointer}.secondary{background:#e7ddcb;color:#102033}.danger{background:var(--red)}.ok{background:var(--ok)}.disabled,button:disabled{opacity:.45;cursor:not-allowed}.status{padding:10px 12px;border-radius:12px;background:#e9f4ee;color:#0c4528;font-weight:800}.warn{background:#fff3cc;color:#5f4300}.error{background:#ffe5e2;color:#8d2318}.muted{color:var(--muted)}
+  .workbench{display:grid;grid-template-columns:minmax(500px,1.25fr) minmax(430px,.75fr);gap:18px;align-items:start}.sticky{position:sticky;top:10px}.imageShell{overflow:auto;max-height:76vh;border:1px solid var(--line);border-radius:14px;background:#fafafa;padding:12px}.previewInner{transform-origin:top left;display:inline-block}.previewInner img{display:block;max-width:100%;height:auto;image-rendering:auto}.sectionGrid{display:grid;grid-template-columns:repeat(6,minmax(54px,1fr));gap:6px;margin-top:10px}.secBtn{min-height:48px;padding:6px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#102033}.secBtn.active{outline:3px solid var(--gold);background:#fff8e7}.secBtn.has-rows{background:#e8f3ed;border-color:#79b38d}.secBtn.complete{background:#1f3b31;color:#fff}.secBtn.no-records{background:#eef1f4;color:#405168}.secBtn.needs-review{background:#fff3cc}.secBtn .meta{display:block;font-size:.72rem;font-weight:700;opacity:.8}.rows{border:1px solid var(--line);border-radius:14px;overflow:hidden}.row{display:grid;grid-template-columns:1.5fr .85fr .9fr .7fr .9fr 1.4fr;gap:8px;padding:10px;border-top:1px solid #eee;align-items:center}.row.header{background:#efe8dc;font-weight:900;border-top:0}.badge{display:inline-block;border-radius:999px;padding:3px 8px;background:#eee1cf;font-size:.76rem;font-weight:900}.dupBox{display:none;margin-top:10px}.dupBox.show{display:block}.json{max-height:340px;overflow:auto;background:#111;color:#e6e6e6;border-radius:12px;padding:12px;white-space:pre-wrap}.twoCols{grid-column:span 6}.threeCols{grid-column:span 4}.fourCols{grid-column:span 3}.privacy{padding:14px;border:1px solid #efe1b5;background:#fff9e6;border-radius:14px;margin-top:12px}
+  @media (max-width:1100px){.workbench,.grid2{grid-template-columns:1fr}.sticky{position:static}.grid{grid-template-columns:repeat(6,1fr)}.twoCols,.threeCols,.fourCols{grid-column:1/-1}.row{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <header class="hero"><div class="wrap">
-    <p class="small" style="color:#f8e6bd;font-weight:800;letter-spacing:.08em;text-transform:uppercase">AllottedLand.com · Local Human Section Transcription Tool</p>
-    <h1>Section Entry Helper v0.17</h1>
-    <p>This local tool is for human transcription from a section crop. It does not use OCR as proof, does not upload anything, and does not write to your computer automatically. You read the map image yourself, add rows for that section, and export verified JSON.</p>
-  </div></header>
+<header class="hero"><div class="wrap"><div class="eyebrow">AllottedLand.com · local human section transcription tool</div><h1>Section Entry Workbench v0.18</h1><p>Human-first section indexing. Load all section crops from one township/range map, pick the section, enter rows from the tile, prevent duplicate entries, and mark each section as complete, needs review, or no records found. This tool runs locally and does not upload anything.</p></div></header>
+<main class="wrap">
+  <section class="panel">
+    <h2>1. Load section crops and existing data</h2>
+    <div class="grid">
+      <div class="field fourCols"><label>Section manifest JSON <span class="muted tiny">optional</span><input type="file" id="manifestInput" accept="application/json,.json"></label></div>
+      <div class="field fourCols"><label>Existing public records JSON <span class="muted tiny">optional duplicate check</span><input type="file" id="existingInput" accept="application/json,.json"></label></div>
+      <div class="field fourCols"><label>Section crop image <span class="muted tiny">manual fallback</span><input type="file" id="imageInput" accept="image/*"></label></div>
+    </div>
+    <p id="loadStatus" class="status">Ready. Start by loading <code>data/ocr_runs/page_###_sections_manifest.json</code>, or manually choose one section image.</p>
+    <div class="privacy tiny"><strong>How to create all 36 section crops from one LOC map:</strong><br><code>python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 90 --crops-only</code><br>Use <code>--grid-pct</code> if the section boxes are off. Use <code>soft</code> first for human reading; use <code>threshold</code> or <code>invert</code> only if they make the writing clearer.</div>
+  </section>
 
-  <main class="wrap">
-    <section class="panel">
-      <h2>1. Load one section crop</h2>
-      <p class="hint">Use the section-first crop from <code>data/ocr_runs/page_###_sections/soft/</code>, <code>threshold/</code>, or <code>invert/</code>. For human reading, try <strong>soft</strong> first; use <strong>threshold</strong> or <strong>invert</strong> only when it makes handwriting clearer.</p>
+  <section class="panel">
+    <h2>2. Pick township/range/section and track progress</h2>
+    <div class="grid">
+      <div class="field threeCols"><label>LOC page<input id="loc_page" value="29"></label></div>
+      <div class="field threeCols"><label>Township<input id="township" value="24"></label></div>
+      <div class="field threeCols"><label>Range<input id="range" value="14"></label></div>
+      <div class="field threeCols"><label>Township/Range<input id="township_range" value="T24N R14E"></label></div>
+      <div class="field threeCols"><label>Section<select id="section"></select></label></div>
+      <div class="field threeCols"><label>Crop image path<input id="section_image_path" placeholder="data/ocr_runs/page_029_sections/soft/p029_soft_s24.jpg"></label></div>
+      <div class="field threeCols"><label>Section status<select id="section_status"><option value="not-started">not-started</option><option value="has-rows">has-rows</option><option value="complete">complete</option><option value="needs-review">needs-review</option><option value="no-records">no-records</option></select></label></div>
+      <div class="field threeCols"><label>Reviewer initials<input id="reviewer" placeholder="optional"></label></div>
+    </div>
+    <div class="toolbar">
+      <button id="loadSectionBtn" type="button">Load selected section image</button>
+      <button id="markCompleteBtn" class="ok" type="button">Mark section complete</button>
+      <button id="markNeedsReviewBtn" class="secondary" type="button">Mark needs review</button>
+      <button id="markNoRecordsBtn" class="secondary" type="button">Mark no records</button>
+      <button id="downloadStatusBtn" class="secondary" type="button">Download section status JSON</button>
+    </div>
+    <div id="sectionGrid" class="sectionGrid" aria-label="PLSS section grid"></div>
+    <p class="hint tiny">Standard PLSS section order is shown. Use the grid as a work tracker, not as proof of legal title. Confirm the crop boundaries visually before entering rows.</p>
+  </section>
+
+  <section class="workbench">
+    <div class="panel">
+      <h2>3. Read the section tile</h2>
       <div class="toolbar">
-        <input type="file" id="imageInput" accept="image/*" />
-        <label class="zoomLabel">Zoom <input id="zoom" type="range" min="25" max="300" value="100" /> <span id="zoomOut">100%</span></label>
-        <button class="secondary" id="fitWidthBtn" type="button">Fit width</button>
-        <button class="secondary" id="actualSizeBtn" type="button">100%</button>
-        <button class="secondary" id="rotateLeftBtn" type="button">Rotate left</button>
-        <button class="secondary" id="rotateRightBtn" type="button">Rotate right</button>
+        <label>Zoom <input type="range" id="zoom" min="35" max="300" value="100"></label><strong id="zoomOut">100%</strong>
+        <button id="fitWidthBtn" class="secondary" type="button">Fit width</button><button id="actualSizeBtn" class="secondary" type="button">100%</button><button id="rotateLeftBtn" class="secondary" type="button">Rotate left</button><button id="rotateRightBtn" class="secondary" type="button">Rotate right</button>
+        <a id="openImageLink" href="#" target="_blank" rel="noopener" class="btn secondary">Open image directly</a>
       </div>
-      <p id="imageStatus" class="status warn">No image loaded yet.</p>
-    </section>
+      <p id="imageStatus" class="status">No section image loaded.</p>
+      <div class="imageShell" id="previewBox"><p class="hint">Load a section crop. The image stays local in your browser.</p></div>
+    </div>
 
-    <section class="workbench">
-      <div class="panel imagePanel">
-        <h2>2. Read the section image</h2>
-        <div class="quickbar">
-          <strong>Human transcription rule:</strong> enter only what you can read from the image. Leave roll/enrollment/census-card numbers blank unless verified from another source.
-        </div>
-        <div class="previewBox" id="previewBox"><p class="hint">Image preview will appear here.</p></div>
+    <div class="panel sticky">
+      <h2>4. Add records from this section</h2>
+      <div id="duplicateWarning" class="status error dupBox"></div>
+      <div class="grid">
+        <div class="field full"><label>Verified name<input id="verified_name" placeholder="Name exactly as human-read from map"></label></div>
+        <div class="field twoCols"><label>Given name<input id="given_name" placeholder="Given name"></label></div>
+        <div class="field twoCols"><label>Surname<input id="surname" placeholder="Surname"></label></div>
+        <div class="field twoCols"><label>Allotment #<input id="allotment_number" placeholder="Allotment number shown on map"></label></div>
+        <div class="field twoCols"><label>Status/restriction note<input id="status_restriction_notation" placeholder="H, minor, etc. if shown"></label></div>
+        <div class="field full"><label>Tribe/Nation<input id="tribe" value="Cherokee Nation"></label></div>
+        <div class="field twoCols"><label>County<input id="county" placeholder="leave blank if unknown"></label></div>
+        <div class="field twoCols"><label>Confidence<select id="confidence"><option>human-reviewed</option><option>source-verified</option><option>needs-second-review</option></select></label></div>
+        <div class="field full"><label>Legal description<textarea id="legal_description">Section 24, T24N R14E</textarea></label></div>
+        <div class="field full"><label>Source link<textarea id="source_link">https://www.loc.gov/resource/g4021gm.gla00497/?sp=29&amp;st=image</textarea></label></div>
+        <div class="field twoCols"><label>Roll number<input id="roll_number" placeholder="only if separately verified"></label></div>
+        <div class="field twoCols"><label>Enrollment number<input id="enrollment_number" placeholder="only if separately verified"></label></div>
+        <div class="field full"><label>Census card #<input id="census_card_number" placeholder="only if separately verified"></label></div>
+        <div class="field full"><label>Notes<textarea id="notes" placeholder="Describe uncertainty, image file, row location, or reviewer note."></textarea></label></div>
+        <label class="full"><input type="checkbox" id="allowDuplicate"> Allow duplicate override for this row</label>
       </div>
-
-      <div class="panel entryPanel">
-        <h2>3. Add records from this section</h2>
-        <div class="formgrid">
-          <div class="full"><label>Verified name<input id="verified_name" placeholder="Name exactly as human-read from map" /></label></div>
-          <div><label>Given name<input id="given_name" placeholder="Given name" /></label></div>
-          <div><label>Surname<input id="surname" placeholder="Surname" /></label></div>
-          <div><label>Allotment #<input id="allotment_number" placeholder="Allotment number shown on map" /></label></div>
-          <div><label>Status/restriction note<input id="status_restriction_notation" placeholder="H, minor, etc. if shown" /></label></div>
-          <div><label>Tribe/Nation<input id="tribe" value="Cherokee Nation" /></label></div>
-          <div><label>LOC page<input id="loc_page" value="29" /></label></div>
-          <div><label>Township<input id="township" value="24" /></label></div>
-          <div><label>Range<input id="range" value="14" /></label></div>
-          <div><label>Section<input id="section" value="24" /></label></div>
-          <div><label>Township/Range<input id="township_range" value="T24N R14E" /></label></div>
-          <div><label>County<input id="county" placeholder="leave blank if unknown" /></label></div>
-          <div><label>Confidence<select id="confidence"><option>human-reviewed</option><option>source-verified</option><option>needs-second-review</option></select></label></div>
-          <div><label>Reviewer initials<input id="reviewer" placeholder="optional" /></label></div>
-          <div class="full"><label>Legal description<textarea id="legal_description">Section 24, T24N R14E</textarea></label></div>
-          <div class="full"><label>Source link<textarea id="source_link">https://www.loc.gov/resource/g4021gm.gla00497/?sp=29&amp;st=image</textarea></label></div>
-          <div><label>Roll number<input id="roll_number" placeholder="only if separately verified" /></label></div>
-          <div><label>Enrollment number<input id="enrollment_number" placeholder="only if separately verified" /></label></div>
-          <div class="full"><label>Census card #<input id="census_card_number" placeholder="only if separately verified" /></label></div>
-          <div class="full"><label>Notes<textarea id="notes" placeholder="Describe uncertainty, image file, row location, or reviewer note."></textarea></label></div>
-        </div>
-        <div class="toolbar">
-          <button id="addRowBtn" class="ok" type="button">Add row from this section</button>
-          <button id="addAndClearBtn" class="ok" type="button">Add row + clear name fields</button>
-          <button id="clearPersonBtn" class="secondary" type="button">Clear name fields only</button>
-        </div>
-        <div class="warnbox small">Do not add roll/enrollment/census-card numbers unless verified from Dawes/NARA or another source. The LOC map crop alone is a map/allotment layer.</div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Approved rows for export</h2>
-      <p class="hint">Rows are held only in this browser page until you download or copy them. Save the JSON and merge it into <code>data/allotment_records.json</code> only after review.</p>
       <div class="toolbar">
-        <button id="downloadBtn" type="button">Download approved rows JSON</button>
-        <button id="copyBtn" class="secondary" type="button">Copy approved rows array</button>
-        <button id="clearRowsBtn" class="danger" type="button">Clear approved list</button>
+        <button id="addRowBtn" class="ok" type="button">Add row from selected section</button>
+        <button id="addAndClearBtn" class="ok" type="button">Add row + clear name fields</button>
+        <button id="clearPersonBtn" class="secondary" type="button">Clear name fields only</button>
       </div>
-      <p id="rowStatus" class="status">0 approved rows queued.</p>
-      <div class="rows" id="rowsTable"><div class="row header"><span>Name</span><span>Allotment #</span><span>TR</span><span>Section</span><span>Confidence</span><span>Actions</span></div></div>
-      <h3>JSON preview</h3>
-      <pre id="jsonPreview">[]</pre>
-    </section>
-  </main>
+      <div class="privacy tiny">Do not add roll/enrollment/census-card numbers unless verified from Dawes/NARA or another source. The LOC map crop alone is a map/allotment layer.</div>
+    </div>
+  </section>
 
-  <footer class="footer wrap">
-    <p><strong>Privacy note:</strong> This tool runs locally in your browser. It does not upload the section image or records. You control what gets copied into the public website data.</p>
-  </footer>
-
+  <section class="panel">
+    <h2>5. Approved rows for export</h2>
+    <p class="hint">Rows are held only in this browser page until you download or copy them. Duplicate checks compare against rows queued here and any existing records JSON you loaded.</p>
+    <div class="toolbar"><button id="downloadBtn" type="button">Download approved rows JSON</button><button id="copyBtn" class="secondary" type="button">Copy approved rows array</button><button id="clearRowsBtn" class="danger" type="button">Clear approved list</button></div>
+    <p id="rowStatus" class="status">0 approved rows queued.</p>
+    <div class="rows" id="rowsTable"><div class="row header"><span>Name</span><span>Allotment #</span><span>TR</span><span>Section</span><span>Confidence</span><span>Actions</span></div></div>
+    <h3>JSON preview</h3><pre id="jsonPreview" class="json">[]</pre>
+  </section>
+</main>
+<footer class="wrap"><p class="hint"><strong>Privacy note:</strong> This tool runs locally in your browser. It does not upload the section image or records. You control what gets copied into the public website data.</p></footer>
 <script>
-const $ = (id) => document.getElementById(id);
-let approvedRows = [];
-let currentImageName = '';
-let imgEl = null;
-let imgWrap = null;
-let rotation = 0;
-let objectUrl = null;
-function clean(v){ return (v || '').toString().trim(); }
-function escapeHtml(s){ return String(s||'').replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
-function updateTransform(){ if(!imgWrap) return; imgWrap.style.transform = `scale(${$('zoom').value/100}) rotate(${rotation}deg)`; $('zoomOut').textContent = `${$('zoom').value}%`; }
-function inferNames(){ const full=clean($('verified_name').value); const parts=full.split(/\s+/).filter(Boolean); if(!$('given_name').value && parts.length) $('given_name').value=parts[0]; if(!$('surname').value && parts.length>1) $('surname').value=parts[parts.length-1]; }
-function syncLegal(){ const twp=clean($('township').value), rng=clean($('range').value), sec=clean($('section').value); const tr=clean($('township_range').value) || (twp && rng ? `T${twp}N R${rng}E` : ''); if(!$('township_range').value && tr) $('township_range').value=tr; if(sec && tr && (!clean($('legal_description').value) || clean($('legal_description').value).match(/^Section \d+, T\d+N R\d+E$/))) $('legal_description').value=`Section ${sec}, ${tr}`; }
-function makeRow(){ inferNames(); syncLegal(); const page=parseInt(clean($('loc_page').value),10)||''; const twp=clean($('township').value); const rng=clean($('range').value); const sec=clean($('section').value); const tr=clean($('township_range').value); return {verified_name:clean($('verified_name').value), possible_ocr_name:'', surname:clean($('surname').value), given_name:clean($('given_name').value), tribe:clean($('tribe').value)||'Cherokee Nation', roll_number:clean($('roll_number').value), enrollment_number:clean($('enrollment_number').value), census_card_number:clean($('census_card_number').value), allotment_number:clean($('allotment_number').value), status_restriction_notation:clean($('status_restriction_notation').value), loc_page:page, township_range:tr, township:twp, range:rng, section:sec, county:clean($('county').value), state:'Oklahoma', legal_description:clean($('legal_description').value), source_link:clean($('source_link').value), confidence:clean($('confidence').value), needs_human_review:clean($('confidence').value)==='needs-second-review'?'yes':'no', notes:clean($('notes').value), review_trace:{method:'human-section-entry', image_file:currentImageName, reviewer:clean($('reviewer').value), section_source:'human-reviewed-section-crop', entered_at_local:new Date().toISOString()}}; }
-function updateRows(){ $('rowStatus').textContent=`${approvedRows.length} approved row${approvedRows.length===1?'':'s'} queued.`; const table=$('rowsTable'); table.innerHTML='<div class="row header"><span>Name</span><span>Allotment #</span><span>TR</span><span>Section</span><span>Confidence</span><span>Actions</span></div>'; approvedRows.forEach((r,idx)=>{ const div=document.createElement('div'); div.className='row'; div.innerHTML=`<span><strong>${escapeHtml(r.verified_name||'(no name)')}</strong></span><span>${escapeHtml(r.allotment_number)}</span><span>${escapeHtml(r.township_range)}</span><span>${escapeHtml(r.section)}</span><span><span class="badge">${escapeHtml(r.confidence)}</span></span><span><button class="secondary" data-edit="${idx}">Load</button><button class="danger" data-remove="${idx}">Remove</button></span>`; table.appendChild(div); }); $('jsonPreview').textContent=JSON.stringify(approvedRows,null,2); }
-function loadToForm(r){ Object.keys(r).forEach(k=>{ if($(k)) $(k).value = r[k] ?? ''; }); }
-function clearPerson(){ ['verified_name','given_name','surname','allotment_number','status_restriction_notation','roll_number','enrollment_number','census_card_number','notes'].forEach(id=>$(id).value=''); }
-function addRow(clearAfter=false){ const row=makeRow(); if(!row.verified_name && !row.allotment_number){ alert('Add at least a verified name or allotment number before exporting.'); return; } approvedRows.push(row); updateRows(); if(clearAfter) clearPerson(); }
-function downloadJson(){ const blob=new Blob([JSON.stringify(approvedRows,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); const stamp=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-'); a.href=url; a.download=`approved_allotment_records_${stamp}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-$('imageInput').addEventListener('change',(e)=>{ const file=e.target.files[0]; if(!file) return; currentImageName=file.name; if(objectUrl) URL.revokeObjectURL(objectUrl); objectUrl=URL.createObjectURL(file); const box=$('previewBox'); box.innerHTML=''; imgWrap=document.createElement('div'); imgWrap.className='previewInner'; imgEl=document.createElement('img'); imgEl.src=objectUrl; imgEl.alt=`Section crop: ${file.name}`; imgWrap.appendChild(imgEl); box.appendChild(imgWrap); $('imageStatus').textContent=`Loaded image: ${file.name}`; $('imageStatus').className='status'; rotation=0; $('zoom').value=100; updateTransform(); });
-$('zoom').addEventListener('input',updateTransform);
-$('fitWidthBtn').addEventListener('click',()=>{ if(!imgEl) return; imgEl.style.maxWidth='100%'; imgEl.style.height='auto'; $('zoom').value=100; rotation=0; updateTransform(); });
-$('actualSizeBtn').addEventListener('click',()=>{ if(!imgEl) return; imgEl.style.maxWidth='none'; $('zoom').value=100; rotation=0; updateTransform(); });
-$('rotateLeftBtn').addEventListener('click',()=>{ rotation-=90; updateTransform(); });
-$('rotateRightBtn').addEventListener('click',()=>{ rotation+=90; updateTransform(); });
-['township','range','section','township_range'].forEach(id=>$(id).addEventListener('input',syncLegal));
-$('addRowBtn').addEventListener('click',()=>addRow(false));
-$('addAndClearBtn').addEventListener('click',()=>addRow(true));
-$('clearPersonBtn').addEventListener('click',clearPerson);
-$('downloadBtn').addEventListener('click',downloadJson);
-$('copyBtn').addEventListener('click',async()=>{ await navigator.clipboard.writeText(JSON.stringify(approvedRows,null,2)); alert('Approved rows copied.'); });
-$('clearRowsBtn').addEventListener('click',()=>{ if(confirm('Clear approved rows from this browser page?')){ approvedRows=[]; updateRows(); } });
-$('rowsTable').addEventListener('click',(e)=>{ const edit=e.target.getAttribute('data-edit'), rem=e.target.getAttribute('data-remove'); if(edit!==null) loadToForm(approvedRows[Number(edit)]); if(rem!==null){ approvedRows.splice(Number(rem),1); updateRows(); } });
-updateRows();
+const $ = (id)=>document.getElementById(id);
+const SECTION_GRID = [[6,5,4,3,2,1],[7,8,9,10,11,12],[18,17,16,15,14,13],[19,20,21,22,23,24],[30,29,28,27,26,25],[31,32,33,34,35,36]];
+let approvedRows=[], existingRows=[], manifestRows=[], sectionStatus={}, imgWrap=null, imgEl=null, objectUrl=null, rotation=0, currentImageName='', currentImagePath='';
+const storeKey=()=>`allottedland_section_status_${clean($('loc_page').value)}_${norm($('township_range').value)}`;
+function clean(v){return (v||'').toString().trim()} function norm(v){return clean(v).toLowerCase().replace(/[^a-z0-9]/g,'')} function escapeHtml(s){return String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function rowKey(r){return [r.loc_page,r.township_range,r.section,norm(r.verified_name),norm(r.allotment_number)].join('|')}
+function candidateKeyFromForm(){return [clean($('loc_page').value),clean($('township_range').value),clean($('section').value),norm($('verified_name').value),norm($('allotment_number').value)].join('|')}
+function loadLocalStatus(){try{sectionStatus=JSON.parse(localStorage.getItem(storeKey())||'{}')}catch(e){sectionStatus={}}}
+function saveLocalStatus(){localStorage.setItem(storeKey(), JSON.stringify(sectionStatus))}
+function setSectionStatus(sec,status){const key=String(sec); sectionStatus[key]={...(sectionStatus[key]||{}), status, updated_at:new Date().toISOString(), reviewer:clean($('reviewer').value), row_count:approvedRows.filter(r=>String(r.section)===key && String(r.loc_page)===clean($('loc_page').value) && r.township_range===clean($('township_range').value)).length}; saveLocalStatus(); renderSectionGrid()}
+function getSecStatus(sec){const key=String(sec); const rows=approvedRows.filter(r=>String(r.section)===key && String(r.loc_page)===clean($('loc_page').value) && r.township_range===clean($('township_range').value)).length; const st=(sectionStatus[key]&&sectionStatus[key].status)||'not-started'; return rows>0 && st==='not-started'?'has-rows':st}
+function populateSectionSelect(){for(let i=1;i<=36;i++){const o=document.createElement('option');o.value=i;o.textContent=`Section ${i}`;$('section').appendChild(o)} $('section').value='24'}
+function renderSectionGrid(){const box=$('sectionGrid'); box.innerHTML=''; SECTION_GRID.flat().forEach(sec=>{const st=getSecStatus(sec); const count=approvedRows.filter(r=>String(r.section)===String(sec) && String(r.loc_page)===clean($('loc_page').value) && r.township_range===clean($('township_range').value)).length; const b=document.createElement('button'); b.type='button'; b.className=`secBtn ${st} ${String(sec)===clean($('section').value)?'active':''}`; b.innerHTML=`<strong>${sec}</strong><span class="meta">${st}${count?` · ${count} row${count===1?'':'s'}`:''}</span>`; b.addEventListener('click',()=>{ $('section').value=String(sec); applySectionSelection(true); }); box.appendChild(b);})}
+function syncLegal(){const twp=clean($('township').value), rng=clean($('range').value), sec=clean($('section').value); let tr=clean($('township_range').value); if(!tr && twp && rng){tr=`T${twp}N R${rng}E`; $('township_range').value=tr} if(sec&&tr) $('legal_description').value=`Section ${sec}, ${tr}`; $('source_link').value=`https://www.loc.gov/resource/g4021gm.gla00497/?sp=${clean($('loc_page').value)}&st=image`; checkDuplicateLive(); renderSectionGrid()}
+function applyManifestRow(row){if(!row)return; $('loc_page').value=row.loc_page||$('loc_page').value; $('township').value=row.township||$('township').value; $('range').value=row.range||$('range').value; $('township_range').value=row.township_range||$('township_range').value; $('section').value=String(row.section||$('section').value); $('section_image_path').value=row.section_image_path||row.tile_path||''; $('source_link').value=row.source_link||$('source_link').value; syncLegal(); setImageFromPath($('section_image_path').value)}
+function applySectionSelection(loadImage=false){const sec=clean($('section').value); const row=manifestRows.find(r=>String(r.section)===sec && (!clean($('township_range').value)||r.township_range===clean($('township_range').value)) ) || manifestRows.find(r=>String(r.section)===sec); if(row) applyManifestRow(row); else syncLegal(); if(loadImage && !row) setImageFromPath($('section_image_path').value); $('section_status').value=(sectionStatus[sec]&&sectionStatus[sec].status)||'not-started';}
+function setImageFromPath(path){path=clean(path); currentImagePath=path; if(!path)return; let src=path.replace(/\\/g,'/'); if(src.startsWith('data/')) src='../'+src; $('openImageLink').href=src; const box=$('previewBox'); box.innerHTML=''; imgWrap=document.createElement('div'); imgWrap.className='previewInner'; imgEl=document.createElement('img'); imgEl.src=src; imgEl.alt=`Section crop ${path}`; imgEl.onerror=()=>{ $('imageStatus').textContent='Could not auto-load image. Use the manual section crop image chooser.'; $('imageStatus').className='status warn'; }; imgEl.onload=()=>{ $('imageStatus').textContent=`Loaded section image: ${path}`; $('imageStatus').className='status'; }; imgWrap.appendChild(imgEl); box.appendChild(imgWrap); rotation=0; $('zoom').value=100; updateTransform();}
+function updateTransform(){ if(!imgWrap)return; imgWrap.style.transform=`scale(${$('zoom').value/100}) rotate(${rotation}deg)`; $('zoomOut').textContent=`${$('zoom').value}%`;}
+function inferNames(){const full=clean($('verified_name').value); const parts=full.split(/\s+/).filter(Boolean); if(!$('given_name').value&&parts.length)$('given_name').value=parts[0]; if(!$('surname').value&&parts.length>1)$('surname').value=parts[parts.length-1]}
+function makeRow(){inferNames(); syncLegal(); const confidence=clean($('confidence').value); return {verified_name:clean($('verified_name').value), possible_ocr_name:'', surname:clean($('surname').value), given_name:clean($('given_name').value), tribe:clean($('tribe').value)||'Cherokee Nation', roll_number:clean($('roll_number').value), enrollment_number:clean($('enrollment_number').value), census_card_number:clean($('census_card_number').value), allotment_number:clean($('allotment_number').value), status_restriction_notation:clean($('status_restriction_notation').value), loc_page:parseInt(clean($('loc_page').value),10)||'', township_range:clean($('township_range').value), township:clean($('township').value), range:clean($('range').value), section:clean($('section').value), county:clean($('county').value), state:'Oklahoma', legal_description:clean($('legal_description').value), source_link:clean($('source_link').value), confidence, needs_human_review:confidence==='needs-second-review'?'yes':'no', notes:clean($('notes').value), review_trace:{method:'human-section-entry-v0.18', image_file:currentImageName, image_path:currentImagePath||clean($('section_image_path').value), reviewer:clean($('reviewer').value), section_status:getSecStatus(clean($('section').value)), entered_at_local:new Date().toISOString()}}}
+function duplicateInfo(){const key=candidateKeyFromForm(); if(!norm($('verified_name').value)&&!norm($('allotment_number').value))return null; const inQueue=approvedRows.find(r=>rowKey(r)===key); const inExisting=existingRows.find(r=>rowKey(r)===key); return inQueue?{where:'approved export list',row:inQueue}:inExisting?{where:'existing public records',row:inExisting}:null}
+function checkDuplicateLive(){const dup=duplicateInfo(); const box=$('duplicateWarning'); if(dup && !$('allowDuplicate').checked){box.className='status error dupBox show'; box.textContent=`Possible duplicate found in ${dup.where}: ${dup.row.verified_name || '(no name)'} / allotment # ${dup.row.allotment_number || '(blank)'}`;} else {box.className='status error dupBox'; box.textContent='';}}
+function clearPerson(){['verified_name','given_name','surname','allotment_number','status_restriction_notation','roll_number','enrollment_number','census_card_number','notes'].forEach(id=>$(id).value=''); $('allowDuplicate').checked=false; checkDuplicateLive()}
+function addRow(clearAfter=false){const row=makeRow(); if(!row.verified_name && !row.allotment_number){alert('Add at least a verified name or allotment number.'); return;} const dup=duplicateInfo(); if(dup && !$('allowDuplicate').checked){alert(`Possible duplicate found in ${dup.where}. Check Allow duplicate override only if this really is a separate record.`); return;} approvedRows.push(row); setSectionStatus(row.section,'has-rows'); updateRows(); if(clearAfter)clearPerson();}
+function loadToForm(r){Object.keys(r).forEach(k=>{if($(k))$(k).value=r[k]??''}); syncLegal(); checkDuplicateLive()}
+function updateRows(){ $('rowStatus').textContent=`${approvedRows.length} approved row${approvedRows.length===1?'':'s'} queued.`; const table=$('rowsTable'); table.innerHTML='<div class="row header"><span>Name</span><span>Allotment #</span><span>TR</span><span>Section</span><span>Confidence</span><span>Actions</span></div>'; approvedRows.forEach((r,idx)=>{const div=document.createElement('div'); div.className='row'; div.innerHTML=`<span><strong>${escapeHtml(r.verified_name||'(no name)')}</strong></span><span>${escapeHtml(r.allotment_number)}</span><span>${escapeHtml(r.township_range)}</span><span>${escapeHtml(r.section)}</span><span><span class="badge">${escapeHtml(r.confidence)}</span></span><span><button class="secondary" data-edit="${idx}">Load</button><button class="danger" data-remove="${idx}">Remove</button></span>`; table.appendChild(div);}); $('jsonPreview').textContent=JSON.stringify(approvedRows,null,2); renderSectionGrid();}
+function downloadJson(rows, filename){const blob=new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)}
+function statusRows(){return SECTION_GRID.flat().map(sec=>({loc_page:parseInt(clean($('loc_page').value),10)||'', township_range:clean($('township_range').value), township:clean($('township').value), range:clean($('range').value), section:String(sec), review_status:getSecStatus(sec), row_count:approvedRows.filter(r=>String(r.section)===String(sec)&&String(r.loc_page)===clean($('loc_page').value)&&r.township_range===clean($('township_range').value)).length, completed:getSecStatus(sec)==='complete'||getSecStatus(sec)==='no-records', reviewer:clean($('reviewer').value), updated_at:(sectionStatus[String(sec)]&&sectionStatus[String(sec)].updated_at)||'', section_image_path:(manifestRows.find(r=>String(r.section)===String(sec))||{}).section_image_path||'', notes:''}))}
+async function readJsonFile(file){const text=await file.text(); const data=JSON.parse(text); if(Array.isArray(data))return data; for(const k of ['rows','records','data','results','sections','manifest']) if(Array.isArray(data[k])) return data[k]; return []}
+$('manifestInput').addEventListener('change',async e=>{const f=e.target.files[0]; if(!f)return; try{manifestRows=await readJsonFile(f); $('loadStatus').textContent=`Loaded section manifest: ${f.name}. Section rows found: ${manifestRows.length}.`; $('loadStatus').className='status'; const first=manifestRows[0]; if(first)applyManifestRow(first); renderSectionGrid();}catch(err){$('loadStatus').textContent=`Could not read manifest JSON: ${err.message}`; $('loadStatus').className='status error';}});
+$('existingInput').addEventListener('change',async e=>{const f=e.target.files[0]; if(!f)return; try{existingRows=await readJsonFile(f); $('loadStatus').textContent=`Loaded existing public records for duplicate checks: ${existingRows.length} rows.`; $('loadStatus').className='status'; checkDuplicateLive();}catch(err){$('loadStatus').textContent=`Could not read existing records JSON: ${err.message}`; $('loadStatus').className='status error';}});
+$('imageInput').addEventListener('change',e=>{const file=e.target.files[0]; if(!file)return; currentImageName=file.name; currentImagePath=clean($('section_image_path').value); if(objectUrl)URL.revokeObjectURL(objectUrl); objectUrl=URL.createObjectURL(file); const box=$('previewBox'); box.innerHTML=''; imgWrap=document.createElement('div'); imgWrap.className='previewInner'; imgEl=document.createElement('img'); imgEl.src=objectUrl; imgEl.alt=`Section crop ${file.name}`; imgWrap.appendChild(imgEl); box.appendChild(imgWrap); $('imageStatus').textContent=`Loaded manual image: ${file.name}`; $('imageStatus').className='status'; rotation=0; $('zoom').value=100; updateTransform();});
+$('zoom').addEventListener('input',updateTransform); $('fitWidthBtn').addEventListener('click',()=>{if(imgEl){imgEl.style.maxWidth='100%';imgEl.style.height='auto';$('zoom').value=100;rotation=0;updateTransform();}}); $('actualSizeBtn').addEventListener('click',()=>{if(imgEl){imgEl.style.maxWidth='none';$('zoom').value=100;rotation=0;updateTransform();}}); $('rotateLeftBtn').addEventListener('click',()=>{rotation-=90;updateTransform()}); $('rotateRightBtn').addEventListener('click',()=>{rotation+=90;updateTransform()});
+['loc_page','township','range','township_range','section'].forEach(id=>$(id).addEventListener('input',()=>{loadLocalStatus();syncLegal()})); $('section').addEventListener('change',()=>applySectionSelection(true)); ['verified_name','allotment_number'].forEach(id=>$(id).addEventListener('input',checkDuplicateLive)); $('allowDuplicate').addEventListener('change',checkDuplicateLive);
+$('loadSectionBtn').addEventListener('click',()=>applySectionSelection(true)); $('markCompleteBtn').addEventListener('click',()=>setSectionStatus(clean($('section').value),'complete')); $('markNeedsReviewBtn').addEventListener('click',()=>setSectionStatus(clean($('section').value),'needs-review')); $('markNoRecordsBtn').addEventListener('click',()=>setSectionStatus(clean($('section').value),'no-records')); $('downloadStatusBtn').addEventListener('click',()=>downloadJson(statusRows(),`section_status_p${clean($('loc_page').value)}_${norm($('township_range').value)}.json`));
+$('addRowBtn').addEventListener('click',()=>addRow(false)); $('addAndClearBtn').addEventListener('click',()=>addRow(true)); $('clearPersonBtn').addEventListener('click',clearPerson); $('downloadBtn').addEventListener('click',()=>downloadJson(approvedRows,`approved_allotment_records_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`)); $('copyBtn').addEventListener('click',async()=>{await navigator.clipboard.writeText(JSON.stringify(approvedRows,null,2)); alert('Approved rows copied.')}); $('clearRowsBtn').addEventListener('click',()=>{if(confirm('Clear approved rows from this browser page?')){approvedRows=[];updateRows();}}); $('rowsTable').addEventListener('click',e=>{const edit=e.target.getAttribute('data-edit'), rem=e.target.getAttribute('data-remove'); if(edit!==null)loadToForm(approvedRows[Number(edit)]); if(rem!==null){approvedRows.splice(Number(rem),1);updateRows();}});
+populateSectionSelect(); loadLocalStatus(); syncLegal(); updateRows();
 </script>
 </body>
 </html>
