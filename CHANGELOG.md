@@ -1,3 +1,13 @@
+# Changelog
+
+## v0.20 — Line-Detected Section Crops
+
+- Added `--grid-method lines` to detect actual map section boundary lines with OpenCV instead of only using a percent-based 6x6 grid.
+- Added `--save-grid-debug` to export an overlay showing the detected section grid lines.
+- Added manual calibration overrides: `--manual-grid-lines-x` and `--manual-grid-lines-y`.
+- Added `tools/requirements.txt` update for `opencv-python` and `numpy`.
+- Keeps township/range/section crop organization under `data/ocr_runs/by_township_range/T##_R##/section_##/`.
+
 
 ## v0.19 — T/R/S organized section crops and safer hosting plan
 

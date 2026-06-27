@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.19
+AllottedLand.com Map Indexing Agent v0.20
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.20:
+  - Adds line-detected section grid cropping so section crops follow actual map section lines.
+  - Adds manual grid-line overrides and debug overlay images for calibration.
+  - Adds crop metadata showing whether percent grid, detected lines, or manual lines were used.
 
 What changed in v0.19:
   - Adds township/range/section organized output folders.
@@ -46,7 +51,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import requests
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
 import pytesseract
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -146,7 +151,7 @@ def download_image(page_no: int, image_url: str | None = None, overwrite: bool =
     if out_path.exists() and not overwrite:
         return out_path
     url = image_url or COMMONS_URL_TEMPLATE.format(page=page_no)
-    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.12 (+https://allottedland.com)"}
+    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.20 (+https://allottedland.com)"}
     resp = requests.get(url, headers=headers, timeout=120, allow_redirects=True)
     if resp.status_code != 200 or not resp.content:
         raise RuntimeError(f"Could not download image for page {page_no}: HTTP {resp.status_code} from {url}")
@@ -271,6 +276,139 @@ def slug(value: str) -> str:
     return value.strip("_") or "unknown"
 
 
+
+def parse_number_list(value: str | None) -> list[int]:
+    if not value:
+        return []
+    out: list[int] = []
+    for part in str(value).split(','):
+        part = part.strip()
+        if not part:
+            continue
+        out.append(int(float(part)))
+    return sorted(out)
+
+
+def cluster_positions(values: list[int], tolerance: int = 28) -> list[int]:
+    """Cluster nearby line coordinates into one representative coordinate."""
+    if not values:
+        return []
+    values = sorted(int(v) for v in values)
+    groups: list[list[int]] = [[values[0]]]
+    for value in values[1:]:
+        if abs(value - groups[-1][-1]) <= tolerance:
+            groups[-1].append(value)
+        else:
+            groups.append([value])
+    return [int(round(sum(g) / len(g))) for g in groups]
+
+
+def choose_grid_lines(candidates: list[int], left: int, right: int) -> list[int]:
+    """Choose 7 section-grid lines from many detected line candidates.
+
+    Maps contain both section lines and allotment/subdivision lines. This function
+    keeps candidates inside the rough grid area and prefers a sequence whose
+    spacing is roughly regular. If detection fails, caller should fall back.
+    """
+    candidates = sorted(x for x in candidates if left <= x <= right)
+    if len(candidates) < 7:
+        return []
+    expected = [(left + (right - left) * i / 6.0) for i in range(7)]
+    chosen: list[int] = []
+    for e in expected:
+        nearest = min(candidates, key=lambda x: abs(x - e))
+        chosen.append(int(nearest))
+    # Ensure strictly increasing and close to the rough grid. If duplicates occur,
+    # detection latched onto subdivision lines rather than section grid lines.
+    if len(set(chosen)) != 7:
+        return []
+    chosen = sorted(chosen)
+    spacings = [chosen[i+1] - chosen[i] for i in range(6)]
+    avg = sum(spacings) / max(1, len(spacings))
+    if avg <= 0 or any(s < avg * 0.35 for s in spacings):
+        return []
+    return chosen
+
+
+def detect_grid_lines_from_image(
+    img: Image.Image,
+    rough_box: tuple[int, int, int, int],
+    cluster_tolerance: int = 40,
+    min_length_frac: float = 0.50,
+) -> tuple[list[int], list[int], dict[str, Any]]:
+    """Detect likely township section grid lines from the actual map image.
+
+    Uses OpenCV morphology to emphasize long horizontal/vertical black lines,
+    then clusters line coordinates. This is intentionally conservative: if it
+    cannot find a reasonable 7x7 grid, the caller falls back to percent grid.
+    """
+    try:
+        import cv2  # type: ignore
+        import numpy as np  # type: ignore
+    except Exception as exc:  # pragma: no cover - local dependency message
+        raise RuntimeError(
+            "Line-detected cropping requires OpenCV. Install with: python -m pip install opencv-python numpy"
+        ) from exc
+
+    gl, gt, gr, gb = rough_box
+    crop = img.crop((gl, gt, gr, gb)).convert('L')
+    arr = np.array(crop)
+    # Black map lines become white foreground for morphology.
+    _, binary = cv2.threshold(arr, 190, 255, cv2.THRESH_BINARY_INV)
+    h, w = binary.shape[:2]
+    min_h_len = max(60, int(w * min_length_frac))
+    min_v_len = max(60, int(h * min_length_frac))
+
+    h_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(35, min_h_len // 3), 3))
+    v_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, max(35, min_v_len // 3)))
+    horizontal = cv2.morphologyEx(binary, cv2.MORPH_OPEN, h_kernel, iterations=1)
+    vertical = cv2.morphologyEx(binary, cv2.MORPH_OPEN, v_kernel, iterations=1)
+
+    x_candidates: list[int] = []
+    y_candidates: list[int] = []
+
+    contours, _ = cv2.findContours(horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    for c in contours:
+        x, y, ww, hh = cv2.boundingRect(c)
+        if ww >= min_h_len:
+            y_candidates.append(gt + y + hh // 2)
+
+    contours, _ = cv2.findContours(vertical, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    for c in contours:
+        x, y, ww, hh = cv2.boundingRect(c)
+        if hh >= min_v_len:
+            x_candidates.append(gl + x + ww // 2)
+
+    x_clustered = cluster_positions(x_candidates, cluster_tolerance)
+    y_clustered = cluster_positions(y_candidates, cluster_tolerance)
+    x_lines = choose_grid_lines(x_clustered, gl, gr)
+    y_lines = choose_grid_lines(y_clustered, gt, gb)
+    meta = {
+        "rough_box": {"left": gl, "top": gt, "right": gr, "bottom": gb},
+        "raw_x_candidates": x_candidates,
+        "raw_y_candidates": y_candidates,
+        "clustered_x_candidates": x_clustered,
+        "clustered_y_candidates": y_clustered,
+        "selected_x_lines": x_lines,
+        "selected_y_lines": y_lines,
+        "cluster_tolerance": cluster_tolerance,
+        "min_length_frac": min_length_frac,
+    }
+    return x_lines, y_lines, meta
+
+
+def draw_grid_debug(img: Image.Image, x_lines: list[int], y_lines: list[int], rough_box: tuple[int,int,int,int], out_path: Path) -> None:
+    preview = img.convert('RGB').copy()
+    draw = ImageDraw.Draw(preview)
+    gl, gt, gr, gb = rough_box
+    draw.rectangle((gl, gt, gr, gb), outline=(255, 165, 0), width=6)
+    for x in x_lines:
+        draw.line((x, gt, x, gb), fill=(255, 0, 0), width=5)
+    for y in y_lines:
+        draw.line((gl, y, gr, y), fill=(0, 120, 255), width=5)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    preview.save(out_path, quality=92)
+
 def make_section_crops(
     img: Image.Image,
     page_no: int,
@@ -280,6 +418,12 @@ def make_section_crops(
     padding: int = 180,
     township_range: str = "",
     output_layout: str = "trs",
+    grid_method: str = "percent",
+    manual_x_lines: str | None = None,
+    manual_y_lines: str | None = None,
+    line_cluster_tolerance: int = 40,
+    line_min_length_frac: float = 0.50,
+    save_grid_debug: bool = False,
 ) -> list[Tile]:
     crops: list[Tile] = []
     tr_slug = slug(township_range)
@@ -291,16 +435,58 @@ def make_section_crops(
     gl, gt, gr, gb = parse_grid_pct(grid_pct, w, h)
     gl, gt = max(0, gl), max(0, gt)
     gr, gb = min(w, gr), min(h, gb)
-    cell_w = (gr - gl) / 6.0
-    cell_h = (gb - gt) / 6.0
-    grid_meta = {"left": gl, "top": gt, "right": gr, "bottom": gb, "grid_pct": grid_pct}
+    rough_box = (gl, gt, gr, gb)
+
+    x_lines: list[int] = []
+    y_lines: list[int] = []
+    line_meta: dict[str, Any] = {}
+    used_method = grid_method
+
+    manual_x = parse_number_list(manual_x_lines)
+    manual_y = parse_number_list(manual_y_lines)
+    if len(manual_x) == 7 and len(manual_y) == 7:
+        x_lines, y_lines = manual_x, manual_y
+        used_method = "manual-lines"
+        line_meta = {"selected_x_lines": x_lines, "selected_y_lines": y_lines, "manual": True}
+    elif grid_method == "lines":
+        try:
+            x_lines, y_lines, line_meta = detect_grid_lines_from_image(
+                img, rough_box, cluster_tolerance=line_cluster_tolerance, min_length_frac=line_min_length_frac
+            )
+            if not (len(x_lines) == 7 and len(y_lines) == 7):
+                print("Line grid detection did not find a clean 7x7 grid; falling back to percent grid.")
+                used_method = "percent-fallback"
+        except Exception as exc:
+            print(f"Line grid detection failed: {exc}. Falling back to percent grid.")
+            used_method = "percent-fallback"
+
+    if not (len(x_lines) == 7 and len(y_lines) == 7):
+        x_lines = [int(gl + (gr - gl) * i / 6.0) for i in range(7)]
+        y_lines = [int(gt + (gb - gt) * i / 6.0) for i in range(7)]
+        line_meta.update({"selected_x_lines": x_lines, "selected_y_lines": y_lines})
+
+    grid_debug_path = None
+    if save_grid_debug:
+        grid_debug_path = RUNS_DIR / "by_township_range" / tr_slug / f"p{page_no:03}_{preprocess}_grid_{used_method}.jpg"
+        draw_grid_debug(img, x_lines, y_lines, rough_box, grid_debug_path)
+        print(f"Wrote grid debug overlay: {grid_debug_path.relative_to(PROJECT_ROOT)}")
+
+    grid_meta_base = {
+        "left": min(x_lines), "top": min(y_lines), "right": max(x_lines), "bottom": max(y_lines),
+        "grid_pct": grid_pct,
+        "grid_method": used_method,
+        "x_lines": x_lines,
+        "y_lines": y_lines,
+        "line_meta": line_meta,
+        "grid_debug_path": str(grid_debug_path.relative_to(PROJECT_ROOT)) if grid_debug_path else "",
+    }
 
     for section in sections:
         row, col = section_to_row_col(section)
-        left = int(gl + col * cell_w) - padding
-        top = int(gt + row * cell_h) - padding
-        right = int(gl + (col + 1) * cell_w) + padding
-        bottom = int(gt + (row + 1) * cell_h) + padding
+        left = int(x_lines[col]) - padding
+        top = int(y_lines[row]) - padding
+        right = int(x_lines[col + 1]) + padding
+        bottom = int(y_lines[row + 1]) + padding
         left, top = max(0, left), max(0, top)
         right, bottom = min(w, right), min(h, bottom)
         tile_id = f"p{page_no:03}_{preprocess}_s{section:02}"
@@ -325,9 +511,9 @@ def make_section_crops(
             path=crop_path,
             preprocess=preprocess,
             section=str(section),
-            section_source="plss-grid-crop",
+            section_source=f"plss-grid-crop:{used_method}",
             section_image_path=str(crop_path.relative_to(PROJECT_ROOT)),
-            section_grid={**grid_meta, "row": row, "col": col, "section": section, "padding": padding, "output_layout": output_layout, "storage_key": f"{tr_slug}/section_{section:02}"},
+            section_grid={**grid_meta_base, "row": row, "col": col, "section": section, "padding": padding, "output_layout": output_layout, "storage_key": f"{tr_slug}/section_{section:02}"},
         ))
     return crops
 
@@ -612,6 +798,12 @@ def main() -> None:
     parser.add_argument("--grid-pct", default="7,12,93,88", help="Section grid left,top,right,bottom as percent/fraction/pixels. Default: 7,12,93,88")
     parser.add_argument("--section-padding", type=int, default=180, help="Extra pixels around each section crop after scaling. Higher values prevent clipped section edges. Default: 180")
     parser.add_argument("--output-layout", choices=["trs", "legacy"], default="trs", help="Where to save section crops. trs groups by township/range/section; legacy uses page_###_sections. Default: trs")
+    parser.add_argument("--grid-method", choices=["percent", "lines"], default="percent", help="Section crop method. percent uses a 6x6 percent box; lines detects actual map section lines with OpenCV. Default: percent")
+    parser.add_argument("--manual-grid-lines-x", default="", help="Optional 7 comma-separated x pixel coordinates for section grid lines after scaling, overriding detection.")
+    parser.add_argument("--manual-grid-lines-y", default="", help="Optional 7 comma-separated y pixel coordinates for section grid lines after scaling, overriding detection.")
+    parser.add_argument("--line-cluster-tolerance", type=int, default=40, help="Line-detection clustering tolerance in scaled pixels. Default: 40")
+    parser.add_argument("--line-min-length-frac", type=float, default=0.50, help="Line detection minimum length as fraction of rough grid width/height. Default: 0.50")
+    parser.add_argument("--save-grid-debug", action="store_true", help="Save an overlay image showing the detected/manual grid lines.")
     parser.add_argument("--tile-size", type=int, default=1200, help="Tile size in pixels after scaling. Default: 1200")
     parser.add_argument("--overlap", type=int, default=220, help="Overlap between tiles in pixels. Default: 220")
     parser.add_argument("--psm", default="11", help="Tesseract PSM mode(s), e.g. 11 or 11,6. Default: 11")
@@ -651,7 +843,16 @@ def main() -> None:
         img = preprocess_image(base, mode)
         if args.mode == "sections":
             sections = parse_sections(args.sections or "all")
-            units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding, page.get("township_range", ""), args.output_layout)
+            units = make_section_crops(
+                img, args.page, sections, mode, args.grid_pct, args.section_padding,
+                page.get("township_range", ""), args.output_layout,
+                grid_method=args.grid_method,
+                manual_x_lines=args.manual_grid_lines_x,
+                manual_y_lines=args.manual_grid_lines_y,
+                line_cluster_tolerance=args.line_cluster_tolerance,
+                line_min_length_frac=args.line_min_length_frac,
+                save_grid_debug=args.save_grid_debug,
+            )
             manifest_rows.extend(manifest_from_section_tiles(units, page, run_id))
             label = "section crops"
         else:

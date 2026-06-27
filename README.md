@@ -114,3 +114,32 @@ data/ocr_runs/by_township_range/T24N_R14E/section_24/
 ```
 
 The public website should store searchable JSON/index data and source links. Do not commit thousands of large crop images unless intentionally creating a limited thumbnail set.
+
+
+## v0.20 line-detected section crops
+
+If percent-grid crops are shifted or missing part of a section, use line detection so the agent finds the actual black section boundary lines before cropping. Install the updated local dependencies first:
+
+```cmd
+python -m pip install -r tools\requirements.txt
+```
+
+Generate all 36 section crops using detected lines and a debug overlay:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --grid-method lines --section-padding 120 --save-grid-debug
+```
+
+Check the grid overlay in:
+
+```text
+data\ocr_runs\by_township_range\T24N_R14E\p029_soft_grid_lines.jpg
+```
+
+If the detected grid is wrong, use the overlay coordinates to manually set 7 vertical and 7 horizontal section lines:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --crops-only --output-layout trs --section-padding 120 --manual-grid-lines-x "100,500,900,1300,1700,2100,2500" --manual-grid-lines-y "120,520,920,1320,1720,2120,2520" --save-grid-debug
+```
+
+Only upload verified JSON/search data to GitHub by default. Keep generated working crop images local unless they are small, final, and necessary.

@@ -177,3 +177,16 @@ Section crop manifest rows may include:
 ```
 
 The final public record rows should still be exported into `data/allotment_records.json` or a future chunked record index.
+
+
+## v0.20 section crop metadata
+
+Section crop manifest records may include the following crop-calibration fields inside `section_grid`:
+
+- `grid_method`: `percent`, `percent-fallback`, `lines`, or `manual-lines`.
+- `x_lines`: seven x coordinates for the detected/manual section grid lines after scaling.
+- `y_lines`: seven y coordinates for the detected/manual section grid lines after scaling.
+- `grid_debug_path`: local path to the overlay image showing the grid lines used.
+- `line_meta`: diagnostic line-detection metadata.
+
+These fields document how a section crop was produced. They are not proof of allotment ownership; they support human transcription and review.
