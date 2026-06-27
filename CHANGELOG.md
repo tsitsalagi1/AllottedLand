@@ -163,3 +163,12 @@ python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 
 ```
 
 The agent also now checks common Windows install locations automatically.
+
+## v0.24 — Beginner data-entry guide and safer map-number fields
+
+- Added a “How to read the LOC map labels” guide inside the Full Map Workbench.
+- Changed the entry form to First name, Middle name / initial, Last name, and Full name preview.
+- Replaced the forced “Allotment #” entry with “Number shown on map” plus a “Number type” selector.
+- Preserves the exact map number as `map_number` / `number_shown_on_map` so reviewers do not accidentally mislabel a number as a roll, enrollment, census-card, or allotment number.
+- Only populates `allotment_number`, `roll_number`, `enrollment_number`, or `census_card_number` when the reviewer intentionally selects that number type.
+- Updated duplicate checking to use the safest available number field.

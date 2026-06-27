@@ -252,3 +252,24 @@ Human-reviewed rows may now include separate name fields:
 `verified_name` remains the display/search name. `first_name`, `middle_name`, and `last_name` support cleaner human entry and duplicate checks.
 
 `review_trace.grid` may store the human-calibrated grid used by `tools/map_workbench.html`; it should be treated as review metadata, not as an official source record.
+
+## v0.24 map-number fields
+
+New human-review fields:
+
+- `first_name` — first name as read from the map.
+- `middle_name` — middle name or initial only if shown/readable.
+- `last_name` — surname as read from the map.
+- `map_number` / `number_shown_on_map` — the number exactly as shown beside the name on the map.
+- `number_type` — reviewer interpretation of the map number. Default should be `unknown_map_number`.
+
+Allowed `number_type` values:
+
+- `unknown_map_number`
+- `allotment_number`
+- `roll_number`
+- `enrollment_number`
+- `census_card_number`
+- `other`
+
+Do not populate roll, enrollment, or census-card fields unless separately verified or intentionally classified by the reviewer.

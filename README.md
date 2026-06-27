@@ -198,3 +198,9 @@ Recommended workflow:
 8. Export approved rows JSON and merge reviewed rows into `data/allotment_records.json`.
 
 The tool runs locally in the browser and does not upload records or images.
+
+### v0.24 data-entry rule
+
+The LOC map may show names, status marks, and numbers beside names. The workbench now records those numbers first as `map_number` / `number_shown_on_map`. A reviewer should only classify that number as an allotment number, roll number, enrollment number, or census card number when that interpretation is clear or verified from another source.
+
+For a name with no visible middle name or middle initial, leave the middle-name field blank. Use the notes field for uncertainty.
