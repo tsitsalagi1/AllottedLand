@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand OCR Candidate Review</title>
+  <title>AllottedLand OCR Candidate Review v0.13</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f7f4ed; color: #1d1b18; }
     header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
@@ -43,7 +43,7 @@
 </head>
 <body>
 <header><div>
-  <h1>AllottedLand OCR Candidate Review</h1>
+  <h1>AllottedLand OCR Candidate Review v0.13</h1>
   <p>Local helper for reviewing machine-extracted candidate rows before any record becomes public/searchable.</p>
 </div></header>
 <main>
@@ -75,7 +75,11 @@
 
   <section class="panel">
     <h2>Tile preview</h2>
-    <p id="tileHelp" class="muted">Select a candidate row to view the tile or section crop image that produced the OCR line. If the image does not show, confirm the candidate JSON has a <code>tile_path</code> and that the tile image exists under <code>data/ocr_runs/</code>.</p>
+    <p id="tileHelp" class="muted">Select a candidate row to view the tile or section crop image that produced the OCR line. If the image does not show, confirm the candidate JSON has a <code>tile_path</code> or <code>section_image_path</code> and that the tile image exists under <code>data/ocr_runs/</code>.</p>
+    <div class="toolbar" style="margin-bottom:12px">
+      <a id="openTileLink" href="#" target="_blank" rel="noopener" style="display:none">Open tile image directly</a>
+      <label style="margin-left:8px">Manual tile/image load <input type="file" id="manualTileFile" accept="image/*" /></label>
+    </div>
     <div class="review-layout">
       <div class="tile-wrap"><div class="tile-stage" id="tileStage"><p class="muted" style="padding:18px">No candidate selected.</p></div></div>
       <div>
@@ -174,9 +178,13 @@ function selectRow(r){
   selected = {...r};
   const stage = $('tileStage');
   stage.innerHTML = '';
-  const imgSrc = pathForImg(r.tile_path || r.section_image_path);
+  const rawImgPath = r.section_image_path || r.tile_path || '';
+  const imgSrc = pathForImg(rawImgPath);
+  const openLink = $('openTileLink');
+  if (imgSrc) { openLink.href = imgSrc; openLink.style.display = 'inline-block'; openLink.textContent = 'Open tile image directly: ' + rawImgPath; }
+  else { openLink.href = '#'; openLink.style.display = 'none'; }
   if (!imgSrc) {
-    stage.innerHTML = '<p class="muted" style="padding:18px">No tile path in this candidate row.</p>';
+    stage.innerHTML = '<p class="muted" style="padding:18px">No tile path in this candidate row. Use the manual tile/image load control above if you know the image file.</p>';
   } else {
     const wrap = document.createElement('div');
     wrap.style.position = 'relative';
@@ -185,10 +193,11 @@ function selectRow(r){
     img.src = imgSrc;
     img.alt = `OCR tile ${r.tile_id || ''}`;
     img.addEventListener('load', () => drawBbox(wrap, img, r));
-    img.addEventListener('error', () => { stage.innerHTML = `<p class="muted" style="padding:18px">Tile image did not load: ${escapeHtml(imgSrc)}<br>Check that the tile/section crop exists locally under data/ocr_runs/.</p>`; });
+    img.addEventListener('error', () => { stage.innerHTML = `<p class="muted" style="padding:18px">Tile image did not load automatically:<br><code>${escapeHtml(imgSrc)}</code><br><br>Try clicking <strong>Open tile image directly</strong>, or use <strong>Manual tile/image load</strong> and choose the section crop from <code>data/ocr_runs/</code>.</p>`; });
     wrap.appendChild(img);
     stage.appendChild(wrap);
   }
+  $('tileHelp').scrollIntoView({behavior:'smooth', block:'start'});
   $('selectedText').textContent = JSON.stringify({
     candidate_id: r.candidate_id,
     raw_ocr_line: r.raw_ocr_line,
@@ -289,6 +298,26 @@ $('markPossibleName').addEventListener('click', () => { if (!selected) return al
 $('markPossibleNumber').addEventListener('click', () => { if (!selected) return alert('Select a candidate first.'); $('allotment_number').value = selected.allotment_number || ''; updateJson(); });
 $('rejectRow').addEventListener('click', () => { if (!selected) return alert('Select a candidate first.'); rejected.add(selected.candidate_id); selected = null; render(); });
 ['verified_name','given_name','surname','allotment_number','section','status_restriction_notation','confidence','needs_human_review','notes'].forEach(id => $(id).addEventListener('input', updateJson));
+
+$('manualTileFile').addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const stage = $('tileStage');
+  stage.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.style.position = 'relative';
+  wrap.style.display = 'inline-block';
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(file);
+  img.alt = 'Manually loaded tile image';
+  img.addEventListener('load', () => {
+    if (selected) drawBbox(wrap, img, selected);
+  });
+  wrap.appendChild(img);
+  stage.appendChild(wrap);
+  $('selectedText').textContent = (selected ? $('selectedText').textContent + '\n\n' : '') + 'Manual image loaded: ' + file.name;
+});
+
 $('copyJson').addEventListener('click', async () => {
   const obj = approvedObject();
   if (!obj) return alert('Select a candidate first.');

@@ -156,3 +156,7 @@ When the local OCR agent is run with `--mode sections`, candidate rows may also 
 - `legal_description` — may be prefilled as `Section X, T##N R##E` for review convenience.
 
 These fields are review aids only. A section-first candidate is not a verified allotment record until a human checks the crop and original map source.
+
+
+## v0.13 Review Tool Note
+The local review tool can display section/tile images by relative path, direct file link, or manual File input. This avoids browser file:// path problems during local review.
