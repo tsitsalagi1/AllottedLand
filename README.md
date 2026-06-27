@@ -88,7 +88,7 @@ Added `tools/section_entry.html`, a local browser tool for manually entering ver
 The section-entry workflow is now the primary production workflow: human reviewers read one PLSS section crop at a time and export verified JSON rows. OCR remains optional and should not be treated as proof.
 
 
-## v0.18 section workflow
+## v0.19 section workflow
 
 Generate all 36 human-review section crops from one map page without OCR:
 
@@ -97,3 +97,20 @@ python tools\map_indexing_agent.py --page 29 --mode sections --sections all --pr
 ```
 
 Then open `tools/section_entry.html`, load `data/ocr_runs/page_029_sections_manifest.json`, pick township/range/section, enter rows by human reading, prevent duplicates by loading `data/allotment_records.json`, and export approved rows plus section status JSON.
+
+
+### v0.19 section-crop workflow
+
+For human transcription, generate organized section crops from one township/range map:
+
+```cmd
+python tools\map_indexing_agent.py --page 29 --mode sections --sections all --preprocess soft --section-padding 240 --crops-only --output-layout trs
+```
+
+This writes a manifest and saves local review crops under:
+
+```text
+data/ocr_runs/by_township_range/T24N_R14E/section_24/
+```
+
+The public website should store searchable JSON/index data and source links. Do not commit thousands of large crop images unless intentionally creating a limited thumbnail set.

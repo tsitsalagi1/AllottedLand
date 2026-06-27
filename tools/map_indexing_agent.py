@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-AllottedLand.com Map Indexing Agent v0.18
+AllottedLand.com Map Indexing Agent v0.19
 
 Purpose:
   Turn a Library of Congress allotment map image into *candidate* OCR rows for
   human review. This script does NOT create verified public records by itself.
+
+What changed in v0.19:
+  - Adds township/range/section organized output folders.
+  - Raises the default section padding for more complete human-review section crops.
+  - Adds --output-layout trs so crops are grouped by township_range/section_##.
+  - Adds manifest fields for storage keys and duplicate-safe T/R/S review workflow.
 
 What changed in v0.18:
   - Adds section-crop-only mode so one township/range map can generate all 36 section images without OCR.
@@ -259,17 +265,28 @@ def make_tiles(img: Image.Image, page_no: int, tile_size: int, overlap: int, pre
     return tiles
 
 
+def slug(value: str) -> str:
+    value = str(value or "").strip().replace("/", "_").replace("\\", "_")
+    value = re.sub(r"[^A-Za-z0-9._-]+", "_", value)
+    return value.strip("_") or "unknown"
+
+
 def make_section_crops(
     img: Image.Image,
     page_no: int,
     sections: list[int],
     preprocess: str,
     grid_pct: str,
-    padding: int = 30,
+    padding: int = 180,
+    township_range: str = "",
+    output_layout: str = "trs",
 ) -> list[Tile]:
     crops: list[Tile] = []
-    section_dir = RUNS_DIR / f"page_{page_no:03}_sections" / preprocess
-    section_dir.mkdir(parents=True, exist_ok=True)
+    tr_slug = slug(township_range)
+    legacy_dir = RUNS_DIR / f"page_{page_no:03}_sections" / preprocess
+    trs_root = RUNS_DIR / "by_township_range" / tr_slug
+    legacy_dir.mkdir(parents=True, exist_ok=True)
+    trs_root.mkdir(parents=True, exist_ok=True)
     w, h = img.size
     gl, gt, gr, gb = parse_grid_pct(grid_pct, w, h)
     gl, gt = max(0, gl), max(0, gt)
@@ -287,8 +304,18 @@ def make_section_crops(
         left, top = max(0, left), max(0, top)
         right, bottom = min(w, right), min(h, bottom)
         tile_id = f"p{page_no:03}_{preprocess}_s{section:02}"
-        crop_path = section_dir / f"{tile_id}.jpg"
+        if output_layout == "trs":
+            section_dir = trs_root / f"section_{section:02}"
+            section_dir.mkdir(parents=True, exist_ok=True)
+            crop_path = section_dir / f"{tile_id}_review.jpg"
+        else:
+            crop_path = legacy_dir / f"{tile_id}.jpg"
         img.crop((left, top, right, bottom)).save(crop_path, quality=94)
+        # Also keep a legacy-compatible copy when using the new organized layout.
+        if output_layout == "trs":
+            legacy_copy = legacy_dir / f"{tile_id}.jpg"
+            if not legacy_copy.exists():
+                img.crop((left, top, right, bottom)).save(legacy_copy, quality=94)
         crops.append(Tile(
             tile_id=tile_id,
             left=left,
@@ -300,7 +327,7 @@ def make_section_crops(
             section=str(section),
             section_source="plss-grid-crop",
             section_image_path=str(crop_path.relative_to(PROJECT_ROOT)),
-            section_grid={**grid_meta, "row": row, "col": col, "section": section},
+            section_grid={**grid_meta, "row": row, "col": col, "section": section, "padding": padding, "output_layout": output_layout, "storage_key": f"{tr_slug}/section_{section:02}"},
         ))
     return crops
 
@@ -537,6 +564,8 @@ def manifest_from_section_tiles(tiles: list[Tile], page: dict[str, Any], run_id:
             "section": section,
             "section_image_path": tile.section_image_path or str(tile.path.relative_to(PROJECT_ROOT)),
             "tile_id": tile.tile_id,
+            "storage_key": f"{slug(page.get('township_range', ''))}/section_{section.zfill(2)}",
+            "duplicate_scope": f"{page.get('loc_page', '')}|{page.get('township_range', '')}|section:{section}",
             "preprocess": tile.preprocess,
             "section_grid": tile.section_grid or {},
             "source_link": page.get("loc_image_view") or LOC_VIEW_TEMPLATE.format(page=page.get("loc_page", "")),
@@ -581,7 +610,8 @@ def main() -> None:
     parser.add_argument("--mode", choices=["tiles", "sections"], default="tiles", help="OCR random tiles or PLSS section crops. Default: tiles")
     parser.add_argument("--sections", default="", help="Section-first mode: e.g. 24, 24,25, 19-24, or all")
     parser.add_argument("--grid-pct", default="7,12,93,88", help="Section grid left,top,right,bottom as percent/fraction/pixels. Default: 7,12,93,88")
-    parser.add_argument("--section-padding", type=int, default=30, help="Extra pixels around each section crop after scaling. Default: 30")
+    parser.add_argument("--section-padding", type=int, default=180, help="Extra pixels around each section crop after scaling. Higher values prevent clipped section edges. Default: 180")
+    parser.add_argument("--output-layout", choices=["trs", "legacy"], default="trs", help="Where to save section crops. trs groups by township/range/section; legacy uses page_###_sections. Default: trs")
     parser.add_argument("--tile-size", type=int, default=1200, help="Tile size in pixels after scaling. Default: 1200")
     parser.add_argument("--overlap", type=int, default=220, help="Overlap between tiles in pixels. Default: 220")
     parser.add_argument("--psm", default="11", help="Tesseract PSM mode(s), e.g. 11 or 11,6. Default: 11")
@@ -621,7 +651,7 @@ def main() -> None:
         img = preprocess_image(base, mode)
         if args.mode == "sections":
             sections = parse_sections(args.sections or "all")
-            units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding)
+            units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding, page.get("township_range", ""), args.output_layout)
             manifest_rows.extend(manifest_from_section_tiles(units, page, run_id))
             label = "section crops"
         else:

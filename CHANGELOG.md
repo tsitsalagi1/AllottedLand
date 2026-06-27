@@ -1,3 +1,11 @@
+
+## v0.19 — T/R/S organized section crops and safer hosting plan
+
+- Adds township/range/section organized section-crop output folders.
+- Raises the default section padding to reduce clipped section edges.
+- Adds `--output-layout trs` so local crops are grouped like `data/ocr_runs/by_township_range/T24N_R14E/section_24/`.
+- Adds storage keys and duplicate-scope metadata to the section manifest.
+- Keeps public hosting focused on JSON/index data, not large crop-image collections.
 ## v0.18 - Section tracker and duplicate-safe human entry
 
 - Added section-crop-only workflow for generating all 36 section images from one LOC map page.

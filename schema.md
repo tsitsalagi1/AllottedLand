@@ -158,3 +158,22 @@ Rows exported from tools/section_entry.html should represent human-read records 
 ## data/section_status.json
 
 Optional local/public progress-tracking rows for page/section review. Each row may include `loc_page`, `township_range`, `township`, `range`, `section`, `review_status`, `row_count`, `completed`, `reviewer`, `updated_at`, `section_image_path`, and `notes`. This file tracks transcription progress; it is not a title or ownership record.
+
+
+## v0.19 section crop manifest additions
+
+Section crop manifest rows may include:
+
+```json
+{
+  "loc_page": 29,
+  "township_range": "T24N R14E",
+  "section": "24",
+  "section_image_path": "data/ocr_runs/by_township_range/T24N_R14E/section_24/p029_soft_s24_review.jpg",
+  "storage_key": "T24N_R14E/section_24",
+  "duplicate_scope": "29|T24N R14E|section:24",
+  "review_status": "not-started"
+}
+```
+
+The final public record rows should still be exported into `data/allotment_records.json` or a future chunked record index.
