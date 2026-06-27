@@ -1,16 +1,9 @@
 # Changelog
 
-## v0.26 — Online submission backend starter
+## v0.27 — Admin Review Panel
 
-- Added Cloudflare Pages Functions for submitting workbench records.
-- Added Cloudflare D1 schema for approved records, pending records, section status, grid calibrations, and submission logs.
-- Added submit-first workbench behavior.
-- Added trusted reviewer key flow for direct approved-record submission.
-- Added pending-review flow for public submissions without a reviewer key.
-- Added setup documentation for D1 and Pages Functions.
-
-## v0.25 — Workflow cleanup
-
-- Marked OCR/crop workflow as deprecated.
-- Made `tools/map_workbench.html` the primary production tool.
-- Added cleanup documentation.
+- Added `admin.html` for pending-record inspection and moderation.
+- Added `/api/admin-reject` to reject/delete pending records.
+- Added `/api/admin-update-pending` to save obvious corrections before approval.
+- Kept `/api/admin-approve` for moving pending records into approved records.
+- Added admin review workflow documentation.

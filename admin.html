@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AllottedLand Admin Review v0.27</title>
+  <style>
+    :root {
+      --green:#173f35; --green2:#235b4e; --cream:#f6f1e9; --paper:#fffdf8;
+      --line:#d8cbb8; --ink:#102033; --muted:#667085; --danger:#9f2f23;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+    header{background:var(--green);color:white;padding:28px 20px} header .wrap{max-width:1180px;margin:auto} h1{margin:0;font-size:clamp(26px,4vw,44px)}
+    h2{margin:0 0 12px}.sub{opacity:.9;margin:.4rem 0 0}.wrap{max-width:1180px;margin:0 auto;padding:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 10px rgba(17,24,39,.05)}
+    label{display:block;font-weight:700;margin:10px 0 5px} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:white} textarea{min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}.grid{display:grid;gap:12px}.grid.cols{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:900px){.grid.cols{grid-template-columns:1fr 1fr}}@media(max-width:650px){.grid.cols{grid-template-columns:1fr}}
+    button{border:0;border-radius:999px;background:var(--green);color:white;font-weight:800;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0}button.secondary{background:#eee5d7;color:var(--ink)}button.danger{background:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}.row-actions{white-space:nowrap}.status{padding:10px;border-radius:10px;background:#e7f5ef;color:#123d32;margin-top:10px}.status.error{background:#fde8e4;color:#7a1d13}.muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}th{background:#efe6d8}.pill{display:inline-block;border-radius:999px;background:#efe6d8;padding:4px 8px;font-size:12px;font-weight:700}.split{display:grid;grid-template-columns:1.25fr .95fr;gap:16px}@media(max-width:1000px){.split{grid-template-columns:1fr}}
+    .record-list{max-height:620px;overflow:auto}.details pre{white-space:pre-wrap;background:#111827;color:#f9fafb;border-radius:10px;padding:12px;max-height:280px;overflow:auto}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.checkbox-cell{width:36px}.selected{outline:3px solid #c9a45a}.small{font-size:12px}.topnav a{color:white;margin-right:12px}.warning{background:#fff4d6;border:1px solid #ead192;padding:10px;border-radius:10px;margin-top:10px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="topnav"><a href="/">AllottedLand.com</a><a href="/workbench.html">Workbench</a></div>
+    <h1>Admin Review v0.27</h1>
+    <p class="sub">Inspect pending human-submitted records, edit obvious corrections, approve verified rows, or reject bad duplicates.</p>
+  </div>
+</header>
+<main class="wrap">
+  <section class="card">
+    <h2>1. Admin access</h2>
+    <p class="muted">This page talks to Cloudflare Pages Functions. Your admin key is sent only as an <code>X-Admin-Key</code> request header and is not placed in the URL.</p>
+    <div class="grid cols">
+      <div style="grid-column:span 2">
+        <label for="adminKey">Admin key</label>
+        <input id="adminKey" type="password" placeholder="ADMIN_KEY from Cloudflare Pages variables" autocomplete="off" />
+      </div>
+      <div>
+        <label for="trFilter">Township/Range filter</label>
+        <input id="trFilter" placeholder="Example: T24N R14E" />
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button id="loadBtn">Load pending records</button>
+      </div>
+    </div>
+    <label><input id="rememberKey" type="checkbox" style="width:auto"> Remember key in this browser</label>
+    <div id="status" class="status" hidden></div>
+  </section>
+
+  <section class="split">
+    <div class="card">
+      <h2>2. Pending records</h2>
+      <p class="muted"><span id="count">0</span> pending rows loaded. Select rows, inspect details, then approve or reject.</p>
+      <button id="approveSelectedBtn" disabled>Approve selected</button>
+      <button id="rejectSelectedBtn" class="danger" disabled>Reject selected</button>
+      <button id="clearSelectionBtn" class="secondary">Clear selection</button>
+      <div class="record-list">
+        <table>
+          <thead><tr><th class="checkbox-cell"></th><th>Name</th><th>Map #</th><th>TR/Sec</th><th>Submitted</th><th>Actions</th></tr></thead>
+          <tbody id="pendingBody"><tr><td colspan="6" class="muted">No pending records loaded yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card details">
+      <h2>3. Inspect / edit selected record</h2>
+      <p class="muted">Use this for spelling cleanup before approval. Do not guess. If a record is uncertain, leave it pending or reject it.</p>
+      <div id="detailEmpty" class="warning">Select a pending row to inspect it.</div>
+      <div id="detailPanel" hidden>
+        <div class="fieldrow">
+          <div><label>First name</label><input id="editFirst"></div>
+          <div><label>Middle name / initial</label><input id="editMiddle"></div>
+        </div>
+        <div class="fieldrow">
+          <div><label>Last name</label><input id="editLast"></div>
+          <div><label>Verified / full name</label><input id="editVerified"></div>
+        </div>
+        <div class="fieldrow">
+          <div><label>Number shown on map</label><input id="editMapNumber"></div>
+          <div><label>Number type</label><select id="editNumberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option></select></div>
+        </div>
+        <div class="fieldrow">
+          <div><label>Township/Range</label><input id="editTR"></div>
+          <div><label>Section</label><input id="editSection"></div>
+        </div>
+        <div class="fieldrow">
+          <div><label>Status / restriction note</label><input id="editStatusNote"></div>
+          <div><label>Confidence</label><select id="editConfidence"><option value="human-reviewed">human-reviewed</option><option value="needs-review">needs-review</option><option value="uncertain">uncertain</option></select></div>
+        </div>
+        <label>Notes</label><textarea id="editNotes" style="min-height:90px"></textarea>
+        <button id="saveEditBtn">Save edits to pending row</button>
+        <button id="approveOneBtn">Approve this record</button>
+        <button id="rejectOneBtn" class="danger">Reject this record</button>
+        <h3>Raw record JSON</h3>
+        <pre id="rawJson"></pre>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let pending = [];
+let selected = new Set();
+let activeId = null;
+
+function showStatus(msg, isError=false){ const el=$('status'); el.hidden=false; el.textContent=msg; el.className='status'+(isError?' error':''); }
+function key(){ return $('adminKey').value.trim(); }
+function headers(extra={}){ return { 'content-type':'application/json', 'X-Admin-Key': key(), ...extra }; }
+function safeParse(s){ try{return JSON.parse(s||'{}')}catch{return {}} }
+function recOf(row){ return safeParse(row.record_json); }
+function labelRow(row){ const r=recOf(row); return {name: row.verified_name || r.verified_name || '', num: row.number_shown_on_map || r.number_shown_on_map || r.map_number || '', tr: row.township_range || r.township_range || '', section: row.section || r.section || '', created: row.created_at || ''}; }
+function escapeHtml(str=''){ return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+async function api(path, opts={}){
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(()=>({error:'Non-JSON response'}));
+  if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+async function loadPending(){
+  if(!key()) return showStatus('Enter ADMIN_KEY first.', true);
+  if($('rememberKey').checked) localStorage.setItem('allottedland_admin_key', key());
+  const tr=$('trFilter').value.trim();
+  const url='/api/pending-records'+(tr?'?township_range='+encodeURIComponent(tr):'');
+  try{
+    showStatus('Loading pending records...');
+    const data=await api(url,{headers:headers({})});
+    pending=data.pending || [];
+    selected.clear(); activeId=null; render();
+    showStatus(`Loaded ${pending.length} pending record(s).`);
+  }catch(err){ showStatus(err.message, true); }
+}
+function render(){
+  $('count').textContent=pending.length;
+  const body=$('pendingBody');
+  if(!pending.length){ body.innerHTML='<tr><td colspan="6" class="muted">No pending records found.</td></tr>'; }
+  else body.innerHTML=pending.map(row=>{
+    const l=labelRow(row); const checked=selected.has(row.id)?'checked':''; const active=row.id===activeId?' class="selected"':'';
+    return `<tr${active}><td><input type="checkbox" data-check="${escapeHtml(row.id)}" ${checked}></td><td><strong>${escapeHtml(l.name)}</strong><br><span class="small muted">${escapeHtml(row.id)}</span></td><td>${escapeHtml(l.num)}<br><span class="pill">${escapeHtml(recOf(row).number_type || row.number_type || '')}</span></td><td>${escapeHtml(l.tr)}<br>Sec. ${escapeHtml(l.section)}</td><td class="small">${escapeHtml(l.created)}</td><td class="row-actions"><button data-view="${escapeHtml(row.id)}">Inspect</button></td></tr>`
+  }).join('');
+  $('approveSelectedBtn').disabled = selected.size===0;
+  $('rejectSelectedBtn').disabled = selected.size===0;
+  bindTableEvents();
+}
+function bindTableEvents(){
+  document.querySelectorAll('[data-check]').forEach(cb=>cb.addEventListener('change',e=>{ const id=e.target.dataset.check; e.target.checked?selected.add(id):selected.delete(id); render(); }));
+  document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>selectRecord(btn.dataset.view)));
+}
+function selectRecord(id){
+  activeId=id; const row=pending.find(r=>r.id===id); if(!row)return;
+  const r=recOf(row);
+  $('detailEmpty').hidden=true; $('detailPanel').hidden=false;
+  $('editFirst').value=r.first_name || row.first_name || '';
+  $('editMiddle').value=r.middle_name || row.middle_name || '';
+  $('editLast').value=r.last_name || row.last_name || '';
+  $('editVerified').value=r.verified_name || row.verified_name || '';
+  $('editMapNumber').value=r.number_shown_on_map || r.map_number || row.number_shown_on_map || '';
+  $('editNumberType').value=r.number_type || row.number_type || 'unknown_map_number';
+  $('editTR').value=r.township_range || row.township_range || '';
+  $('editSection').value=r.section || row.section || '';
+  $('editStatusNote').value=r.status_restriction_notation || row.status_restriction_notation || '';
+  $('editConfidence').value=r.confidence || row.confidence || 'human-reviewed';
+  $('editNotes').value=r.notes || row.notes || '';
+  $('rawJson').textContent=JSON.stringify(r,null,2);
+  render();
+}
+function editedRecord(){
+  const row=pending.find(r=>r.id===activeId); const r=recOf(row||{});
+  const first=$('editFirst').value.trim(); const middle=$('editMiddle').value.trim(); const last=$('editLast').value.trim();
+  const verified=$('editVerified').value.trim() || [first,middle,last].filter(Boolean).join(' ');
+  const number=$('editMapNumber').value.trim(); const numberType=$('editNumberType').value;
+  return {...r, first_name:first, given_name:first, middle_name:middle, last_name:last, surname:last, verified_name:verified, map_number:number, number_shown_on_map:number, number_type:numberType, township_range:$('editTR').value.trim(), section:$('editSection').value.trim(), status_restriction_notation:$('editStatusNote').value.trim(), confidence:$('editConfidence').value, notes:$('editNotes').value.trim()};
+}
+async function saveEdit(){
+  if(!activeId) return;
+  try{
+    const record=editedRecord();
+    await api('/api/admin-update-pending',{method:'POST',headers:headers(),body:JSON.stringify({id:activeId,record})});
+    showStatus('Saved edits to pending record.');
+    await loadPending(); selectRecord(activeId);
+  }catch(err){ showStatus(err.message,true); }
+}
+async function approveIds(ids){
+  if(!ids.length)return;
+  try{ const data=await api('/api/admin-approve',{method:'POST',headers:headers(),body:JSON.stringify({ids})}); showStatus(`Approved ${data.approved || 0} record(s).`); await loadPending(); }
+  catch(err){ showStatus(err.message,true); }
+}
+async function rejectIds(ids){
+  if(!ids.length)return;
+  if(!confirm(`Reject/delete ${ids.length} pending record(s)?`)) return;
+  try{ const data=await api('/api/admin-reject',{method:'POST',headers:headers(),body:JSON.stringify({ids})}); showStatus(`Rejected ${data.rejected || 0} record(s).`); await loadPending(); }
+  catch(err){ showStatus(err.message,true); }
+}
+
+$('loadBtn').addEventListener('click',loadPending);
+$('approveSelectedBtn').addEventListener('click',()=>approveIds([...selected]));
+$('rejectSelectedBtn').addEventListener('click',()=>rejectIds([...selected]));
+$('clearSelectionBtn').addEventListener('click',()=>{selected.clear();render();});
+$('saveEditBtn').addEventListener('click',saveEdit);
+$('approveOneBtn').addEventListener('click',()=>approveIds([activeId]));
+$('rejectOneBtn').addEventListener('click',()=>rejectIds([activeId]));
+['editFirst','editMiddle','editLast'].forEach(id=>$(id).addEventListener('input',()=>{ if(!$('editVerified').value.trim()){ $('editVerified').value=[$('editFirst').value.trim(),$('editMiddle').value.trim(),$('editLast').value.trim()].filter(Boolean).join(' '); }}));
+const saved=localStorage.getItem('allottedland_admin_key'); if(saved){$('adminKey').value=saved;$('rememberKey').checked=true;}
+</script>
+</body>
+</html>

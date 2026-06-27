@@ -1,57 +1,39 @@
-# AllottedLand.com
+# AllottedLand.com v0.27
 
-AllottedLand.com is a free public research tool helping Native families find allotted land records, maps, and land history.
+AllottedLand.com is a free public research tool for helping Native families find allotted land records by name, map number, township/range, section, and source-linked records.
 
 ## Current production workflow
 
-The current primary tool is:
+1. Human reviewer opens `workbench.html`.
+2. Reviewer selects one full LOC map image locally in the browser.
+3. Reviewer calibrates the township/range grid and selects a section.
+4. Reviewer enters human-reviewed records.
+5. Reviewer submits rows to the website.
+6. Rows submitted with a trusted reviewer key go to approved records; rows without the key go to pending review.
+7. Admin reviews pending rows at `admin.html`.
 
-```text
-workbench.html
-```
+## Backend
 
-and the local/development copy is:
+The backend uses Cloudflare Pages Functions and Cloudflare D1.
 
-```text
-tools/map_workbench.html
-```
-
-The workbench loads one full LOC map image in the browser, lets a human calibrate the section grid, zooms into a selected section, and lets a human enter reviewed rows.
-
-Starting with v0.26, the workbench can submit reviewed rows to Cloudflare Pages Functions and a Cloudflare D1 database. The LOC source image stays in the browser and is not uploaded.
-
-## Backend files
-
-```text
-functions/api/submit-records.js
-functions/api/records.js
-functions/api/section-status.js
-functions/api/pending-records.js
-functions/api/admin-approve.js
-schema.sql
-docs/cloudflare-d1-backend-setup.md
-```
-
-## D1 binding
-
-The Pages Functions expect a Cloudflare D1 binding named:
+Required bindings/secrets:
 
 ```text
 DB
-```
-
-Trusted direct-approval submissions require an environment variable:
-
-```text
 REVIEWER_KEY
-```
-
-Admin queue review requires:
-
-```text
 ADMIN_KEY
 ```
 
-## Privacy rule
+## Admin review
 
-Do not upload private living-person data. The tool should collect only historical public-source transcription data unless a person has given consent under the site policies.
+Open:
+
+```text
+/admin.html
+```
+
+The admin panel can load pending records, inspect row data, save obvious corrections, approve records, and reject bad duplicates or mistakes.
+
+## Privacy
+
+Source map images are not stored by the website. The browser uses the local image only to generate section zooms for human review.
