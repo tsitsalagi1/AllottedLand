@@ -315,3 +315,10 @@ body #printPacket.print-packet{
 .story-panel{border-left:5px solid var(--gold,#c6a76a);}
 @media(max-width:860px){.intro-helper-grid.two-col{grid-template-columns:1fr;}}
 @media print{.unified-results .section-help{border:1px solid #ddd;background:#fff!important;color:#111!important;}}
+
+
+/* v0.50 public-page simplification */
+.doc-main .panel p{font-size:1.02rem;}
+.doc-main .panel .button{margin-top:.5rem;}
+.site-footer .footer-grid{align-items:start;}
+@media print{.site-header .topnav,.site-footer{display:none!important}.doc-main{max-width:100%;}.doc-main .panel{box-shadow:none;}}

@@ -1,46 +1,61 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login — AllottedLand.com</title>
-<link rel="stylesheet" href="assets/styles.css"><link rel="stylesheet" href="assets/v032-visual.css">
-<style>.login-card{max-width:760px;margin:40px auto}.key-row{display:grid;gap:14px}.notice{background:#fff7e6;border:1px solid #e0c070;padding:12px;border-radius:12px}.ok{background:#e8f6ef;border:1px solid #9fcdb7;padding:12px;border-radius:12px}.bad{background:#fff0ef;border:1px solid #d9a7a1;padding:12px;border-radius:12px}</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reviewer Login — AllottedLand.com</title>
+  <meta name="description" content="Reviewer and admin login page for trusted AllottedLand.com reviewers." />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/v032-visual.css?v=050" />
+  <style>.login-card{max-width:760px;margin:20px auto}.key-row{display:grid;gap:14px}.ok{background:#e8f6ef;border:1px solid #9fcdb7;padding:12px;border-radius:12px}.bad{background:#fff0ef;border:1px solid #d9a7a1;padding:12px;border-radius:12px}</style>
 </head>
 <body>
-<header class="site-header"><nav class="topnav"><a class="brand-link" href="index.html">AllottedLand.com</a><a href="index.html">Home</a><a href="testimonials.html">Testimonials</a><a href="evidence.html">Land Loss Project</a><a href="sources.html">Source records</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav><div class="hero"><p class="eyebrow">Reviewer / Admin</p><h1>Login</h1><p class="subtitle">Enter a reviewer key or admin key. The key is stored only in your browser session unless you choose to remember it.</p></div></header>
-<main class="section">
-<section class="panel login-card">
-<h2>Reviewer or admin access</h2>
-<p class="notice">This page does not create a public account. It verifies the key against the Cloudflare Pages backend and stores the key in your browser so the Workbench or Admin Panel can use it.</p>
-<div class="key-row">
-<label>Access type
-<select id="role"><option value="reviewer">Reviewer / data entry</option><option value="admin">Admin / approval panel</option></select></label>
-<label>Access key <input id="accessKey" type="password" autocomplete="off" placeholder="Paste reviewer or admin key"></label>
-<label><input id="remember" type="checkbox" style="width:auto"> Remember on this browser</label>
-<div class="buttons"><button id="loginBtn">Verify key</button><button class="secondary" id="clearBtn" type="button">Clear saved keys</button></div>
-<div id="status" class="status">Enter a key to continue.</div>
-</div>
-<div class="link-cards" style="margin-top:18px">
-<a href="workbench.html"><strong>Open Workbench</strong><span>For trusted reviewers entering map records.</span></a>
-<a href="admin.html"><strong>Open Admin</strong><span>For reviewing pending records, testimonials, and evidence submissions.</span></a>
-</div>
-</section>
+<header class="site-header">
+  <nav class="topnav" aria-label="Main navigation">
+  <a class="brand-link" href="index.html">AllottedLand.com</a>
+  <a href="index.html#universal-search">Search</a>
+  <a href="testimonials.html">Family stories</a>
+  <a href="evidence.html">Land Loss Project</a>
+  <a href="sources.html">Source guide</a>
+  <a href="contact.html">Contact</a>
+</nav>
+  <div class="hero doc-hero">
+    <p class="eyebrow">Reviewer / admin only</p>
+    <h1>Reviewer login</h1>
+    <p class="subtitle">Families do not need an account to search. This page is only for trusted reviewers and admins.</p>
+  </div>
+</header>
+<main class="doc-main">
+
+  <section class="panel login-card">
+    <h2>Reviewer or admin access</h2>
+    <p class="alert">If you are here to search for family land records, go back to the Universal Search. No login is needed.</p>
+    <p><a class="button" href="index.html#universal-search">Go to Universal Search</a></p>
+    <div class="key-row">
+      <label>Access type
+        <select id="role"><option value="reviewer">Reviewer / data entry</option><option value="admin">Admin / approval panel</option></select>
+      </label>
+      <label>Access key <input id="accessKey" type="password" autocomplete="off" placeholder="Paste reviewer or admin key"></label>
+      <label><input id="remember" type="checkbox" style="width:auto"> Remember on this browser</label>
+      <div class="buttons"><button id="loginBtn">Verify key</button><button class="secondary" id="clearBtn" type="button">Clear saved keys</button></div>
+      <div id="status" class="status">Enter a key to continue.</div>
+    </div>
+  </section>
+
 </main>
-<footer class="site-footer"><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p></footer>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><strong>AllottedLand.com</strong><p>One family-land search path. Results are research leads, not proof of title, ownership, enrollment, heirship, or legal rights.</p></div>
+    <div><strong>For families</strong><p><a href="index.html#universal-search">Search everything</a><br><a href="testimonials.html">Family stories</a><br><a href="evidence.html">Land Loss Project</a><br><a href="sources.html">Source guide</a></p></div>
+    <div><strong>Project</strong><p><a href="about.html">About</a><br><a href="privacy.html">Privacy</a><br><a href="terms.html">Terms</a><br><a href="submission-policy.html">Submission consent</a><br><a href="login.html">Reviewer login</a></p></div>
+  </div>
+  <p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p>
+</footer>
 <script>
 const $=id=>document.getElementById(id);
 function setStatus(msg, cls='status'){const el=$('status'); el.className=cls; el.textContent=msg;}
-async function verify(){
-  const role=$('role').value; const key=$('accessKey').value.trim(); if(!key) return setStatus('Enter a key first.','bad');
-  try{ const res=await fetch('/api/login-check',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role,key})}); const data=await res.json(); if(!res.ok) throw new Error(data.error||'Key rejected.');
-    const storage=$('remember').checked?localStorage:sessionStorage; const other=$('remember').checked?sessionStorage:localStorage;
-    if(role==='admin'){storage.setItem('allottedland_admin_key',key); other.removeItem('allottedland_admin_key');}
-    else {storage.setItem('allottedland_reviewer_key',key); other.removeItem('allottedland_reviewer_key');}
-    setStatus(data.message || 'Key accepted.','ok');
-    setTimeout(()=>{ location.href = role==='admin' ? 'admin.html' : 'workbench.html'; }, 650);
-  }catch(e){setStatus(e.message,'bad');}
-}
-$('loginBtn').addEventListener('click',verify); $('accessKey').addEventListener('keydown',e=>{if(e.key==='Enter')verify();});
-$('clearBtn').addEventListener('click',()=>{['allottedland_admin_key','allottedland_reviewer_key'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)}); $('accessKey').value=''; setStatus('Saved keys cleared.','ok');});
+async function verify(){const role=$('role').value; const key=$('accessKey').value.trim(); if(!key) return setStatus('Enter a key first.','bad'); try{ const res=await fetch('/api/login-check',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role,key})}); const data=await res.json(); if(!res.ok) throw new Error(data.error||'Key rejected.'); const storage=$('remember').checked?localStorage:sessionStorage; const other=$('remember').checked?sessionStorage:localStorage; if(role==='admin'){storage.setItem('allottedland_admin_key',key); other.removeItem('allottedland_admin_key');} else {storage.setItem('allottedland_reviewer_key',key); other.removeItem('allottedland_reviewer_key');} setStatus(data.message || 'Key accepted.','ok'); setTimeout(()=>{ location.href = role==='admin' ? 'admin.html' : 'workbench.html'; }, 650);}catch(e){setStatus(e.message,'bad');}}
+$('loginBtn').addEventListener('click',verify); $('accessKey').addEventListener('keydown',e=>{if(e.key==='Enter')verify();}); $('clearBtn').addEventListener('click',()=>{['allottedland_admin_key','allottedland_reviewer_key'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)}); $('accessKey').value=''; setStatus('Saved keys cleared.','ok');});
 </script>
-</body></html>
+</body>
+</html>

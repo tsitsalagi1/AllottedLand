@@ -346,3 +346,8 @@ Key test cases:
 - Removed the visible Search Summary section from results.
 - Added plain explanations for Official source leads and Prepared official links.
 - Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
+
+
+### v0.50 public-page simplification
+
+All public-facing pages except `admin.html` and `workbench.html` were simplified around a single user goal: help families search first, understand the record path, and avoid confusing tool sprawl. Reviewer/admin tools remain available but are not promoted in the public navigation.

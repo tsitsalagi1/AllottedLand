@@ -429,3 +429,8 @@ Local/index record matching should require strong evidence such as name, roll/ca
 - Removed the visible Search Summary section from results.
 - Added plain explanations for Official source leads and Prepared official links.
 - Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
+
+
+## v0.50 public information architecture
+
+Public navigation is now user-focused: Search, Family stories, Land Loss Project, Source guide, and Contact. Admin and Workbench pages remain operational but are not part of the family-facing workflow.
