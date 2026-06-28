@@ -102,7 +102,7 @@
           <label class="wide">Family story or notes <textarea id="wizStory" placeholder="Example: family story, old town, cemetery, oil lease, tax sale, deed, or county clue"></textarea></label>
         </div>
         <div class="buttons">
-          <button type="submit">Build research path</button>
+          <button type="submit" id="buildPathBtn" disabled>Build research path</button>
           <button type="button" class="secondary" id="fillExample">Use map-only sample</button>
           <button type="button" class="ghost" id="clearWizard">Clear</button>
         </div>
@@ -132,7 +132,7 @@
           <label class="wide">Any keyword <input id="keyword" placeholder="name, status, legal description, notes" autocomplete="off"></label>
         </div>
         <div class="buttons">
-          <button id="searchBtn">Search</button>
+          <button id="searchBtn" disabled>Search</button>
           <button id="clearBtn" class="secondary">Clear</button>
         </div>
       </section>
@@ -303,9 +303,18 @@
     }
 
     function hasAgreed(){ return !!document.getElementById('siteAgree')?.checked; }
+    function setToolGate(){
+      const ok = hasAgreed();
+      ['buildPathBtn','searchBtn'].forEach(id => { const b=$(id); if(b) b.disabled = !ok; });
+      try { localStorage.setItem('allottedland_site_agreement', ok ? 'yes' : 'no'); } catch(e) {}
+    }
     function requireAgree(){ if(hasAgreed()) return true; alert('Please check the Privacy Policy / Terms of Use agreement before using the search or research-path tools.'); document.getElementById('siteAgree')?.scrollIntoView({behavior:'smooth', block:'center'}); return false; }
     document.addEventListener('submit', function(e){ if(e.target && e.target.id === 'wizardForm' && !requireAgree()){ e.preventDefault(); e.stopImmediatePropagation(); }}, true);
     document.addEventListener('DOMContentLoaded', function () {
+      const agree = $('siteAgree');
+      try { if (agree && localStorage.getItem('allottedland_site_agreement') === 'yes') agree.checked = true; } catch(e) {}
+      if (agree) agree.addEventListener('change', setToolGate);
+      setToolGate();
       const btn = $('searchBtn');
       if (btn) btn.addEventListener('click', function(e){ if(!requireAgree()){ e.preventDefault(); return; } runRecordSearch(e); });
       const clear = $('clearBtn');

@@ -104,3 +104,8 @@ After uploading v0.30, run this migration in Cloudflare D1 Console:
 The public source image still is not stored by the website. Workbench users load the LOC image locally in their browser, enter human-reviewed rows, and submit record data only.
 
 County lookup is now supported through `data/township_county_lookup.json`. Do not rely on a county suggestion until the township/range-to-county crosswalk has been independently verified.
+
+### v0.31 consent gate update
+Public search and research-path tools now require a Privacy Policy / Terms of Use checkbox before the buttons activate. Testimonial, evidence-project, and Workbench submission buttons remain disabled until required consent boxes are checked. Server-side Functions also reject submissions missing required consent confirmations.
+
+This is not a substitute for legal review. The project should continue to review privacy, accessibility, child-privacy, data-retention, and state privacy requirements before wider public launch.

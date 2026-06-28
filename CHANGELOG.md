@@ -121,3 +121,11 @@ The agent also now checks common Windows install locations automatically.
 - Added Privacy/Terms agreement gate before public search and guided research-path tools.
 - Updated Workbench with user-focused instructions, LOC source link, saved reviewer-key loading, and township/range county lookup architecture.
 - Added D1 migration `migrations/0002_testimonials_evidence.sql`.
+
+## v0.31 — Required Consent Gates and Compliance Hardening
+- Disabled public Search and Build Research Path buttons until the user checks the Privacy Policy / Terms of Use agreement.
+- Disabled testimonial, evidence, and Workbench submit buttons until all required consent boxes are checked.
+- Added age/guardian confirmation to public testimonial and evidence submissions.
+- Added server-side consent checks for Workbench record submissions, testimonials, and evidence submissions.
+- Updated Privacy Policy, Terms of Use, and Submission Consent Policy language for the live beta submission workflow.
+- Added a legal/compliance notes document for ongoing review.

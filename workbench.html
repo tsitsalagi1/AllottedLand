@@ -37,9 +37,16 @@
         <div><label>Reviewer contact or initials</label><input id="reviewerContact" placeholder="name, initials, or email"></div>
         <div><label>Reviewer key</label><input id="reviewerKey" type="password" placeholder="loaded from login if saved; blank submits to pending review"></div>
       </div>
+      <div class="note warn" id="workbenchConsentBox">
+        <strong>Required before submitting records:</strong> Reviewers must confirm these before the submit buttons activate.
+        <label><input id="wbPrivacy" type="checkbox" style="width:auto"> I have read and agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label>
+        <label><input id="wbTerms" type="checkbox" style="width:auto"> I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Use</a>.</label>
+        <label><input id="wbSubmission" type="checkbox" style="width:auto"> I have read and agree to the <a href="submission-policy.html" target="_blank" rel="noopener">Submission Consent Policy</a>.</label>
+        <label><input id="wbPermission" type="checkbox" style="width:auto"> I have permission to submit these transcriptions and will not enter sensitive living-person private data.</label>
+      </div>
       <div class="toolbar noPrint" style="margin-top:12px">
         <button type="button" id="loadServerDataBtn" class="secondary">Load website records/progress</button>
-        <button type="button" id="submitRowsBtn">Submit queued rows to website</button>
+        <button type="button" id="submitRowsBtn" disabled>Submit queued rows to website</button>
       </div>
       <div id="submitStatus" class="note">Rows will submit to <code>/api/submit-records</code> once the Cloudflare D1 backend is set up.</div>
     </section>
@@ -161,7 +168,7 @@
         <h2>Approved rows</h2>
         <p class="muted">Rows are queued in this page until you submit them to the website database. The source image is never uploaded.</p>
         <div class="toolbar noPrint">
-          <button id="submitRowsBtn2" type="button">Submit queued rows to website</button>
+          <button id="submitRowsBtn2" type="button" disabled>Submit queued rows to website</button>
           <button id="loadServerDataBtn2" type="button" class="secondary">Reload website duplicate/progress data</button>
           <button id="clearRowsBtn" type="button" class="danger">Clear rows</button>
         </div>
@@ -345,6 +352,11 @@ $('copyRowsBtn').addEventListener('click',()=>navigator.clipboard?.writeText(JSO
 function apiMeta(){ return {loc_page:$('locPage').value, township:$('township').value, range:$('range').value, township_range:$('townshipRange').value, source_link:$('sourceLink').value, image_name:state.imageName}; }
 function getReviewerKey(){ return ($('reviewerKey')?.value||'').trim(); }
 function getReviewerContact(){ return ($('reviewerContact')?.value||$('reviewer')?.value||'').trim(); }
+function workbenchConsentOK(){ return ['wbPrivacy','wbTerms','wbSubmission','wbPermission'].every(id => $(id)?.checked); }
+function updateWorkbenchSubmitGate(){
+  const ok = workbenchConsentOK();
+  ['submitRowsBtn','submitRowsBtn2'].forEach(id => { const b=$(id); if(b) b.disabled = !ok; });
+}
 async function loadWebsiteData(){
   const tr=encodeURIComponent($('townshipRange').value||slugTR());
   const status=$('submitStatus');
@@ -361,6 +373,7 @@ async function loadWebsiteData(){
 }
 async function submitQueuedRows(){
   const status=$('submitStatus');
+  if(!workbenchConsentOK()){ alert('Please check the Privacy Policy, Terms of Use, Submission Consent, and permission boxes before submitting records.'); $('workbenchConsentBox')?.scrollIntoView({behavior:'smooth', block:'center'}); return; }
   if(!state.approvedRows.length){ alert('No queued rows to submit.'); return; }
   const payload={
     client_version:'v0.30',
@@ -368,7 +381,8 @@ async function submitQueuedRows(){
     reviewer:{contact:getReviewerContact(), initials:$('reviewer')?.value||''},
     grid:currentGridJson(),
     section_status:state.sectionStatus,
-    records:state.approvedRows
+    records:state.approvedRows,
+    consent:{privacy:true,terms:true,submission:true,permission:true}
   };
   status.textContent='Submitting rows to website...';
   try{
@@ -384,6 +398,8 @@ async function submitQueuedRows(){
 }
 $('loadServerDataBtn')?.addEventListener('click',loadWebsiteData);
 $('loadServerDataBtn2')?.addEventListener('click',loadWebsiteData);
+['wbPrivacy','wbTerms','wbSubmission','wbPermission'].forEach(id => { const el=$(id); if(el) el.addEventListener('change', updateWorkbenchSubmitGate); });
+updateWorkbenchSubmitGate();
 $('submitRowsBtn')?.addEventListener('click',submitQueuedRows);
 $('submitRowsBtn2')?.addEventListener('click',submitQueuedRows);
 

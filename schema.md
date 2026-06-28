@@ -158,3 +158,20 @@ Approved rows may include a `review_trace` object showing the original OCR candi
 
 ## County lookup
 `data/township_county_lookup.json` is a verified-data layer for township/range-to-county suggestions. Until a row is verified, the Workbench should leave county blank or treat it as a suggestion only.
+
+## v0.31 Consent metadata
+Submissions should include a consent object when sent to backend APIs:
+
+```json
+{
+  "consent": {
+    "privacy": true,
+    "terms": true,
+    "submission": true,
+    "permission": true,
+    "age": true
+  }
+}
+```
+
+Workbench record submissions require privacy, terms, submission, and permission confirmations. Public testimonial and evidence submissions also require age/guardian confirmation.
