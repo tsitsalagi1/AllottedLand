@@ -361,3 +361,7 @@ Connectors added:
 - `/api/census-lookup?address=&lat=&lon=&limit=`
 
 Census/TIGERweb results are geography leads only. They do not prove ownership, title, trust/restricted status, or final Indian Country legal status.
+
+
+## v0.43 Census connector note
+`/api/census-lookup` accepts either `address=` or both `lat=` and `lon=`. Blank coordinate parameters are treated as null, not zero.

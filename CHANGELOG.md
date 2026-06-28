@@ -1,3 +1,9 @@
+# v0.43 — Census coordinate bug hotfix
+
+- Fixed `/api/census-lookup` so missing `lat` / `lon` parameters remain blank instead of being treated as `0`.
+- This prevents false coordinate lookups at `0,0` when users search by address only.
+- Added clearer guidance when Census cannot geocode a rural, historic, or non-standard street address: use latitude/longitude from a map pin.
+
 ## v0.36 — Dawes quick-search layer and branded PDF packet
 
 - Added a home-page Dawes / Five Tribes quick-search section powered by `data/dawes_index.json`.

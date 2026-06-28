@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.42 official source connector hub
+/* AllottedLand.com v0.43 official source connector hub
    Adds no-key/low-friction public source leads while map indexing continues:
    Federal Register, Chronicling America/LOC, Census Geocoder/TIGERweb, and printable request packets.
 */

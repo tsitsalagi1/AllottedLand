@@ -246,7 +246,7 @@ npx.cmd wrangler pages deploy . --project-name allottedland --branch main
 
 Do not deploy a changed-files-only folder as the whole site. Cloudflare Pages deployments replace the deployed asset snapshot with the folder you deploy. A partial folder can leave the live site missing shared CSS, JavaScript, data, and supporting pages.
 
-## v0.42 public source-lead connectors
+## v0.43 public source-lead connectors
 
 This build adds public source-lead tools that make the site useful while map indexing continues:
 
@@ -264,3 +264,7 @@ npx.cmd wrangler pages deploy . --project-name allottedland --branch main
 ```
 
 Do not deploy a changed-files-only folder as the full website snapshot.
+
+
+## v0.43 Census lookup note
+If Census returns no address match, use latitude/longitude. Rural, historic, or non-standard addresses may not geocode from Census address-range data.

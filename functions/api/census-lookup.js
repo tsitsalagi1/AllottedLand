@@ -1,12 +1,18 @@
 // Cloudflare Pages Function: /api/census-lookup
-// v0.42 Census geocoder + TIGERweb AIANNH/OTSA source-lead connector. No API key required for these services.
+// v0.43 Census geocoder + TIGERweb AIANNH/OTSA source-lead connector. No API key required for these services.
+// Hotfix: blank lat/lon query params must stay null; Number(null) becomes 0 and caused false Gulf-of-Guinea coordinate lookups.
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
   headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=900' }
 });
 function clean(v){ return String(v == null ? '' : v).replace(/\s+/g, ' ').trim(); }
 function first(...vals){ return vals.map(clean).find(Boolean) || ''; }
-function num(v){ const n = Number(v); return Number.isFinite(n) ? n : null; }
+function num(v){
+  const raw = String(v == null ? '' : v).trim();
+  if (!raw) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
 function safeStr(v){ return clean(typeof v === 'object' ? JSON.stringify(v) : v); }
 const AIANNH_LAYERS = [
   { id: 2, label: 'Federal American Indian Reservations' },
@@ -87,7 +93,8 @@ export async function onRequestGet({ request }) {
         lon = num(match.coordinates?.x);
         rows.push(...geographyCards(match.geographies));
       } else {
-        rows.push(card(`No Census address match for: ${address}`, officialUrl, 'Census geocoder search', 'Try a street address with city/state or ZIP, or use latitude/longitude.', ''));
+        rows.push(card(`No Census address match for: ${address}`, officialUrl, 'Census geocoder search', 'Census could not geocode this address from its address-range database. Try a USPS-style street address with ZIP, remove punctuation/directional wording, or use latitude/longitude from a map pin.', ''));
+        rows.push(card('Use latitude/longitude for Census tribal geography lookup', officialTigerUrl(), 'Census coordinate lookup tip', 'For rural, historic, or non-standard addresses, copy the map pin coordinates and search again with lat/lon. The site can then query TIGERweb AIANNH, OTSA, off-reservation trust, and related Census tribal geography layers by point.', ''));
       }
     } else {
       rows.push(card(`Census coordinate lookup: ${lat}, ${lon}`, officialUrl, 'Census geocoder coordinate lookup', 'Coordinate-based geographic lookup from Census Geocoder.', ''));
