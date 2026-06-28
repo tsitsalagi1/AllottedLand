@@ -245,3 +245,22 @@ npx.cmd wrangler pages deploy . --project-name allottedland --branch main
 ```
 
 Do not deploy a changed-files-only folder as the whole site. Cloudflare Pages deployments replace the deployed asset snapshot with the folder you deploy. A partial folder can leave the live site missing shared CSS, JavaScript, data, and supporting pages.
+
+## v0.42 public source-lead connectors
+
+This build adds public source-lead tools that make the site useful while map indexing continues:
+
+- `/api/chronicling-search` — Chronicling America / LOC historic newspaper source leads for tax-sale, sheriff sale, guardian, probate, oil/gas, and family-name searches.
+- `/api/fr-search` — FederalRegister.gov public API source leads for BIA, Indian Affairs, tribal ordinances, land acquisition, and related notices.
+- `/api/census-lookup` — Census Geocoder + TIGERweb AIANNH/OTSA source leads for address or coordinate lookups.
+- Record request packet builder — printable request text for NARA, OHS, county clerk, BIA/LTRO, and BLM/GLO follow-up.
+
+No new D1 migration is required. No new API keys are required for Federal Register, Census Geocoder/TIGERweb, or Chronicling America/LOC. NARA still requires `NARA_API_KEY` for live NARA rows.
+
+Deploy the full folder with:
+
+```powershell
+npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+```
+
+Do not deploy a changed-files-only folder as the full website snapshot.

@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=040">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=042">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -138,11 +138,18 @@
             <label>Range <input id="sourceRange" placeholder="range #" autocomplete="off"></label>
             <label>Section <input id="sourceSection" placeholder="section #" autocomplete="off"></label>
             <label class="wide">Extra keyword <input id="sourceKeyword" placeholder="Dawes, allotment jacket, tax deed, sheriff deed, oil lease, etc." autocomplete="off"></label>
+            <label class="wide">Address / place for Census lookup <input id="sourceAddress" placeholder="street address, city, state, or ZIP for Census geography leads" autocomplete="off"></label>
+            <label>Latitude <input id="sourceLat" placeholder="35.9154" autocomplete="off"></label>
+            <label>Longitude <input id="sourceLon" placeholder="-94.9699" autocomplete="off"></label>
           </div>
           <div class="buttons">
             <button type="button" id="sourceUseCluesBtn" class="secondary">Use current page clues</button>
             <button type="button" id="sourceNaraBtn">Search NARA API</button>
             <button type="button" id="sourceLocBtn">Search LOC maps</button>
+            <button type="button" id="sourceNewsBtn">Search newspapers</button>
+            <button type="button" id="sourceFRBtn">Search Federal Register</button>
+            <button type="button" id="sourceCensusBtn">Census geography lookup</button>
+            <button type="button" id="sourceRequestsBtn" class="secondary">Build record request packet</button>
             <button type="button" id="sourceLinksBtn" class="secondary">Build official links</button>
             <button type="button" id="sourcePrintBtn" class="ghost">Print source leads / save PDF</button>
           </div>
@@ -364,8 +371,8 @@
 
 
   <script src="assets/dawes-search.js?v=039"></script>
-  <script src="assets/print-packet.js?v=040"></script>
-  <script src="assets/source-connectors.js?v=040"></script>
+  <script src="assets/print-packet.js?v=042"></script>
+  <script src="assets/source-connectors.js?v=042"></script>
   <script src="assets/app.js?v=039"></script>
   <script>
   (function () {

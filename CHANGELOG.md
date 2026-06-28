@@ -218,3 +218,15 @@ Notes:
 - Restored core static assets such as `assets/styles.css`, `assets/app.js`, data files, docs, and all public pages.
 - Preserved v0.40 connector resilience fixes and v0.39 official-source connectors.
 - Use this folder for Wrangler deployments. Do not deploy a changed-files-only patch folder as the entire Cloudflare Pages site.
+
+## v0.42 — Public source-lead connectors
+
+- Added `/api/chronicling-search` for Chronicling America / LOC historic newspaper source leads, with printable fallback official links.
+- Added `/api/fr-search` for FederalRegister.gov source leads. No API key required.
+- Added `/api/census-lookup` for Census Geocoder and TIGERweb AIANNH/OTSA geography source leads. No API key required for these endpoints.
+- Expanded the homepage Official Source Lookup section with buttons for newspapers, Federal Register, Census geography lookup, and record request packets.
+- Added address, latitude, and longitude inputs for Census geography lookup.
+- Added printable record request packet text for NARA, OHS, county clerks, BIA/LTRO, and BLM/GLO.
+- Updated `sources.html`, schema notes, and connector source cards.
+
+Deployment note: deploy this as a full site folder with Wrangler, not as a changed-files-only patch.

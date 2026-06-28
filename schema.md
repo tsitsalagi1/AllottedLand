@@ -328,3 +328,36 @@ Official source lookup endpoints may return either live API results or printable
 - `/api/loc-search?q=...` returns `fallback: false` when LOC JSON rows are available and `fallback: true` when it returns official LOC search-link leads after a 403/rate-limit/proxy block or zero-row JSON response.
 
 Fallback rows are intentional records for user guidance and printing; they are not database records and should not be treated as proof of title, enrollment, heirship, ownership, or legal rights.
+
+## v0.42 source-lead connector response shape
+
+New public source connectors return a common research-lead shape:
+
+```json
+{
+  "query": "string",
+  "provider": "string",
+  "results": [
+    {
+      "title": "string",
+      "url": "official source URL",
+      "date": "string",
+      "type": "string",
+      "sourceId": "optional identifier",
+      "description": "source lead summary",
+      "thumbnail": "optional image URL"
+    }
+  ],
+  "official_url": "official fallback URL",
+  "fallback": false,
+  "notice": "research-only/source notice"
+}
+```
+
+Connectors added:
+
+- `/api/chronicling-search?q=&place=&limit=`
+- `/api/fr-search?q=&limit=`
+- `/api/census-lookup?address=&lat=&lon=&limit=`
+
+Census/TIGERweb results are geography leads only. They do not prove ownership, title, trust/restricted status, or final Indian Country legal status.
