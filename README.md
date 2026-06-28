@@ -1,3 +1,7 @@
+## v0.33 — Green header + Land Loss Project
+
+This release keeps the original green header color while leaving the angled source-map pattern in the page body only. It also renames the public evidence initiative to **Land Loss Project** while preserving the existing `evidence.html` URL.
+
 
 
 ## v0.32 — Home mission, consent placement, and visual background
@@ -100,7 +104,7 @@ The admin page does not load database content until the `ADMIN_KEY` is entered a
 The Workbench header now includes a direct Admin link for trusted reviewers. The admin page still requires the ADMIN_KEY before database data loads.
 
 ## v0.30 notes
-This version adds public Testimonials and People Powered Evidence Project pages, a `/login.html` key helper for reviewers/admins, and D1-backed pending review queues for testimonials and evidence submissions.
+This version adds public Testimonials and Land Loss Project pages, a `/login.html` key helper for reviewers/admins, and D1-backed pending review queues for testimonials and evidence submissions.
 
 After uploading v0.30, run this migration in Cloudflare D1 Console:
 

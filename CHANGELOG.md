@@ -1,3 +1,10 @@
+# Changelog
+
+## v0.33 — Green header restoration and Land Loss Project rename
+- Restored the solid green header so the map-pattern background does not affect the hero/nav area.
+- Renamed the public evidence initiative from People Powered Evidence Project to Land Loss Project.
+- Kept the existing evidence.html route for stability while updating public labels, admin labels, and documentation.
+
 
 
 ## v0.32 — Home mission, consent placement, and visual background
@@ -118,10 +125,10 @@ The agent also now checks common Windows install locations automatically.
 - Moves latest-approved-record display and Phase 1 data status off the public home page and into the admin panel.
 - Keeps the public home page focused on search, guidance, source records, and the volunteer workbench.
 
-## v0.30 — Login, testimonials, evidence project, consent gate
+## v0.30 — Login, testimonials, Land Loss Project, consent gate
 - Added `/login.html` for reviewer/admin key storage and verification.
 - Added Testimonials page with consent-gated public submissions for review.
-- Added People Powered Evidence Project page with consent-gated evidence submissions and aggregate chart placeholders.
+- Added Land Loss Project page with consent-gated evidence submissions and aggregate chart placeholders.
 - Added backend APIs for testimonials and evidence review using Cloudflare Pages Functions + D1.
 - Added admin review sections for pending testimonials and evidence submissions.
 - Cleaned the public home page: removed launch/verification-rule blocks and Help Index Maps button.

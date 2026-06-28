@@ -1,3 +1,7 @@
+## v0.33 naming update
+
+The public evidence initiative is now named **Land Loss Project**. Existing D1 table/API names that use `evidence` may remain for backward compatibility, but public labels should use Land Loss Project.
+
 
 
 ## v0.32 — Home mission, consent placement, and visual background
@@ -161,7 +165,7 @@ Approved rows may include a `review_trace` object showing the original OCR candi
 `/api/admin-dashboard` requires the `X-Admin-Key` header matching `ADMIN_KEY`. It returns approved/pending counts, section-status counts, and recent approved records for the admin panel.
 
 ## v0.30 submission tables
-`pending_testimonials` and `approved_testimonials` store testimonial submissions after consent. `pending_evidence` and `approved_evidence` store People Powered Evidence Project submissions. Evidence charts should use only approved evidence rows and should be presented as aggregate patterns, not private family records.
+`pending_testimonials` and `approved_testimonials` store testimonial submissions after consent. `pending_evidence` and `approved_evidence` store Land Loss Project submissions. Evidence charts should use only approved evidence rows and should be presented as aggregate patterns, not private family records.
 
 ## County lookup
 `data/township_county_lookup.json` is a verified-data layer for township/range-to-county suggestions. Until a row is verified, the Workbench should leave county blank or treat it as a suggestion only.
