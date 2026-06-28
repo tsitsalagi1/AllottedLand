@@ -1,3 +1,11 @@
+## v0.36 — Dawes quick-search layer and branded PDF packet
+
+- Added a home-page Dawes / Five Tribes quick-search section powered by `data/dawes_index.json`.
+- Added fields for name, tribe/nation, enrollment category, roll/enrollment number, census card number, age, sex, blood degree, relationship, source, and notes.
+- Added `data/dawes_index_template.csv` and `tools/build_dawes_index_from_csv.py` so reviewed CSV rows can be converted into the public JSON index.
+- Added branded print / save-as-PDF research packets for selected or current Dawes search results.
+- Added print CSS that hides the normal page and prints a branded AllottedLand.com research packet with a research-only disclaimer.
+
 ## v0.35 — Land Loss Project pattern-evidence intake
 
 This release expands `evidence.html` from a short evidence form into a structured pattern-evidence intake. It asks for allottee identity, land description, land-loss mechanism, actors, protection/vulnerability flags, document checklist, federal approval status, and pattern-research consent.

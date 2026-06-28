@@ -1,3 +1,29 @@
+## v0.36 — Dawes quick-search index schema
+
+`data/dawes_index.json` powers the new homepage Dawes / Five Tribes quick-search layer. It is a lightweight static JSON file so the site can help users find record leads before every allotment map is indexed.
+
+Recommended fields for each `records[]` item:
+
+- `id` — stable unique row ID.
+- `record_type` — usually `Dawes Roll Match`, `Dawes Census Card Lead`, `Enrollment Application Lead`, or `Allotment Jacket Lead`.
+- `full_name`, `first_name`, `middle_name`, `last_name`, `variant_names`.
+- `tribe` and `nation`.
+- `enrollment_category` and `category_abbreviation`.
+- `roll_number` / enrollment number.
+- `census_card_number`.
+- `age`, `sex`, `blood_degree`.
+- `relationship_to_head` for census-card/family-group records when known.
+- `source_title`, `source_url`, `notes`, `search_terms`.
+
+Build workflow:
+
+1. Put reviewed rows into `data/dawes_index_template.csv`.
+2. Run `python tools/build_dawes_index_from_csv.py data/dawes_index_template.csv data/dawes_index.json`.
+3. Commit/deploy the updated JSON.
+4. The homepage Dawes search reads the new static index automatically.
+
+Do not confuse `roll_number` / enrollment number with allotment number or map number. Keep Dawes identity records separate from allotment-map records until they are verified and linked by source documents.
+
 ## v0.35 — Land Loss Project pattern-evidence intake
 
 The public `evidence.html` form now collects structured pattern-evidence fields while preserving the existing compact backend keys used by `/api/submit-evidence`. Extra details are compiled into `summary` and `source_note` so the current review queue can still receive submissions without a database migration.

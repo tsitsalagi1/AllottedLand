@@ -1,0 +1,58 @@
+{
+  "version": "0.36",
+  "title": "AllottedLand.com Dawes quick-search index",
+  "description": "Starter index for Final Dawes Roll / Dawes census-card leads. Replace or expand records with reviewed public-domain/index data.",
+  "source_notes": [
+    "NARA identifies Final Dawes Rolls, Dawes census cards, enrollment applications, land allotment jackets, and allotment maps as core Five Tribes Dawes records.",
+    "Final Dawes Rolls fields include roll number, name, age, sex, blood degree, and census card number.",
+    "The census card number points users toward the Dawes census/enrollment card; the roll/enrollment number helps locate the land allotment jacket."
+  ],
+  "fields": [
+    "id",
+    "record_type",
+    "full_name",
+    "first_name",
+    "middle_name",
+    "last_name",
+    "variant_names",
+    "tribe",
+    "nation",
+    "enrollment_category",
+    "category_abbreviation",
+    "roll_number",
+    "census_card_number",
+    "age",
+    "sex",
+    "blood_degree",
+    "relationship_to_head",
+    "source_title",
+    "source_url",
+    "notes",
+    "search_terms"
+  ],
+  "records": [
+    {
+      "id": "nara-example-cherokee-blood-11384",
+      "record_type": "Dawes Roll Match",
+      "full_name": "William P. Rogers",
+      "first_name": "William",
+      "middle_name": "P.",
+      "last_name": "Rogers",
+      "variant_names": "",
+      "tribe": "Cherokee",
+      "nation": "Cherokee Nation",
+      "enrollment_category": "Citizen by Blood",
+      "category_abbreviation": "BB",
+      "roll_number": "11384",
+      "census_card_number": "4747",
+      "age": "",
+      "sex": "",
+      "blood_degree": "",
+      "relationship_to_head": "",
+      "source_title": "NARA Dawes Records guide example",
+      "source_url": "https://www.archives.gov/research/native-americans/dawes",
+      "notes": "Starter test record from NARA's public Dawes Records guide. Verify against the original NARA Catalog image before treating as proof.",
+      "search_terms": "Cherokee Citizen by Blood BB Final Dawes Roll Census Card 4747 Enrollment 11384"
+    }
+  ]
+}

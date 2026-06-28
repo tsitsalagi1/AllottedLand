@@ -114,6 +114,82 @@
       </div>
     </section>
 
+
+
+    <section id="dawes" class="section dawes-section">
+      <div class="panel dawes-intro-panel">
+        <p class="eyebrow dark">Fast search layer</p>
+        <h2>Search Dawes record leads before the maps are finished.</h2>
+        <p>The Dawes search layer is a quick public index for Five Tribes research. It helps families find a person, roll/enrollment number, census card number, tribe, category, age, sex, and blood degree first — then follow the trail to census cards, enrollment packets, allotment jackets, maps, county records, and land-loss evidence.</p>
+        <p class="hint">This search uses <code>data/dawes_index.json</code>. The starter file includes a small test record and an import-ready schema. Add bulk Dawes rows there as the public index is cleaned and verified.</p>
+      </div>
+      <div class="dawes-search-grid">
+        <section class="panel search-panel dawes-search-panel" aria-labelledby="dawesSearchTitle">
+          <h2 id="dawesSearchTitle">Search Dawes / Five Tribes index</h2>
+          <div class="grid">
+            <label class="wide">Name or keyword
+              <input id="dawesQuery" placeholder="name, spelling variant, roll number, card number, tribe, category" autocomplete="off">
+            </label>
+            <label>Tribe / Nation
+              <select id="dawesTribe">
+                <option value="">Any tribe / nation</option>
+                <option value="Cherokee">Cherokee</option>
+                <option value="Choctaw">Choctaw</option>
+                <option value="Chickasaw">Chickasaw</option>
+                <option value="Creek">Muscogee / Creek</option>
+                <option value="Seminole">Seminole</option>
+              </select>
+            </label>
+            <label>Enrollment category
+              <select id="dawesCategory">
+                <option value="">Any category</option>
+                <option value="blood">Citizen by Blood / Minor / Newborn</option>
+                <option value="freedmen">Freedmen / Minor Freedmen / Newborn Freedmen</option>
+                <option value="intermarried">Intermarried White / Citizen by Marriage</option>
+                <option value="adopted">Adopted / Delaware Adopted</option>
+                <option value="rejected">Denied / Doubtful / Rejected</option>
+              </select>
+            </label>
+            <label>Roll / enrollment no.
+              <input id="dawesRoll" placeholder="example: 11384" autocomplete="off">
+            </label>
+            <label>Census card no.
+              <input id="dawesCard" placeholder="example: 4747" autocomplete="off">
+            </label>
+          </div>
+          <div class="buttons consent-actions">
+            <button type="button" id="dawesSearchBtn">Search Dawes leads</button>
+            <button type="button" class="secondary" id="dawesClearBtn">Clear</button>
+            <button type="button" class="ghost" id="printDawesBtn">Print / save PDF</button>
+          </div>
+          <p class="hint">Use the print button after selecting or finding results. Your browser can save the branded research packet as a PDF.</p>
+        </section>
+
+        <section class="panel results-panel dawes-results-panel" aria-live="polite">
+          <div class="results-head">
+            <h2>Dawes lead results</h2>
+            <span id="dawesCount">0 results</span>
+          </div>
+          <div id="dawesStatus" class="status">Loading Dawes index…</div>
+          <div id="dawesResults" class="results dawes-results"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="printPacket" class="print-packet" aria-hidden="true">
+      <div class="print-brand">
+        <p class="print-eyebrow">AllottedLand.com</p>
+        <h1>Family Allotment Research Lead Packet</h1>
+        <p>Free public research tool helping Native families follow Dawes records, allotment maps, county records, BIA/LTRO records, and documented land history.</p>
+        <p class="print-meta">Generated from AllottedLand.com on <span id="printPacketDate"></span></p>
+      </div>
+      <div id="printPacketContent"></div>
+      <div class="print-disclaimer">
+        <strong>Research-only notice:</strong> This packet is a research lead, not proof of title, citizenship, heirship, ownership, or legal rights. Verify every match against original NARA, tribal, county, BIA/LTRO, and other source records.
+      </div>
+    </section>
+
+
     <section id="search" class="section layout">
       <section class="panel search-panel">
         <h2>Search the current index</h2>
@@ -238,6 +314,7 @@
   </footer>
 
 
+  <script src="assets/dawes-search.js"></script>
   <script src="assets/app.js"></script>
   <script>
   (function () {
