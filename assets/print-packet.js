@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.47 universal branded print packet
+/* AllottedLand.com v0.48 universal branded print packet
    Supports both the on-page Print buttons and browser Ctrl+P.
    If users print the page directly, it builds a packet from visible unified results.
 */
@@ -63,7 +63,7 @@
     if (!packetReady() || !unifiedResultsReady()) return false;
     const content = $('printPacketContent');
     if (text(content.textContent)) return true;
-    const queryText = $('unifiedQuery')?.value ? `<p><strong>User clue:</strong> ${esc($('unifiedQuery').value)}</p>` : '';
+    const queryText = $('unifiedQuery')?.value ? `<p><strong>Information entered:</strong> ${esc($('unifiedQuery').value)}</p>` : '';
     const results = $('unifiedResults');
     const date = $('printPacketDate');
     if (date) date.textContent = new Date().toLocaleString();
@@ -84,7 +84,7 @@
     if (!hasBuiltPath(path)) { alert('Build a research path first, then print/save the packet.'); return; }
     const sections = [sectionHTML('Built search path result', stripForPrint(path))];
     if (request && text(request.value)) sections.push(sectionHTML('Copy-paste county records request', `<pre class="print-pre">${esc(request.value)}</pre>`));
-    buildPacket('AllottedLand.com Research Path Packet', 'This packet captures the built search path, source-route clues, and county-record request generated from the information entered on the site.', sections);
+    buildPacket('AllottedLand.com Research Path Packet', 'This packet captures the built search path, source-route information, and county-record request generated from the information entered on the site.', sections);
   }
   function printSiteSearchResults(){
     const results = $('results');

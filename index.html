@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AllottedLand.com — Find your family’s allotted land</title>
-  <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
+  <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or family information." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=047">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=048">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -37,7 +37,7 @@
     <div class="hero">
       <p class="eyebrow">AllottedLand.com · Beta / Phase 1</p>
       <h1>Find your family’s allotted land.</h1>
-      <p class="subtitle">A free public research tool helping Native families search historical allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues.</p>
+      <p class="subtitle">A free public research tool helping Native families search historical allotment maps and records by name, roll number, tribe, township, range, section, county, or family information.</p>
       <div class="hero-actions">
         <a class="button" href="#unified-search">Search everything</a>
         <a class="button secondary" href="#unified-search">I don’t know where to start</a>
@@ -51,7 +51,7 @@
       <div class="panel intro-panel feature-panel mission-panel">
         <p class="eyebrow dark">Mission</p>
         <h2>Start with what you know. Follow the record trail.</h2>
-        <p class="mission-lead">AllottedLand.com helps Native families turn partial family clues into a documented research path. A name, spelling variant, township/range, county, cemetery, old town, map number, or family story can become the starting point for finding source records.</p>
+        <p class="mission-lead">AllottedLand.com helps Native families turn family information into a documented research path. A name, spelling variant, township/range, county, cemetery, old town, map number, or family story can become the starting point for finding source records.</p>
         <p>The site is built around original records: historical allotment maps, enrollment records, allotment jackets, county land records, BIA/LTRO title records, tribal records, NARA records, and family-submitted evidence that has been reviewed before publication.</p>
         <div class="mission-detail-grid" aria-label="Mission details">
           <div><strong>Free public search</strong><span>No paywall for families searching the public index.</span></div>
@@ -68,16 +68,55 @@
       <div class="panel unified-intro-panel">
         <p class="eyebrow dark">One-search family land finder</p>
         <h2>Search everything. Start anywhere.</h2>
-        <p>Use one form for every kind of clue: family names, Dawes roll or census-card numbers, tribe, allotment number, township/range/section, county, address, coordinates, legal-description details, land-loss notices, old deeds, family stories, or official-source keywords. If you do not know where to start, leave the clue box blank and click <strong>Search everything</strong>; the site will build a starter research path.</p>
+        <p>Use one form for every kind of information the family has: family names, Dawes roll or census-card numbers, tribe, allotment number, township/range/section, county, address, coordinates, legal-description details, land-loss notices, old deeds, family stories, or official-source keywords. If you do not know where to start, leave the main information box blank and click <strong>I don’t know where to start</strong>; the site will build a starter research path.</p>
         <p class="hint"><strong>Research-lead notice:</strong> results are not proof of title, ownership, citizenship, heirship, or legal rights. Use the packet to find the original records: NARA/OHS Dawes records, allotment jackets, LOC maps, county records, BIA/LTRO title records, Federal Register notices, newspapers, and Census/TIGERweb geography leads.</p>
       </div>
 
+
+
+
+    <section class="section single-tool-note">
+      <div class="panel">
+        <p class="eyebrow dark">One tool, one path</p>
+        <h2>Read this first: one search box builds the whole research path.</h2>
+        <p>Families should not have to know which form or agency to start with. Put the information you have in the Universal Search below. The site will build the research path first, then show matching site records, official-source leads, geography leads, and agency request packets.</p>
+        <p class="hint">Advanced source connectors still run behind the scenes when they are useful. The home page now keeps the user focused on one plain-English workflow.</p>
+      </div>
+    </section>
+
+    
+<section id="process" class="section process-grid">
+      <div class="panel">
+        <h2>How to read the Universal Search results</h2>
+        <ol class="steps">
+          <li><strong>Built research path comes first.</strong> This is the roadmap. It tells the family what record to look for, where to search, and why the record matters.</li>
+          <li><strong>Matching site records come second.</strong> These are records already loaded into AllottedLand.com. If nothing matches yet, that does not mean no record exists; it means the site index is still being built.</li>
+          <li><strong>Official source leads come next.</strong> These cards point users to NARA, OHS, LOC maps, Federal Register, historic newspapers, Census/TIGERweb geography, BIA/LTRO, and BLM/GLO paths.</li>
+          <li><strong>Agency request packets are last.</strong> Copy the request for the agency or county office. Each request is written in plain English so the office understands what the user is asking for.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h2>What the family should collect</h2>
+        <ul class="checklist">
+          <li>Ancestor name, spelling variants, relatives, and tribe/Nation</li>
+          <li>Dawes roll/enrollment number and census card number</li>
+          <li>Enrollment application/testimony packet</li>
+          <li>Allotment jacket or application for allotment</li>
+          <li>Legal description: township, range, section, acreage, county</li>
+          <li>Allotment map page or source image</li>
+          <li>County deed, mortgage, release, sheriff deed, tax deed, probate, guardianship, or oil/gas record</li>
+          <li>BIA/LTRO title records or Title Status Report path if trust/restricted land may be involved</li>
+        </ul>
+      </div>
+    </section>
+
+    
       <form class="panel unified-search-panel unified-wide-panel" id="unifiedSearchForm" onsubmit="return false;">
         <div class="unified-form-head">
           <div>
             <p class="eyebrow dark">Universal search form</p>
-            <h2>What do you know?</h2>
-            <p class="muted">Fill in one box, several boxes, or nothing at all. The form replaces the old guided family-land finder and also sends the same clues to Dawes, map-index, official-source, Census, newspaper, Federal Register, and record-request paths.</p>
+            <h2>Information you have</h2>
+            <p class="muted">Fill in the main box, the optional detail boxes, or nothing at all. This one tool replaces the old guided family-land finder and sends the information to Dawes, map-index, official-source, Census, newspaper, Federal Register, and record-request paths.</p>
           </div>
           <div class="unified-form-badges" aria-label="Search coverage">
             <span class="pill">Build research path</span>
@@ -88,12 +127,12 @@
           </div>
         </div>
 
-        <label class="wide unified-description-label">Describe the clue in your own words
-          <textarea id="unifiedQuery" rows="5" placeholder="Example: Claude Ketcher roll 1637; Craig County sheriff sale 1924; T26N R21E Section 9; old family land near Tahlequah; 17675 S Muskogee Ave, Tahlequah, OK; Cherokee tax sale or oil lease clue"></textarea>
+        <label class="wide unified-description-label">Information I have / information you have
+          <textarea id="unifiedQuery" rows="5" placeholder="Example: Claude Ketcher roll 1637; Craig County sheriff sale 1924; T26N R21E Section 9; old family land near Tahlequah; 17675 S Muskogee Ave, Tahlequah, OK; Cherokee tax sale or oil lease information"></textarea>
         </label>
 
         <details class="unified-details" open>
-          <summary>Person / Dawes / family clues</summary>
+          <summary>Person / Dawes / family information</summary>
           <div class="grid unified-question-grid">
             <label>Tribe / Nation
               <select id="wizTribe">
@@ -126,23 +165,23 @@
         </details>
 
         <details class="unified-details" open>
-          <summary>Land / place / map clues</summary>
+          <summary>Land / place / map information</summary>
           <div class="grid unified-question-grid">
-            <label class="wide">Known county, town, creek, cemetery, or place <input id="wizPlace" placeholder="county, town, creek, cemetery, old community, or place clue" autocomplete="off"></label>
+            <label class="wide">Known county, town, creek, cemetery, or place <input id="wizPlace" placeholder="county, town, creek, cemetery, old community, or place information" autocomplete="off"></label>
             <label class="wide">Address or modern place for coordinate/Census lookup <input id="uniAddress" placeholder="street address, city/state, ZIP, courthouse, cemetery, or landmark" autocomplete="off"></label>
             <label>Latitude <input id="uniLat" placeholder="35.8521695" autocomplete="off"></label>
             <label>Longitude <input id="uniLon" placeholder="-94.9909623" autocomplete="off"></label>
             <label>Township <input id="wizTownship" placeholder="township #" autocomplete="off"></label>
             <label>Range <input id="wizRange" placeholder="range #" autocomplete="off"></label>
             <label>Section <input id="wizSection" placeholder="section #" autocomplete="off"></label>
-            <label class="wide">Legal description / county book-page / case clue <input id="uniLegal" placeholder="T26N R21E S9, deed book/page, probate case, tax sale, sheriff deed, oil lease, patent, or court clue" autocomplete="off"></label>
+            <label class="wide">Legal description / county book-page / case information <input id="uniLegal" placeholder="T26N R21E S9, deed book/page, probate case, tax sale, sheriff deed, oil lease, patent, or court information" autocomplete="off"></label>
           </div>
         </details>
 
         <details class="unified-details" open>
-          <summary>Land-loss / official-source clues</summary>
+          <summary>Land-loss / official-source information</summary>
           <div class="grid unified-question-grid">
-            <label class="wide">Land-loss or legal-notice clue <input id="uniNotice" placeholder="tax sale, sheriff sale, guardian sale, probate, mortgage, foreclosure, oil/gas lease, restricted land, deed, judgment" autocomplete="off"></label>
+            <label class="wide">Land-loss or legal-notice information <input id="uniNotice" placeholder="tax sale, sheriff sale, guardian sale, probate, mortgage, foreclosure, oil/gas lease, restricted land, deed, judgment" autocomplete="off"></label>
             <label class="wide">Official-source keyword <input id="uniSourceKeyword" placeholder="Dawes, allotment jacket, enrollment application, BIA, LTRO, Federal Register, LOC map, Chronicling America, GLO, NARA" autocomplete="off"></label>
             <label class="wide">Family story or notes <textarea id="wizStory" rows="4" placeholder="Tell what the family knows: names, old towns, nearby landmarks, counties, possible land loss, documents seen, dates, relatives, or agencies contacted."></textarea></label>
           </div>
@@ -155,7 +194,7 @@
           <button type="button" id="unifiedClearBtn" class="secondary">Clear</button>
           <button type="button" id="unifiedPrintBtn" class="ghost">Print all / save PDF</button>
         </div>
-        <p id="unifiedStatus" class="status">Enter any clue, or click “I don’t know where to start,” to build a research path and search all available source leads.</p>
+        <p id="unifiedStatus" class="status">Enter any information you have, or click “I don’t know where to start,” to build a research path and search all available source leads.</p>
       </form>
 
       <section class="panel unified-results-panel unified-results-below" aria-live="polite">
@@ -163,46 +202,10 @@
           <h2>Unified results</h2>
           <span id="unifiedCount">0 leads</span>
         </div>
-        <div id="unifiedResults" class="results unified-results"><p class="muted">Results will appear here. The first section will be the built research path: what to look for, where to search, and what each record can prove.</p></div>
+        <div id="unifiedResults" class="results unified-results"><p class="muted">Results will appear here. The first section will be the built research path: what to look for, where to search, and why each record matters.</p></div>
       </section>
     </section>
-
-
-    <section class="section single-tool-note">
-      <div class="panel">
-        <p class="eyebrow dark">One tool, one path</p>
-        <h2>The Universal Search now replaces the old separate search boxes.</h2>
-        <p>Families should not have to know whether a clue belongs in a Dawes form, a map form, a source form, a county-record form, or a geography lookup. Put every clue in the Universal Search above. The site will build the research path first, then show matching site records, official-source leads, geography leads, and agency request packets.</p>
-        <p class="hint">Advanced source connectors still run behind the scenes when they are useful. The home page now keeps the user focused on one plain-English workflow.</p>
-      </div>
-    </section>
-
-    <section id="process" class="section process-grid">
-      <div class="panel">
-        <h2>How to read the Universal Search results</h2>
-        <ol class="steps">
-          <li><strong>Built research path comes first.</strong> This is the roadmap. It tells the family what record to look for, where to search, and why the record matters.</li>
-          <li><strong>Matching site records come second.</strong> These are records already loaded into AllottedLand.com. If nothing matches yet, that does not mean no record exists; it means the site index is still being built.</li>
-          <li><strong>Official source leads come next.</strong> These cards point users to NARA, OHS, LOC maps, Federal Register, historic newspapers, Census/TIGERweb geography, BIA/LTRO, and BLM/GLO paths.</li>
-          <li><strong>Agency request packets are last.</strong> Copy the request for the agency or county office. Each request is written in plain English so the office understands what the user is asking for.</li>
-        </ol>
-      </div>
-      <div class="panel">
-        <h2>What the family should collect</h2>
-        <ul class="checklist">
-          <li>Ancestor name, spelling variants, relatives, and tribe/Nation</li>
-          <li>Dawes roll/enrollment number and census card number</li>
-          <li>Enrollment application/testimony packet</li>
-          <li>Allotment jacket or application for allotment</li>
-          <li>Legal description: township, range, section, acreage, county</li>
-          <li>Allotment map page or source image</li>
-          <li>County deed, mortgage, release, sheriff deed, tax deed, probate, guardianship, or oil/gas record</li>
-          <li>BIA/LTRO title records or Title Status Report path if trust/restricted land may be involved</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section two-col">
+<section class="section two-col">
       <div class="panel feature-panel">
         <p class="eyebrow dark">Family stories</p>
         <h2>Testimonials and the Land Loss Project</h2>
@@ -255,8 +258,8 @@
   </footer>
 
 
-  <script src="assets/print-packet.js?v=047"></script>
-  <script src="assets/unified-search.js?v=047"></script>
+  <script src="assets/print-packet.js?v=048"></script>
+  <script src="assets/unified-search.js?v=048"></script>
 
 </body>
 </html>

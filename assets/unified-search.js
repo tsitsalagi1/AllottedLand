@@ -1,5 +1,5 @@
-/* AllottedLand.com v0.47 unified search + plain-English research packet
-   One home-page tool: users enter any clue, the site builds a research path first,
+/* AllottedLand.com v0.48 unified search + plain-English research packet
+   One home-page tool: users enter any information, the site builds a research path first,
    then shows only matching local/index records and source leads.
 */
 (function(){
@@ -25,6 +25,18 @@
   }
   function looksAddress(q){ return /\d+\s+.*\b(ave|avenue|st|street|rd|road|dr|drive|ln|lane|hwy|highway|blvd|court|ct|circle)\b/i.test(q) || /\d+\s+[^,]+,\s*[^,]+,\s*(ok|oklahoma|ar|arkansas|tx|texas|ks|kansas|mo|missouri)\b/i.test(q); }
   function coords(q){ const m = text(q).match(/(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/); return m ? {lat:m[1], lon:m[2]} : null; }
+  function queryNameParts(q){
+    const cleaned = text(q).replace(/\b(roll|enrollment|card|census|section|township|range|county|ave|avenue|street|road|tax|sale|sheriff|probate|guardian)\b/gi, ' ');
+    const m = cleaned.match(/\b([A-Z][A-Za-z'’.-]{2,})\s+([A-Z][A-Za-z'’.-]{2,})\b/);
+    return m ? {first:norm(m[1]), last:norm(m[2])} : null;
+  }
+  function numbersFromQuery(q){
+    const found = [];
+    const re = /\b(?:roll|enrollment|card|census card|allotment|no\.?|number)\s*#?\s*(\d{2,7})\b/gi;
+    let m;
+    while ((m = re.exec(text(q)))) found.push(m[1]);
+    return found;
+  }
   function lossTerms(q){ return /tax sale|sheriff|guardian|probate|foreclosure|mortgage|deed|oil|gas lease|restricted indian land|judgment/i.test(q); }
   function legalTerms(q){ return /bureau of indian affairs|\bbia\b|federal register|rule|notice|ordinance|trust acquisition|land into trust|nagpra|consultation/i.test(q); }
   function starterOnly(q){
@@ -239,7 +251,7 @@
       const sections = [];
       const detected = (planner.detected_types || []).join(', ');
       sections.push(section('Built research path', `<p class="hint"><strong>Start here.</strong> These steps explain what record to look for, where to search for it, and why it matters. A result card is only a lead; the research path tells the family what to do next.</p><div class="path-grid">${(planner.research_path || []).map(pathCard).join('')}</div>`, `${(planner.research_path||[]).length} step(s)`));
-      sections.push(section('Search summary', `<p><strong>What was searched:</strong> ${esc(q)}</p><p><strong>Clue type detected:</strong> ${esc(detected || 'general research clue')}</p><p class="hint">${esc(planner.notice || 'Research leads only. Verify all source records.')}</p>`, 'plain-English summary'));
+      sections.push(section('Search summary', `<p><strong>Information searched:</strong> ${esc(q)}</p><p><strong>Information type detected:</strong> ${esc(detected || 'general research information')}</p><p class="hint">${esc(planner.notice || 'Research leads only. Verify all source records.')}</p>`, 'plain-English summary'));
       const siteCards = [];
       if ((planner.approved_records || []).length) siteCards.push(...(planner.approved_records || []).map(r => sourceCard(r, 'Approved site record')));
       if (local.length) siteCards.push(...local.map(x => localCard(x.item, x.type)));
@@ -258,7 +270,7 @@
       status('Unified search complete. Start with the built research path, then use the matching records, source links, and copy-paste request packets below.');
     } catch (e) {
       if (output) output.innerHTML = `<p class="status bad">Unified search failed: ${esc(e.message || e)}</p>`;
-      status('Unified search failed. Try fewer clues or try again in a moment.', true);
+      status('Unified search failed. Try less information or try again in a moment.', true);
     }
   }
 
@@ -273,9 +285,9 @@
     ['unifiedQuery','wizFirst','wizLast','wizVariants','wizRoll','wizCard','wizAllotment','wizPlace','uniAddress','uniLat','uniLon','wizTownship','wizRange','wizSection','uniLegal','uniNotice','uniSourceKeyword','wizStory'].forEach(id => { if($(id)) $(id).value=''; });
     if($('wizTribe')) $('wizTribe').value='';
     if($('uniCategory')) $('uniCategory').value='';
-    if($('unifiedResults')) $('unifiedResults').innerHTML='<p class="muted">Results will appear here. The first section will be the built research path: what to look for, where to search, and what each record can prove.</p>';
+    if($('unifiedResults')) $('unifiedResults').innerHTML='<p class="muted">Results will appear here. The first section will be the built research path: what to look for, where to search, and why each record matters.</p>';
     if($('unifiedCount')) $('unifiedCount').textContent='0 leads';
-    status('Enter any clue, or click “I don’t know where to start,” to build a research path and search all available source leads.');
+    status('Enter any information you have, or click “I don’t know where to start,” to build a research path and search all available source leads.');
   }
 
   async function copyText(value){

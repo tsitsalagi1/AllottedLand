@@ -1,3 +1,11 @@
+# v0.48 Universal Search Readability Cleanup
+
+- Renamed public-facing “clue” language to “Information you have” / “Information I have.”
+- Moved the user guidance boxes above Universal Search so families read the instructions before searching.
+- Kept Universal Search as the single public homepage tool instead of exposing several separate search forms.
+- Tightened site/index matching so person or roll-number searches do not show every township/section neighbor as a direct match.
+- Improved print CSS so agency request packet text prints fully instead of appearing as scroll boxes.
+
 
 
 ## v0.46 — Unified horizontal family-land search
