@@ -1,3 +1,48 @@
+## v0.35 — Land Loss Project pattern-evidence intake
+
+The public `evidence.html` form now collects structured pattern-evidence fields while preserving the existing compact backend keys used by `/api/submit-evidence`. Extra details are compiled into `summary` and `source_note` so the current review queue can still receive submissions without a database migration.
+
+Recommended extended Land Loss Project fields for a future D1 migration:
+
+### Allottee identity
+- `family_name`
+- `tribe`
+- `roll_number`
+- `census_card_number`
+- `enrollment_category`
+- `blood_degree_or_status`
+- `age_or_birth_year`
+- `relationship_to_submitter`
+
+### Land description
+- `county`
+- `township`
+- `range`
+- `section`
+- `allotment_or_map_number`
+- `acreage`
+- `legal_description`
+- `map_or_source_link`
+
+### Loss event
+- `loss_method` — `tax_sale`, `mortgage_foreclosure`, `sheriff_sale`, `private_deed`, `probate_partition`, `guardian_sale`, `restriction_removal`, `right_of_way_condemnation`, `oil_gas_mineral`, `fraud_alleged`, `still_in_family`, or `unknown`.
+- `event_year`
+- `decade`
+- `amount_debt_tax_or_bid`
+- `buyer_grantee_or_lender`
+- `case_or_instrument_number`
+- `summary`
+
+### Pattern fields
+- `actors` — array of government/private actors shown in the record.
+- `flags` — array of protection/vulnerability flags such as minor, guardianship, missing notice, taxation issue, missing federal approval, or title-chain gap.
+- `documents` — array of document types located or still needed.
+- `federal_approval_status` — `yes`, `no`, `unknown`, or `not_applicable`.
+- `contact_permission`
+- `pattern_research_consent`
+
+Fast data that can be added before map transcription is complete: Dawes roll/card basics, allotment-packet status, county book/page, probate case number, tax-sale year, sheriff deed, mortgage/release, BIA/LTRO file clue, and oil/gas lease clue.
+
 ## v0.33 naming update
 
 The public evidence initiative is now named **Land Loss Project**. Existing D1 table/API names that use `evidence` may remain for backward compatibility, but public labels should use Land Loss Project.

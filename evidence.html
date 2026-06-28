@@ -1,15 +1,284 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Land Loss Project — AllottedLand.com</title><link rel="stylesheet" href="assets/styles.css"><link rel="stylesheet" href="assets/v032-visual.css"><style>.bar{display:grid;grid-template-columns:180px 1fr 50px;gap:10px;align-items:center;margin:8px 0}.bar span:nth-child(2){height:16px;background:#245f50;border-radius:999px;display:block}.demo{opacity:.72}.consent{background:#fff7e6;border:1px solid #e0c070;border-radius:12px;padding:12px}.status.good{background:#e8f6ef}.status.bad{background:#fff0ef}</style></head><body>
-<header class="site-header"><nav class="topnav"><a class="brand-link" href="index.html">AllottedLand.com</a><a href="index.html">Home</a><a href="testimonials.html">Testimonials</a><a href="evidence.html">Land Loss Project</a><a href="sources.html">Source records</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="login.html">Login</a></nav><div class="hero"><p class="eyebrow">Land Loss Project</p><h1>How was allotted land lost?</h1><p class="subtitle">A voluntary, source-linked project to document patterns families find in county, federal, tribal, and archival records.</p></div></header>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Land Loss Project — AllottedLand.com</title>
+  <meta name="description" content="Voluntary, source-linked intake for documenting systemic patterns of allotted land loss by family, land description, legal mechanism, actors, and records." />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/v032-visual.css" />
+  <style>
+    .bar{display:grid;grid-template-columns:190px 1fr 58px;gap:10px;align-items:center;margin:8px 0}.bar span:nth-child(2){height:16px;background:#245f50;border-radius:999px;display:block}.demo{opacity:.72}.consent{background:#fff7e6;border:1px solid #e0c070;border-radius:12px;padding:12px}.status.good{background:#e8f6ef}.status.bad{background:#fff0ef}.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.question-block{border:1px solid #d8cdbd;border-radius:16px;padding:14px;background:rgba(255,253,248,.78);margin:14px 0}.question-block h3{margin-top:0}.check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:7px 14px}.check-grid label,.consent label{display:flex;gap:8px;align-items:flex-start;font-weight:700}.check-grid input,.consent input{width:auto!important;margin-top:3px}.small-warning{border-left:5px solid #9b5d1c;background:#fff7e6;padding:12px;border-radius:10px}.source-pill{display:inline-block;border:1px solid #d8cdbd;background:#fffdf8;border-radius:999px;padding:6px 10px;margin:3px;font-weight:800}.callout-strong{background:rgba(232,246,239,.9);border:1px solid #b5d7c4;border-radius:16px;padding:14px}.privacy-note{font-size:.93rem;color:#584d40}.structured-preview{white-space:pre-wrap;max-height:280px;overflow:auto;background:#1b2c27;color:#f7f1e7;border-radius:12px;padding:12px;font-size:.88rem}.evidence-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.section.tight{padding-top:20px;padding-bottom:20px}@media(max-width:720px){.bar{grid-template-columns:1fr}.bar em{font-style:normal}.check-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="topnav" aria-label="Main navigation">
+    <a class="brand-link" href="index.html">AllottedLand.com</a>
+    <a href="index.html">Home</a>
+    <a href="testimonials.html">Testimonials</a>
+    <a href="evidence.html">Land Loss Project</a>
+    <a href="sources.html">Source records</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html">Login</a>
+  </nav>
+  <div class="hero">
+    <p class="eyebrow">Land Loss Project · Pattern Evidence Intake</p>
+    <h1>Document how allotted land was lost.</h1>
+    <p class="subtitle">Families can submit source-linked clues now, even before every map entry is indexed. The goal is to identify repeatable patterns: tax sales, sheriff sales, mortgages, guardianships, probate, restriction-removal issues, right-of-way takings, leases, and missing approvals.</p>
+    <div class="hero-actions">
+      <a class="button" href="#submit">Submit a land-loss clue</a>
+      <a class="button secondary" href="#questions">See what evidence matters</a>
+    </div>
+  </div>
+</header>
+
 <main>
-<section class="section two-col"><div class="panel"><h2>What this project is</h2><p>The goal is to let families voluntarily report what their records show after allotment: tax sale, mortgage foreclosure, sheriff sale, private deed, probate/partition, guardian sale, right-of-way, fraud allegation, restriction-removal issue, or still unknown.</p><p>Submissions are reviewed before any individual story or data point is published. Public charts should show aggregate patterns, not private family information.</p></div><div class="panel"><h2>What the data can show</h2><ul class="checklist"><li>Common land-loss categories</li><li>Patterns by decade</li><li>Patterns by county and tribe/Nation</li><li>How many cases are still unknown or need more records</li><li>Where families need county, BIA/LTRO, NARA, probate, or tribal records next</li></ul></div></section>
-<section class="section two-col"><div class="panel"><h2>Land-loss categories chart</h2><p class="muted">Charts below use approved evidence submissions. If there are no approved submissions yet, example/demo bars are shown and labeled as examples.</p><div id="lossChart"></div></div><div class="panel"><h2>By decade</h2><div id="decadeChart"></div></div></section>
-<section class="section two-col"><div class="panel"><h2>Submit evidence for review</h2><div class="grid"><label>Ancestor or family name<input id="familyName" placeholder="optional; use initials if privacy is needed"></label><label>Tribe/Nation<input id="tribe" placeholder="optional"></label><label>County<input id="county" placeholder="county shown in later records, if known"></label><label>Decade<select id="decade"><option value="unknown">unknown</option><option>1900s</option><option>1910s</option><option>1920s</option><option>1930s</option><option>1940s</option><option>1950s</option><option>1960s+</option></select></label><label>Land-loss category<select id="lossMethod"><option value="unknown">Unknown / still researching</option><option value="tax_sale">Tax sale</option><option value="mortgage_foreclosure">Mortgage foreclosure</option><option value="sheriff_sale">Sheriff sale</option><option value="private_deed">Private deed / sale</option><option value="probate_partition">Probate / heirship / partition</option><option value="guardian_sale">Guardian/minor sale</option><option value="restriction_removal">Restriction removal / federal approval issue</option><option value="right_of_way_condemnation">Right-of-way / condemnation</option><option value="oil_gas_mineral">Oil/gas/mineral severance or lease issue</option><option value="fraud_alleged">Fraud alleged in records</option></select></label><label>Source type<select id="sourceType"><option>county record</option><option>LOC map</option><option>NARA/Dawes record</option><option>BIA/LTRO record</option><option>tribal record</option><option>court/probate record</option><option>family note - needs verification</option></select></label><label class="wide">What does the record show?<textarea id="summary" rows="6" placeholder="Describe what the record shows. Do not include living-person private details."></textarea></label><label class="wide">Source citation / link / record clue<textarea id="sourceNote" rows="3" placeholder="Book/page, instrument number, LOC/NARA link, county clerk reference, etc."></textarea></label><label>Email/contact for follow-up<input id="contact" placeholder="optional; not displayed publicly"></label></div></div><div class="panel"><h2>Submit after consent</h2><p class="muted">Check the required boxes beside the submit button before sending evidence for review.</p><div class="consent compact-consent"><label><input id="privacy" type="checkbox" style="width:auto"> I agree to the <a href="privacy.html">Privacy Policy</a>.</label><label><input id="terms" type="checkbox" style="width:auto"> I agree to the <a href="terms.html">Terms of Use</a>.</label><label><input id="submission" type="checkbox" style="width:auto"> I agree to the <a href="submission-policy.html">Submission Consent Policy</a>.</label><label><input id="permission" type="checkbox" style="width:auto"> I have permission to submit this information and will not include sensitive living-person data.</label><label><input id="age" type="checkbox" style="width:auto"> I am 13 or older. If I am submitting for a child under 13, I am the parent/guardian and will not submit the child’s private contact information.</label></div><div class="buttons consent-actions" style="margin-top:12px"><span class="muted small">The submit button activates after every required consent box above is checked.</span><button id="submitEvidence" disabled>Submit evidence for review</button></div><div id="submitStatus" class="status">Not submitted yet.</div></div></section>
-</main><footer class="site-footer"><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p></footer>
+  <section class="section two-col tight">
+    <div class="panel">
+      <p class="eyebrow dark">Why this form is different</p>
+      <h2>Build proof of patterns, not just stories.</h2>
+      <p>Individual family stories matter, but a pattern investigation needs structured fields that can be compared across many families: who the allottee was, what land was allotted, how the land left the family, which records prove it, and what public/private actors touched the transaction.</p>
+      <div class="callout-strong"><strong>Fast path:</strong> If you do not have the map entry yet, submit the Dawes roll/card clue, county, book/page, case number, tax-sale/sherriff-sale/probate clue, or BIA/LTRO file clue. Those can be indexed now and matched to maps later.</div>
+    </div>
+    <div class="panel">
+      <p class="eyebrow dark">Protection rule</p>
+      <h2>Private family documents stay protected.</h2>
+      <p>Do not include living-person private information, Social Security numbers, home addresses, phone numbers, unredacted IDs, medical details, or private family disputes. Public charts should show aggregate patterns only. Submissions are held for review before publication.</p>
+      <p class="privacy-note">This site does not determine title, ownership, heirship, citizenship, enrollment, or legal rights. It collects research leads and source citations for review.</p>
+    </div>
+  </section>
+
+  <section id="questions" class="section">
+    <div class="panel">
+      <p class="eyebrow dark">Evidence roadmap</p>
+      <h2>Questions the project needs families to answer</h2>
+      <div class="mission-detail-grid">
+        <div><strong>1. Allottee identity</strong><span>Name, tribe/Nation, roll number, census card number, blood degree, age, family relationship, and enrollment category.</span></div>
+        <div><strong>2. Land description</strong><span>Township, range, section, county, acreage, allotment number, LOC/NARA/BIA source, and legal description.</span></div>
+        <div><strong>3. Loss mechanism</strong><span>Tax sale, sheriff sale, mortgage foreclosure, guardian sale, probate/partition, deed, right-of-way, lease/mineral issue, or unknown.</span></div>
+        <div><strong>4. Actors involved</strong><span>County treasurer, sheriff, county court, guardian, lender, buyer, oil/gas company, BIA/Interior, railroad, city, state, or other.</span></div>
+        <div><strong>5. Documents proving it</strong><span>Allotment jacket, patent, deed, mortgage, sheriff deed, tax deed, probate file, guardianship file, lease, court order, or LTRO title record.</span></div>
+        <div><strong>6. Pattern value</strong><span>Whether the same loss path appears across many allottees, counties, decades, or record systems.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section two-col">
+    <div class="panel">
+      <h2>Land-loss categories chart</h2>
+      <p class="muted">Charts use approved Land Loss Project submissions. If no approved submissions exist yet, example bars are shown and labeled as examples.</p>
+      <div id="lossChart"></div>
+    </div>
+    <div class="panel">
+      <h2>By decade</h2>
+      <p class="muted">This shows when records say the legal event happened, not necessarily when the family first learned about it.</p>
+      <div id="decadeChart"></div>
+    </div>
+  </section>
+
+  <section id="submit" class="section">
+    <form class="panel" id="evidenceForm">
+      <p class="eyebrow dark">Voluntary submission for review</p>
+      <h2>Submit a land-loss clue or record</h2>
+      <p class="small-warning"><strong>Use what you have.</strong> You do not need every field. A county book/page, probate case number, tax-sale year, Dawes card number, or BIA/LTRO file clue is useful even without a finished map entry.</p>
+
+      <div class="question-block">
+        <h3>1. Allottee / family identity</h3>
+        <div class="grid">
+          <label>Ancestor or family name<input id="familyName" placeholder="name, initials, or family line"></label>
+          <label>Tribe / Nation<input id="tribe" placeholder="Cherokee Nation, Creek, Choctaw, etc."></label>
+          <label>Dawes roll / enrollment number<input id="rollNumber" placeholder="roll or enrollment #, if known"></label>
+          <label>Census card number<input id="cardNumber" placeholder="card #, if known"></label>
+          <label>Enrollment category<input id="enrollmentCategory" placeholder="by blood, Freedman, minor, newborn, etc."></label>
+          <label>Blood degree / status note<input id="bloodDegree" placeholder="as shown in record, if known"></label>
+          <label>Allottee age or birth year<input id="ageOrBirth" placeholder="age around sale or enrollment"></label>
+          <label>Relationship to submitter<input id="relationship" placeholder="great-grandparent, family line, researcher, etc."></label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>2. Allotted land description</h3>
+        <div class="grid">
+          <label>County shown in later records<input id="county" placeholder="county, if known"></label>
+          <label>Township<input id="township" placeholder="for example 24N"></label>
+          <label>Range<input id="range" placeholder="for example 14E"></label>
+          <label>Section<input id="section" placeholder="section #"></label>
+          <label>Allotment number / map number<input id="allotmentNumber" placeholder="number shown on map or jacket"></label>
+          <label>Acreage<input id="acreage" placeholder="40, 80, 160, etc."></label>
+          <label class="wide">Legal description<input id="legalDescription" placeholder="description from deed, patent, allotment jacket, tax record, or title abstract"></label>
+          <label class="wide">Map / source link<input id="mapLink" placeholder="LOC, NARA, county, BIA/LTRO, or other source URL if known"></label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>3. How did the land leave the family?</h3>
+        <div class="grid">
+          <label>Land-loss category<select id="lossMethod">
+            <option value="unknown">Unknown / still researching</option>
+            <option value="tax_sale">Tax sale</option>
+            <option value="mortgage_foreclosure">Mortgage foreclosure</option>
+            <option value="sheriff_sale">Sheriff sale</option>
+            <option value="private_deed">Private deed / sale</option>
+            <option value="probate_partition">Probate / heirship / partition</option>
+            <option value="guardian_sale">Guardian/minor sale</option>
+            <option value="restriction_removal">Restriction removal / federal approval issue</option>
+            <option value="right_of_way_condemnation">Right-of-way / condemnation</option>
+            <option value="oil_gas_mineral">Oil/gas/mineral severance or lease issue</option>
+            <option value="fraud_alleged">Fraud alleged in records</option>
+            <option value="still_in_family">Still in family / not lost</option>
+          </select></label>
+          <label>Event year<input id="eventYear" placeholder="specific year, if known"></label>
+          <label>Decade<select id="decade"><option value="unknown">unknown</option><option>1900s</option><option>1910s</option><option>1920s</option><option>1930s</option><option>1940s</option><option>1950s</option><option>1960s+</option></select></label>
+          <label>Amount / debt / tax shown<input id="amount" placeholder="$ amount, tax, debt, bid, judgment"></label>
+          <label>Buyer / grantee / lender<input id="buyer" placeholder="person, company, county, railroad, etc."></label>
+          <label>Case number or instrument number<input id="caseNumber" placeholder="case, instrument, docket, book/page"></label>
+          <label class="wide">What does the record show?<textarea id="summary" rows="5" placeholder="Describe the transaction, sale, mortgage, tax deed, sheriff deed, probate order, guardian sale, restriction issue, lease, or other record. Do not include private living-person details."></textarea></label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>4. Who touched the transaction?</h3>
+        <p class="muted">Check every actor shown in the records or suspected from the record path.</p>
+        <div class="check-grid">
+          <label><input type="checkbox" name="actors" value="county_treasurer"> County treasurer / tax office</label>
+          <label><input type="checkbox" name="actors" value="sheriff"> Sheriff</label>
+          <label><input type="checkbox" name="actors" value="county_court"> County court / judge</label>
+          <label><input type="checkbox" name="actors" value="county_clerk"> County clerk / recorder</label>
+          <label><input type="checkbox" name="actors" value="guardian"> Guardian / conservator</label>
+          <label><input type="checkbox" name="actors" value="private_lender"> Private lender / mortgage holder</label>
+          <label><input type="checkbox" name="actors" value="land_buyer"> Buyer / speculator / grantee</label>
+          <label><input type="checkbox" name="actors" value="oil_gas_company"> Oil, gas, or mineral company</label>
+          <label><input type="checkbox" name="actors" value="railroad_utility"> Railroad / utility / right-of-way holder</label>
+          <label><input type="checkbox" name="actors" value="bia_interior"> BIA / Interior / federal official</label>
+          <label><input type="checkbox" name="actors" value="tribal_office"> Tribal office / tribal record</label>
+          <label><input type="checkbox" name="actors" value="unknown_actor"> Unknown / not sure</label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>5. Protection or vulnerability flags</h3>
+        <p class="muted">These flags help identify repeatable legal problems across many records.</p>
+        <div class="check-grid">
+          <label><input type="checkbox" name="flags" value="minor"> Allottee was a minor</label>
+          <label><input type="checkbox" name="flags" value="elderly"> Allottee was elderly</label>
+          <label><input type="checkbox" name="flags" value="guardianship"> Guardianship involved</label>
+          <label><input type="checkbox" name="flags" value="restricted_status"> Restricted/trust status issue</label>
+          <label><input type="checkbox" name="flags" value="missing_notice"> Notice problem suspected</label>
+          <label><input type="checkbox" name="flags" value="missing_federal_approval"> No federal approval found yet</label>
+          <label><input type="checkbox" name="flags" value="fraud_alleged"> Fraud, coercion, or unfair dealing alleged</label>
+          <label><input type="checkbox" name="flags" value="taxation_issue"> Taxation of Indian land issue</label>
+          <label><input type="checkbox" name="flags" value="mortgage_without_proceeds"> Mortgage/loan proceeds unclear</label>
+          <label><input type="checkbox" name="flags" value="oil_gas_pressure"> Oil/gas lease or minerals nearby</label>
+          <label><input type="checkbox" name="flags" value="title_chain_gap"> Title-chain gap or missing document</label>
+          <label><input type="checkbox" name="flags" value="unknown_flag"> Unknown / still researching</label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>6. Documents or source clues</h3>
+        <div class="grid">
+          <label>Primary source type<select id="sourceType">
+            <option>county record</option>
+            <option>LOC map</option>
+            <option>NARA/Dawes record</option>
+            <option>BIA/LTRO record</option>
+            <option>tribal record</option>
+            <option>court/probate record</option>
+            <option>family note - needs verification</option>
+            <option>newspaper notice</option>
+            <option>title abstract</option>
+          </select></label>
+          <label>Federal approval shown?<select id="federalApproval">
+            <option value="unknown">Unknown / not checked</option>
+            <option value="yes">Yes — approval appears in record</option>
+            <option value="no">No approval found yet</option>
+            <option value="not_applicable">Not applicable / unsure</option>
+          </select></label>
+          <label class="wide">Source citation / link / record clue<textarea id="sourceNote" rows="4" placeholder="Book/page, instrument number, docket number, probate file, BIA/LTRO file number, NARA identifier, LOC link, newspaper citation, title abstract page, etc."></textarea></label>
+        </div>
+        <p class="muted">Document checklist:</p>
+        <div class="check-grid">
+          <label><input type="checkbox" name="documents" value="dawes_card"> Dawes card / roll entry</label>
+          <label><input type="checkbox" name="documents" value="enrollment_packet"> Enrollment packet</label>
+          <label><input type="checkbox" name="documents" value="allotment_jacket"> Allotment jacket</label>
+          <label><input type="checkbox" name="documents" value="patent_deed"> Patent / allotment deed</label>
+          <label><input type="checkbox" name="documents" value="map_plat"> Map / plat</label>
+          <label><input type="checkbox" name="documents" value="county_deed"> County deed</label>
+          <label><input type="checkbox" name="documents" value="mortgage_release"> Mortgage / release</label>
+          <label><input type="checkbox" name="documents" value="sheriff_deed"> Sheriff deed / sale notice</label>
+          <label><input type="checkbox" name="documents" value="tax_deed"> Tax deed / tax-sale record</label>
+          <label><input type="checkbox" name="documents" value="probate_order"> Probate / heirship / partition order</label>
+          <label><input type="checkbox" name="documents" value="guardianship_file"> Guardianship file</label>
+          <label><input type="checkbox" name="documents" value="oil_gas_lease"> Oil/gas/mineral lease</label>
+          <label><input type="checkbox" name="documents" value="ltro_title_record"> BIA/LTRO title record</label>
+          <label><input type="checkbox" name="documents" value="court_judgment"> Court judgment / docket</label>
+          <label><input type="checkbox" name="documents" value="newspaper_notice"> Newspaper notice</label>
+          <label><input type="checkbox" name="documents" value="family_story_only"> Family story only — needs verification</label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <h3>7. Contact and consent</h3>
+        <div class="grid">
+          <label>Email/contact for follow-up<input id="contact" placeholder="optional; not displayed publicly"></label>
+          <label>May researchers contact you?<select id="contactPermission"><option value="yes">Yes, for follow-up</option><option value="no">No, use this as a research lead only</option></select></label>
+        </div>
+        <div class="consent compact-consent">
+          <label><input id="privacy" type="checkbox"> I agree to the <a href="privacy.html">Privacy Policy</a>.</label>
+          <label><input id="terms" type="checkbox"> I agree to the <a href="terms.html">Terms of Use</a>.</label>
+          <label><input id="submission" type="checkbox"> I agree to the <a href="submission-policy.html">Submission Consent Policy</a>.</label>
+          <label><input id="permission" type="checkbox"> I have permission to submit this information and will not include sensitive living-person data.</label>
+          <label><input id="age" type="checkbox"> I am 13 or older. If I am submitting for a child under 13, I am the parent/guardian and will not submit the child’s private contact information.</label>
+          <label><input id="patternConsent" type="checkbox"> I understand this information may be used for historical research, aggregate pattern mapping, legal-policy analysis, or possible attorney review, while private living-person information is protected.</label>
+        </div>
+      </div>
+
+      <div class="evidence-actions">
+        <button type="submit" id="submitEvidence" disabled>Submit evidence for review</button>
+        <button type="button" class="secondary" id="previewBtn">Preview structured summary</button>
+        <button type="button" class="ghost" id="clearBtn">Clear form</button>
+        <span class="muted small">The submit button activates after every required consent box is checked.</span>
+      </div>
+      <div id="submitStatus" class="status">Not submitted yet.</div>
+      <details>
+        <summary>Structured summary preview</summary>
+        <pre id="structuredPreview" class="structured-preview">Use the preview button to see what will be sent for review.</pre>
+      </details>
+    </form>
+  </section>
+
+  <section class="section">
+    <div class="panel">
+      <h2>Quick data layers to add before map indexing is finished</h2>
+      <p>These can be collected immediately and matched to maps later:</p>
+      <p><span class="source-pill">Dawes roll/card basics</span><span class="source-pill">Allotment packet ordered / not ordered</span><span class="source-pill">County book/page</span><span class="source-pill">Probate case number</span><span class="source-pill">Tax-sale year</span><span class="source-pill">Sheriff deed</span><span class="source-pill">Mortgage/release</span><span class="source-pill">BIA/LTRO file clue</span><span class="source-pill">Oil/gas lease clue</span></p>
+      <p class="muted">The map index will eventually connect family names to township/range/section. The Land Loss Project can move faster by collecting legal-event clues first, then linking them to map entries after review.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p><a href="index.html">Home</a> · <a href="sources.html">Source records</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="submission-policy.html">Submission consent</a></p>
+  <p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p>
+</footer>
+
 <script>
-const $=id=>document.getElementById(id); const labels={tax_sale:'Tax sale',mortgage_foreclosure:'Mortgage foreclosure',sheriff_sale:'Sheriff sale',private_deed:'Private deed/sale',probate_partition:'Probate/partition',guardian_sale:'Guardian sale',restriction_removal:'Restriction issue',right_of_way_condemnation:'Right-of-way/condemnation',oil_gas_mineral:'Oil/gas/mineral',fraud_alleged:'Fraud alleged',unknown:'Unknown'};
-function chart(el, rows, demo=false){const max=Math.max(1,...rows.map(r=>r.count)); el.innerHTML=rows.map(r=>`<div class="bar ${demo?'demo':''}"><strong>${labels[r.label]||r.label}</strong><span style="width:${Math.max(4,Math.round((r.count/max)*100))}%"></span><em>${r.count}${demo?' example':''}</em></div>`).join('')}
-async function loadStats(){try{const r=await fetch('/api/evidence-stats');const d=await r.json();const losses=d.loss_methods||[];const decades=d.decades||[];chart($('lossChart'), losses.length?losses:[{label:'tax_sale',count:3},{label:'mortgage_foreclosure',count:2},{label:'probate_partition',count:1},{label:'unknown',count:4}], !losses.length);chart($('decadeChart'), decades.length?decades:[{label:'1910s',count:1},{label:'1920s',count:4},{label:'1930s',count:2},{label:'unknown',count:3}], !decades.length)}catch(e){chart($('lossChart'),[{label:'unknown',count:1}],true);chart($('decadeChart'),[{label:'unknown',count:1}],true)}}
-async function submit(){const ok=['privacy','terms','submission','permission','age'].every(id=>$(id).checked);if(!ok){$('submitStatus').className='status bad';$('submitStatus').textContent='Please agree to privacy, terms, submission consent, and permission before submitting.';return}const summary=$('summary').value.trim();if(summary.length<20){$('submitStatus').className='status bad';$('submitStatus').textContent='Please describe what the record shows.';return}const body={family_name:$('familyName').value.trim(),tribe:$('tribe').value.trim(),county:$('county').value.trim(),decade:$('decade').value,loss_method:$('lossMethod').value,source_type:$('sourceType').value,summary,source_note:$('sourceNote').value.trim(),contact:$('contact').value.trim(),consent:{privacy:true,terms:true,submission:true,permission:true,age:true}};try{const r=await fetch('/api/submit-evidence',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Submit failed');$('submitStatus').className='status good';$('submitStatus').textContent='Submitted for review. Thank you.';$('summary').value='';$('sourceNote').value='';}catch(e){$('submitStatus').className='status bad';$('submitStatus').textContent=e.message}}
-function updateGate(){const ok=['privacy','terms','submission','permission','age'].every(id=>$(id).checked);$('submitEvidence').disabled=!ok}
-document.addEventListener('DOMContentLoaded',()=>{loadStats();['privacy','terms','submission','permission','age'].forEach(id=>$(id).addEventListener('change',updateGate));updateGate();$('submitEvidence').addEventListener('click',submit)})
-</script></body></html>
+const $=id=>document.getElementById(id);
+const labels={tax_sale:'Tax sale',mortgage_foreclosure:'Mortgage foreclosure',sheriff_sale:'Sheriff sale',private_deed:'Private deed/sale',probate_partition:'Probate/partition',guardian_sale:'Guardian sale',restriction_removal:'Restriction issue',right_of_way_condemnation:'Right-of-way/condemnation',oil_gas_mineral:'Oil/gas/mineral',fraud_alleged:'Fraud alleged',still_in_family:'Still in family',unknown:'Unknown'};
+function val(id){return ($(id)&&$(id).value||'').trim()}
+function checks(name){return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(x=>x.value)}
+function chart(el, rows, demo=false){const max=Math.max(1,...rows.map(r=>r.count));el.innerHTML=rows.map(r=>`<div class="bar ${demo?'demo':''}"><strong>${labels[r.label]||r.label}</strong><span style="width:${Math.max(4,Math.round((r.count/max)*100))}%"></span><em>${r.count}${demo?' example':''}</em></div>`).join('')}
+async function loadStats(){try{const r=await fetch('/api/evidence-stats');const d=await r.json();const losses=d.loss_methods||[];const decades=d.decades||[];chart($('lossChart'),losses.length?losses:[{label:'tax_sale',count:3},{label:'mortgage_foreclosure',count:2},{label:'sheriff_sale',count:2},{label:'probate_partition',count:1},{label:'unknown',count:4}],!losses.length);chart($('decadeChart'),decades.length?decades:[{label:'1910s',count:1},{label:'1920s',count:4},{label:'1930s',count:2},{label:'unknown',count:3}],!decades.length)}catch(e){chart($('lossChart'),[{label:'unknown',count:1}],true);chart($('decadeChart'),[{label:'unknown',count:1}],true)}}
+function structuredObject(){return{allottee:{family_name:val('familyName'),tribe:val('tribe'),roll_number:val('rollNumber'),census_card_number:val('cardNumber'),enrollment_category:val('enrollmentCategory'),blood_degree_or_status:val('bloodDegree'),age_or_birth_year:val('ageOrBirth'),relationship_to_submitter:val('relationship')},land:{county:val('county'),township:val('township'),range:val('range'),section:val('section'),allotment_or_map_number:val('allotmentNumber'),acreage:val('acreage'),legal_description:val('legalDescription'),map_or_source_link:val('mapLink')},loss_event:{loss_method:val('lossMethod'),event_year:val('eventYear'),decade:val('decade'),amount_debt_tax_or_bid:val('amount'),buyer_grantee_or_lender:val('buyer'),case_or_instrument_number:val('caseNumber'),summary:val('summary')},actors:checks('actors'),flags:checks('flags'),documents:checks('documents'),sources:{source_type:val('sourceType'),federal_approval_status:val('federalApproval'),source_note:val('sourceNote')},contact:{contact:val('contact'),contact_permission:val('contactPermission')}}}
+function formatStructured(o){return `ALLOTTEE / FAMILY\n- Name or family line: ${o.allottee.family_name||'unknown'}\n- Tribe/Nation: ${o.allottee.tribe||'unknown'}\n- Dawes roll/enrollment #: ${o.allottee.roll_number||'unknown'}\n- Census card #: ${o.allottee.census_card_number||'unknown'}\n- Enrollment category: ${o.allottee.enrollment_category||'unknown'}\n- Blood degree/status: ${o.allottee.blood_degree_or_status||'unknown'}\n- Age/birth clue: ${o.allottee.age_or_birth_year||'unknown'}\n- Relationship: ${o.allottee.relationship_to_submitter||'unknown'}\n\nLAND DESCRIPTION\n- County: ${o.land.county||'unknown'}\n- Township/range/section: ${o.land.township||'?'} ${o.land.range||'?'} sec. ${o.land.section||'?'}\n- Allotment/map number: ${o.land.allotment_or_map_number||'unknown'}\n- Acreage: ${o.land.acreage||'unknown'}\n- Legal description: ${o.land.legal_description||'unknown'}\n- Map/source link: ${o.land.map_or_source_link||'unknown'}\n\nLOSS EVENT\n- Category: ${labels[o.loss_event.loss_method]||o.loss_event.loss_method||'unknown'}\n- Event year/decade: ${o.loss_event.event_year||'unknown'} / ${o.loss_event.decade||'unknown'}\n- Amount/debt/tax/bid: ${o.loss_event.amount_debt_tax_or_bid||'unknown'}\n- Buyer/grantee/lender: ${o.loss_event.buyer_grantee_or_lender||'unknown'}\n- Case/instrument: ${o.loss_event.case_or_instrument_number||'unknown'}\n- Description: ${o.loss_event.summary||'none provided'}\n\nACTORS CHECKED\n${o.actors.length?o.actors.join(', '):'none checked'}\n\nPROTECTION / VULNERABILITY FLAGS\n${o.flags.length?o.flags.join(', '):'none checked'}\n\nDOCUMENTS / SOURCE CLUES\n${o.documents.length?o.documents.join(', '):'none checked'}\n- Primary source type: ${o.sources.source_type||'unknown'}\n- Federal approval status: ${o.sources.federal_approval_status||'unknown'}\n- Source note: ${o.sources.source_note||'none provided'}\n\nCONTACT\n- Contact permission: ${o.contact.contact_permission||'unknown'}\n- Contact provided: ${o.contact.contact?'yes':'no'}`}
+function sourceBundle(o){return [`Primary source type: ${o.sources.source_type||'unknown'}`,`Federal approval status: ${o.sources.federal_approval_status||'unknown'}`,`Source note: ${o.sources.source_note||'none'}`,`Map/source link: ${o.land.map_or_source_link||'none'}`,`Case/instrument: ${o.loss_event.case_or_instrument_number||'none'}`,`Documents checked: ${o.documents.join(', ')||'none'}`].join('\n')}
+function updateGate(){const ok=['privacy','terms','submission','permission','age','patternConsent'].every(id=>$(id).checked);$('submitEvidence').disabled=!ok}
+function preview(){const text=formatStructured(structuredObject());$('structuredPreview').textContent=text;return text}
+async function submit(e){e.preventDefault();const ok=['privacy','terms','submission','permission','age','patternConsent'].every(id=>$(id).checked);if(!ok){$('submitStatus').className='status bad';$('submitStatus').textContent='Please agree to every required consent box before submitting.';return}const o=structuredObject();const structured=preview();const enough=(o.loss_event.summary&&o.loss_event.summary.length>=20)||o.allottee.family_name||o.allottee.roll_number||o.allottee.census_card_number||o.land.legal_description||o.sources.source_note;if(!enough){$('submitStatus').className='status bad';$('submitStatus').textContent='Please add at least one useful clue: family/allottee name, Dawes number, legal description, source note, or a short description of the record.';return}const body={family_name:o.allottee.family_name,tribe:o.allottee.tribe,county:o.land.county,decade:o.loss_event.decade,loss_method:o.loss_event.loss_method,source_type:o.sources.source_type,summary:structured,source_note:sourceBundle(o),contact:o.contact.contact,consent:{privacy:true,terms:true,submission:true,permission:true,age:true,pattern_research:true},draft_details:o};try{const r=await fetch('/api/submit-evidence',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});let d={};try{d=await r.json()}catch(_){ }if(!r.ok)throw new Error(d.error||'Submit failed');$('submitStatus').className='status good';$('submitStatus').textContent='Submitted for review. Thank you.';$('evidenceForm').reset();updateGate();$('structuredPreview').textContent='Use the preview button to see what will be sent for review.'}catch(err){$('submitStatus').className='status bad';$('submitStatus').textContent=err.message}}
+function clearForm(){if(confirm('Clear this form?')){$('evidenceForm').reset();updateGate();$('structuredPreview').textContent='Use the preview button to see what will be sent for review.';$('submitStatus').className='status';$('submitStatus').textContent='Not submitted yet.'}}
+document.addEventListener('DOMContentLoaded',()=>{loadStats();['privacy','terms','submission','permission','age','patternConsent'].forEach(id=>$(id).addEventListener('change',updateGate));updateGate();$('previewBtn').addEventListener('click',preview);$('clearBtn').addEventListener('click',clearForm);$('evidenceForm').addEventListener('submit',submit)})
+</script>
+</body>
+</html>
