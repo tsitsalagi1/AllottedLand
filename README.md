@@ -159,3 +159,28 @@ Upload/overwrite these changed files after v0.36:
 - `changelog.html` if using the public changelog page
 
 This release fixes the Dawes search/PDF display bug. The print packet is hidden on screen and appears only in the browser print/save-PDF output. Dawes results no longer display before a user enters a search clue and clicks Search.
+
+## v0.38 deployment note
+
+Upload these changed files over the current site:
+
+- `index.html`
+- `assets/print-packet.js`
+- `assets/v032-visual.css`
+- `assets/app.js`
+- `README.md`
+- `CHANGELOG.md`
+- `changelog.html`
+
+After upload, hard refresh the site with Ctrl+F5. The print packet must remain outside `<main>` in `index.html`; otherwise print CSS can hide the packet's parent container.
+
+## v0.38 data-source roadmap
+
+The next data layer should prefer official/public source paths:
+
+1. NARA Catalog API for archival descriptions, digital-object metadata, OCR/extracted text, and JSON search results.
+2. Library of Congress JSON API and IIIF image services for map metadata, map pages, citations, and images.
+3. Oklahoma Historical Society Dawes database fields as a search/path reference, subject to permissions and practical access limits.
+4. BIA/LTRO as the official record path for trust/restricted title documents, including patents, deeds, probate orders, leases, rights-of-way, cadastral surveys, plats, and title status records.
+
+Do not scrape paywalled/restricted sites such as Ancestry, Fold3, or FamilySearch. Link out or use user-provided/downloaded records only where permitted.

@@ -174,3 +174,17 @@ The agent also now checks common Windows install locations automatically.
 - Stopped the Dawes starter record from appearing as a result before the user runs a search.
 - Requires at least one Dawes search clue before showing results.
 - Added cache-busting query strings to the Dawes CSS/JS references in `index.html`.
+
+## v0.38 — Universal Branded Print Packets + Data API Roadmap
+
+- Fixed print output by moving the hidden print packet outside `<main>`, so print CSS no longer hides the packet's parent container.
+- Added branded print/save-PDF support for:
+  - built research path results;
+  - generated county-record request text;
+  - visible site-search index results and map leads;
+  - individual visible result cards;
+  - Dawes/Five Tribes result packets through the existing Dawes print button.
+- Added `assets/print-packet.js` as a client-side universal print manager.
+- Added print buttons for “Build research path” results and “Search the current index” results.
+- Added CSS for printable preformatted county-request text and result cards.
+- Data roadmap: NARA Catalog API, LOC JSON/IIIF APIs, OHS Dawes database fields, and BIA/LTRO record paths should be treated as source-linked leads, not proof.

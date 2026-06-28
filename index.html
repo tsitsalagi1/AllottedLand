@@ -103,6 +103,7 @@
           <button type="submit" id="buildPathBtn" disabled>Build research path</button>
           <button type="button" class="secondary" id="fillExample">Use map-only sample</button>
           <button type="button" class="ghost" id="clearWizard">Clear</button>
+          <button type="button" class="ghost" id="printPathBtn">Print path / save PDF</button>
         </div>
       </form>
     </section>
@@ -177,18 +178,6 @@
       </div>
     </section>
 
-    <section id="printPacket" class="print-packet" aria-hidden="true" style="display:none;">
-      <div class="print-brand">
-        <p class="print-eyebrow">AllottedLand.com</p>
-        <h1>Family Allotment Research Lead Packet</h1>
-        <p>Free public research tool helping Native families follow Dawes records, allotment maps, county records, BIA/LTRO records, and documented land history.</p>
-        <p class="print-meta">Generated from AllottedLand.com on <span id="printPacketDate"></span></p>
-      </div>
-      <div id="printPacketContent"></div>
-      <div class="print-disclaimer">
-        <strong>Research-only notice:</strong> This packet is a research lead, not proof of title, citizenship, heirship, ownership, or legal rights. Verify every match against original NARA, tribal, county, BIA/LTRO, and other source records.
-      </div>
-    </section>
 
 
     <section id="search" class="section layout">
@@ -210,6 +199,7 @@
           <label class="inline-agree"><input type="checkbox" id="searchAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
           <button id="searchBtn" disabled>Search</button>
           <button id="clearBtn" class="secondary">Clear</button>
+          <button type="button" class="ghost" id="printSiteResultsBtn">Print results / save PDF</button>
         </div>
       </section>
 
@@ -295,6 +285,20 @@
     </section>
   </main>
 
+  <section id="printPacket" class="print-packet" aria-hidden="true" style="display:none;">
+    <div class="print-brand">
+      <p class="print-eyebrow">AllottedLand.com</p>
+      <h1>Family Allotment Research Lead Packet</h1>
+      <p>Free public research tool helping Native families follow Dawes records, allotment maps, county records, BIA/LTRO records, and documented land history.</p>
+      <p class="print-meta">Generated from AllottedLand.com on <span id="printPacketDate"></span></p>
+    </div>
+    <div id="printPacketContent"></div>
+    <div class="print-disclaimer">
+      <strong>Research-only notice:</strong> This packet is a research lead, not proof of title, citizenship, heirship, ownership, or legal rights. Verify every match against original NARA, tribal, county, BIA/LTRO, and other source records.
+    </div>
+  </section>
+
+
   <footer class="site-footer">
     <div class="footer-grid">
       <div>
@@ -315,7 +319,8 @@
   </footer>
 
 
-  <script src="assets/dawes-search.js?v=037"></script>
+  <script src="assets/dawes-search.js?v=038"></script>
+  <script src="assets/print-packet.js?v=038"></script>
   <script src="assets/app.js"></script>
   <script>
   (function () {
