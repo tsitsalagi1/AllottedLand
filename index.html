@@ -39,7 +39,8 @@
       <h1>Find your family’s allotted land.</h1>
       <p class="subtitle">A free public research tool helping Native families search historical allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues.</p>
       <div class="hero-actions">
-        <a class="button" href="#start">I don’t know where to start</a>
+        <a class="button" href="#unified-search">Search everything</a>
+        <a class="button secondary" href="#start">I don’t know where to start</a>
         <a class="button secondary" href="#search">Search township/range</a>
         <a class="button tertiary" href="testimonials.html">Read family stories</a>
       </div>
@@ -61,6 +62,41 @@
         </div>
       </div>
     </section>
+
+
+
+    <section id="unified-search" class="section unified-search-section">
+      <div class="panel unified-intro-panel">
+        <p class="eyebrow dark">One-search research engine</p>
+        <h2>Search everything from one clue.</h2>
+        <p>Enter a name, Dawes roll or census card number, address, latitude/longitude, township/range/section, county, legal description, tax-sale clue, family story, or agency keyword. AllottedLand.com will build a research path, search the local index, create official source leads, and prepare a printable packet.</p>
+        <p class="hint"><strong>Beta notice:</strong> official-source connectors return research leads, not proof. NARA live results require the server-side <code>NARA_API_KEY</code>. LOC/Chronicling America may return official fallback links when live JSON is blocked or rate-limited.</p>
+      </div>
+      <div class="unified-search-grid">
+        <form class="panel unified-search-panel" id="unifiedSearchForm" onsubmit="return false;">
+          <h2>Universal search</h2>
+          <label class="wide">Any clue
+            <textarea id="unifiedQuery" rows="4" placeholder="Examples: Claude Ketcher · roll 1637 · census card 4747 · T24N R14E section 24 · 17675 S Muskogee Ave, Tahlequah, OK · Cherokee tax sale Craig County 1924"></textarea>
+          </label>
+          <div class="buttons consent-actions">
+            <label class="inline-agree"><input type="checkbox" id="unifiedAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
+            <button type="button" id="unifiedSearchBtn">Search everything</button>
+            <button type="button" id="unifiedUseCluesBtn" class="secondary">Use guided-search clues</button>
+            <button type="button" id="unifiedClearBtn" class="secondary">Clear</button>
+            <button type="button" id="unifiedPrintBtn" class="ghost">Print all / save PDF</button>
+          </div>
+          <p id="unifiedStatus" class="status">Enter one clue to search all available site data and source connectors.</p>
+        </form>
+        <section class="panel unified-results-panel" aria-live="polite">
+          <div class="results-head">
+            <h2>Unified results</h2>
+            <span id="unifiedCount">0 leads</span>
+          </div>
+          <div id="unifiedResults" class="results unified-results"><p class="muted">Unified search results will appear here.</p></div>
+        </section>
+      </div>
+    </section>
+
 
     <section id="start" class="section two-col">
       <div class="panel intro-panel">
@@ -374,6 +410,7 @@
   <script src="assets/dawes-search.js?v=039"></script>
   <script src="assets/print-packet.js?v=044"></script>
   <script src="assets/source-connectors.js?v=044"></script>
+  <script src="assets/unified-search.js?v=045"></script>
   <script src="assets/app.js?v=039"></script>
   <script>
   (function () {

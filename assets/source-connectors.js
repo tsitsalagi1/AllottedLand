@@ -12,7 +12,7 @@
     {key:'loc', label:'Library of Congress Maps', type:'Public JSON API / official links', url:'https://www.loc.gov/maps/', why:'Digitized maps, atlases, item metadata, images, resources, and source links. If the proxy is blocked, the site returns printable official LOC search links.'},
     {key:'chronicling', label:'Chronicling America Newspapers', type:'Public LOC API / official links', url:'https://www.loc.gov/collections/chronicling-america/', why:'Historical newspaper search leads for tax-sale notices, sheriff sales, guardianship notices, probate notices, oil/gas notices, and family-name clues.'},
     {key:'federalregister', label:'Federal Register', type:'Public API, no key', url:'https://www.federalregister.gov/developers/documentation/api/v1', why:'BIA notices, tribal ordinances, land acquisitions, environmental notices, Indian Affairs rules, and official PDF links.'},
-    {key:'census', label:'Census Geocoder / TIGERweb', type:'Public geography APIs', url:'https://geocoding.geo.census.gov/geocoder/', why:'Address or coordinate lookup for county, tract/block, Census AIANNH, off-reservation trust, and Oklahoma Tribal Statistical Area source leads.'},
+    {key:'census', label:'Census Geocoder / TIGERweb', type:'Public geography APIs', url:'https://geocoding.geo.census.gov/geocoder/', why:'Address or coordinate lookup for county, tract/block, Census AIANNH, off-reservation trust, and Oklahoma Tribal Statistical Area source leads. v0.44 can resolve an address to coordinates first when Census needs a coordinate lookup.'},
     {key:'ohs', label:'Oklahoma Historical Society Dawes Search', type:'Official state search/link', url:'https://www.okhistory.org/research/dawes', why:'Search by first name, last name, tribal nation, roll number, and card number; packet ordering path.'},
     {key:'bia', label:'BIA/LTRO Land Titles and Records', type:'Official record-request path', url:'https://www.bia.gov/bia/ots/dtaot/bltr', why:'Official federal office-of-record for trust/restricted title documents, patents, deeds, probate orders, leases, rights-of-way, plats, and title status.'},
     {key:'blm', label:'BLM GLO Records', type:'Official federal land-records link', url:'https://glorecords.blm.gov/', why:'Federal land patents, survey plats, field notes, land status records, tract books, and township land catalog.'},
@@ -129,6 +129,31 @@
   function searchLoc(){ const q = builtQuery('Indian Territory allotment map'); return apiSearch('/api/loc-search', new URLSearchParams({ q, limit:'10' }), 'Library of Congress map source leads', 'Library of Congress', 'Searching Library of Congress map metadata...'); }
   function searchNews(){ const c = sourceClues(); const q = builtQuery('tax sale sheriff sale guardian probate allotment'); return apiSearch('/api/chronicling-search', new URLSearchParams({ q, place:c.place, limit:'10' }), 'Chronicling America newspaper source leads', 'Chronicling America / LOC', 'Searching historic newspaper leads for notices and family-name clues...'); }
   function searchFR(){ const q = builtQuery('Bureau of Indian Affairs allotment land'); return apiSearch('/api/fr-search', new URLSearchParams({ q, limit:'10' }), 'Federal Register source leads', 'Federal Register', 'Searching Federal Register notices and rules...'); }
+
+  async function resolveAddress(){
+    const c = sourceClues();
+    if (!c.address) return setStatus('Enter an address before converting it to coordinates.', true);
+    const params = new URLSearchParams({ address: c.address, limit:'5' });
+    setStatus('Resolving address to latitude/longitude...');
+    try{
+      const r = await fetch('/api/address-resolve?' + params.toString());
+      const d = await r.json().catch(()=>({}));
+      if (!r.ok) throw new Error(d.error || 'Address resolver failed.');
+      if (d.resolved) {
+        if ($('sourceLat')) $('sourceLat').value = d.resolved.lat;
+        if ($('sourceLon')) $('sourceLon').value = d.resolved.lon;
+        showResults('Address-to-coordinate leads', d.resolved.provider || 'Address resolver', d.results || [], d.notice || 'Verify coordinates before relying on geography leads.');
+        setStatus(`Resolved address to ${d.resolved.lat}, ${d.resolved.lon}. Now use Census geography lookup.`);
+      } else {
+        showResults('Address-to-coordinate leads', 'Address resolver', d.results || [], d.notice || 'No coordinates found.');
+        setStatus('No coordinates found. Try a more complete street address or paste map-pin coordinates.', true);
+      }
+    }catch(e){
+      showResults('Address-to-coordinate leads', 'Address resolver', [], e.message);
+      setStatus(e.message + ' Try latitude/longitude from a map pin.', true);
+    }
+  }
+
   function searchCensus(){
     const c = sourceClues();
     const params = new URLSearchParams({ limit:'20' });
@@ -195,6 +220,7 @@
     $('sourceLocBtn')?.addEventListener('click', searchLoc);
     $('sourceNewsBtn')?.addEventListener('click', searchNews);
     $('sourceFRBtn')?.addEventListener('click', searchFR);
+    $('sourceResolveAddressBtn')?.addEventListener('click', resolveAddress);
     $('sourceCensusBtn')?.addEventListener('click', searchCensus);
     $('sourceRequestsBtn')?.addEventListener('click', buildRecordRequests);
     $('sourcePrintBtn')?.addEventListener('click', printSourceResults);

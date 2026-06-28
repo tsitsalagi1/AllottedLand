@@ -1,4 +1,11 @@
 
+## v0.45 Unified Search API
+
+Endpoint: `/api/unified-search?q=...`
+
+Returns: `query`, `detected_types`, `research_path`, `approved_records`, `official_source_leads`, and `record_request_packet`. The endpoint does not require a database migration. If the D1 `DB` binding is available, it searches approved public records; otherwise it still returns path/source-link guidance.
+
+
 ## v0.44 Address resolver endpoint
 
 `GET /api/address-resolve?address=...` returns:

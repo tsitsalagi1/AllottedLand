@@ -1,4 +1,19 @@
 
+## v0.45 Unified Search
+
+The homepage now has a one-search engine. Users can enter a name, Dawes roll number, census card number, address, latitude/longitude, township/range/section, county, family story, or legal-notice clue. The site will:
+
+- classify the clue type;
+- build a research path;
+- search local map, Dawes, allotment, and approved-record data;
+- query official source connectors where useful;
+- prepare official source links;
+- build record-request text for NARA/OHS, county clerk, and BIA/LTRO; and
+- print/save the full packet as a branded PDF.
+
+No new D1 migration is required. Deploy the full v0.45 folder with Wrangler, not as a changed-files-only upload.
+
+
 ## v0.44 address-to-coordinate lookup
 
 Adds an address resolver for Census/TIGERweb research leads:

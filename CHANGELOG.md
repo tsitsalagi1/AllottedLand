@@ -1,4 +1,13 @@
 
+## v0.45 — Unified search + research packet
+
+- Added a one-search homepage engine that accepts names, roll/card numbers, addresses, coordinates, township/range/section, counties, family stories, and legal-notice clues.
+- Added `/api/unified-search` to classify clues, build a research path, prepare source links, return approved D1 record matches, and generate request-packet text.
+- Added `assets/unified-search.js` to search local map/Dawes/index data, approved records, NARA/LOC/Federal Register/Chronicling America/Census connectors, and render one printable results package.
+- Added branded print/save-PDF support for all unified results.
+- Keeps advanced individual tools on the page for power users while giving regular users one place to start.
+
+
 ## v0.44 — Address-to-coordinate lookup for Census/TIGERweb
 
 - Added `/api/address-resolve` endpoint.
