@@ -110,3 +110,14 @@ The agent also now checks common Windows install locations automatically.
 - Adds `functions/api/admin-dashboard.js` for admin-only dashboard counts and latest approved records.
 - Moves latest-approved-record display and Phase 1 data status off the public home page and into the admin panel.
 - Keeps the public home page focused on search, guidance, source records, and the volunteer workbench.
+
+## v0.30 — Login, testimonials, evidence project, consent gate
+- Added `/login.html` for reviewer/admin key storage and verification.
+- Added Testimonials page with consent-gated public submissions for review.
+- Added People Powered Evidence Project page with consent-gated evidence submissions and aggregate chart placeholders.
+- Added backend APIs for testimonials and evidence review using Cloudflare Pages Functions + D1.
+- Added admin review sections for pending testimonials and evidence submissions.
+- Cleaned the public home page: removed launch/verification-rule blocks and Help Index Maps button.
+- Added Privacy/Terms agreement gate before public search and guided research-path tools.
+- Updated Workbench with user-focused instructions, LOC source link, saved reviewer-key loading, and township/range county lookup architecture.
+- Added D1 migration `migrations/0002_testimonials_evidence.sql`.

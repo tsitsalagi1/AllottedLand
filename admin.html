@@ -1,268 +1,34 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AllottedLand Admin Review v0.29</title>
-  <style>
-    :root {
-      --green:#173f35; --green2:#235b4e; --cream:#f6f1e9; --paper:#fffdf8;
-      --line:#d8cbb8; --ink:#102033; --muted:#667085; --danger:#9f2f23; --gold:#c9a45a;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink)}
-    header{background:var(--green);color:white;padding:28px 20px} header .wrap{max-width:1180px;margin:auto}
-    h1{margin:0;font-size:clamp(26px,4vw,44px)} h2{margin:0 0 12px}.sub{opacity:.9;margin:.4rem 0 0}
-    .wrap{max-width:1180px;margin:0 auto;padding:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 10px rgba(17,24,39,.05)}
-    label{display:block;font-weight:700;margin:10px 0 5px} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:white} textarea{min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
-    .grid{display:grid;gap:12px}.grid.cols{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:#efe6d8;border-radius:14px;padding:14px}.stat strong{display:block;font-size:32px;color:var(--green)}
-    @media(max-width:900px){.grid.cols,.stats{grid-template-columns:1fr 1fr}}@media(max-width:650px){.grid.cols,.stats{grid-template-columns:1fr}}
-    button{border:0;border-radius:999px;background:var(--green);color:white;font-weight:800;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0}button.secondary{background:#eee5d7;color:var(--ink)}button.danger{background:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}.row-actions{white-space:nowrap}.status{padding:10px;border-radius:10px;background:#e7f5ef;color:#123d32;margin-top:10px}.status.error{background:#fde8e4;color:#7a1d13}.muted{color:var(--muted)}
-    table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}th{background:#efe6d8}.pill{display:inline-block;border-radius:999px;background:#efe6d8;padding:4px 8px;font-size:12px;font-weight:700}.split{display:grid;grid-template-columns:1.25fr .95fr;gap:16px}@media(max-width:1000px){.split{grid-template-columns:1fr}}
-    .record-list{max-height:620px;overflow:auto}.details pre{white-space:pre-wrap;background:#111827;color:#f9fafb;border-radius:10px;padding:12px;max-height:280px;overflow:auto}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.checkbox-cell{width:36px}.selected{outline:3px solid var(--gold)}.small{font-size:12px}.topnav a{color:white;margin-right:12px}.warning{background:#fff4d6;border:1px solid #ead192;padding:10px;border-radius:10px;margin-top:10px}.latest-list{display:grid;gap:8px}.latest-item{border:1px solid var(--line);background:white;border-radius:12px;padding:10px}.hidden{display:none !important}.lock-card{max-width:720px;margin:28px auto}.lock-title{font-size:22px;font-weight:900}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  </style>
-</head>
-<body>
-<header>
-  <div class="wrap">
-    <div class="topnav"><a href="/">AllottedLand.com</a><a href="/workbench.html">Workbench</a></div>
-    <h1>Admin Review v0.29</h1>
-    <p class="sub">Private review area for pending submissions, latest approved records, and extraction progress.</p>
-  </div>
-</header>
-
-<main class="wrap">
-  <section id="loginPanel" class="card lock-card">
-    <p class="lock-title">Admin key required</p>
-    <p class="muted">Nothing loads from the admin database until the admin key is entered and verified. The key is sent only as an <code>X-Admin-Key</code> request header.</p>
-    <label for="loginAdminKey">Admin key</label>
-    <input id="loginAdminKey" type="password" placeholder="ADMIN_KEY from Cloudflare Pages variables" autocomplete="off" />
-    <label><input id="rememberKey" type="checkbox" style="width:auto"> Remember key in this browser</label>
-    <button id="unlockBtn">Unlock admin panel</button>
-    <a class="button secondary" style="display:inline-block;text-decoration:none" href="/">Back to home</a>
-    <div id="loginStatus" class="status" hidden></div>
-    <div class="warning"><strong>Security note:</strong> this page hides the admin interface until your key is verified. The database APIs still enforce the key server-side. For stronger page-level protection, put <code>/admin.html</code> behind Cloudflare Access.</div>
-  </section>
-
-  <div id="adminApp" class="hidden">
-    <section class="card">
-      <div class="toolbar" style="justify-content:space-between">
-        <div>
-          <h2>Admin dashboard</h2>
-          <p class="muted">Phase status and latest approved records live here now, not on the public home page.</p>
-        </div>
-        <div><button id="refreshDashboardBtn" class="secondary">Refresh dashboard</button><button id="logoutBtn" class="danger">Lock admin panel</button></div>
-      </div>
-      <div class="stats" aria-label="Admin counts">
-        <div class="stat"><strong id="dashApproved">—</strong><span>approved public rows</span></div>
-        <div class="stat"><strong id="dashPending">—</strong><span>pending rows</span></div>
-        <div class="stat"><strong id="dashComplete">—</strong><span>sections complete</span></div>
-        <div class="stat"><strong id="dashNeedsReview">—</strong><span>sections needing review</span></div>
-      </div>
-      <h3>Latest approved records</h3>
-      <div id="latestApproved" class="latest-list"><p class="muted">Unlock to load approved rows.</p></div>
-    </section>
-
-    <section class="card">
-      <h2>Pending-review controls</h2>
-      <div class="grid cols">
-        <div style="grid-column:span 2">
-          <label for="trFilter">Township/Range filter</label>
-          <input id="trFilter" placeholder="Example: T24N R14E" />
-        </div>
-        <div>
-          <label>&nbsp;</label>
-          <button id="loadBtn">Load pending records</button>
-        </div>
-      </div>
-      <div id="status" class="status" hidden></div>
-    </section>
-
-    <section class="split">
-      <div class="card">
-        <h2>Pending records</h2>
-        <p class="muted"><span id="count">0</span> pending rows loaded. Select rows, inspect details, then approve or reject.</p>
-        <button id="approveSelectedBtn" disabled>Approve selected</button>
-        <button id="rejectSelectedBtn" class="danger" disabled>Reject selected</button>
-        <button id="clearSelectionBtn" class="secondary">Clear selection</button>
-        <div class="record-list">
-          <table>
-            <thead><tr><th class="checkbox-cell"></th><th>Name</th><th>Map #</th><th>TR/Sec</th><th>Submitted</th><th>Actions</th></tr></thead>
-            <tbody id="pendingBody"><tr><td colspan="6" class="muted">No pending records loaded yet.</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card details">
-        <h2>Inspect / edit selected record</h2>
-        <p id="detailEmpty" class="muted">Choose a record to inspect it.</p>
-        <div id="detailPanel" hidden>
-          <div class="fieldrow">
-            <div><label>First name</label><input id="editFirst"></div>
-            <div><label>Middle</label><input id="editMiddle"></div>
-          </div>
-          <div class="fieldrow">
-            <div><label>Last name</label><input id="editLast"></div>
-            <div><label>Verified full name</label><input id="editVerified"></div>
-          </div>
-          <div class="fieldrow">
-            <div><label>Number shown on map</label><input id="editMapNumber"></div>
-            <div><label>Number type</label><select id="editNumberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option></select></div>
-          </div>
-          <div class="fieldrow">
-            <div><label>Township/Range</label><input id="editTR"></div>
-            <div><label>Section</label><input id="editSection"></div>
-          </div>
-          <div class="fieldrow">
-            <div><label>Status / restriction note</label><input id="editStatusNote"></div>
-            <div><label>Confidence</label><select id="editConfidence"><option value="human-reviewed">human-reviewed</option><option value="needs-review">needs-review</option><option value="uncertain">uncertain</option></select></div>
-          </div>
-          <label>Notes</label><textarea id="editNotes" style="min-height:90px"></textarea>
-          <button id="saveEditBtn">Save edits to pending row</button>
-          <button id="approveOneBtn">Approve this record</button>
-          <button id="rejectOneBtn" class="danger">Reject this record</button>
-          <h3>Raw record JSON</h3>
-          <pre id="rawJson"></pre>
-        </div>
-      </div>
-    </section>
-  </div>
-</main>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin — AllottedLand.com</title><style>
+:root{--green:#183f33;--green2:#245f50;--cream:#f6f1e8;--paper:#fffdf8;--line:#d8cdbd;--gold:#c59b56;--ink:#0f1f2e;--muted:#607080;--danger:#9b2d20;--ok:#1f6b50}*{box-sizing:border-box}body{margin:0;background:var(--cream);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);line-height:1.45}header{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;padding:24px 34px}.topnav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.topnav a{color:#fff;text-decoration:none;font-weight:800;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 11px}main{max-width:1480px;margin:0 auto;padding:22px}.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 16px;box-shadow:0 2px 12px rgba(0,0,0,.04)}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.stat{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}.stat strong{font-size:1.8rem;display:block}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#efe8db;color:#111}.tabs button.active{background:var(--green);color:#fff}button{border:0;border-radius:11px;background:var(--green);color:#fff;font-weight:800;padding:9px 12px;cursor:pointer}button.secondary{background:#efe8db;color:#111;border:1px solid var(--line)}button.danger{background:var(--danger)}input,select,textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:10px;background:#fffdf8;font:inherit}label{font-weight:800}.muted{color:var(--muted);font-size:.92rem}.status{background:#edf8f4;border:1px solid #cde5dc;border-radius:12px;padding:10px;margin:10px 0}.status.error{background:#fff0ef;border-color:#e5b9b5}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}.small{font-size:.84rem}.pill{display:inline-block;border-radius:999px;background:#f0eadf;border:1px solid var(--line);padding:3px 7px;font-size:.78rem;font-weight:800}.actions{display:flex;gap:6px;flex-wrap:wrap}.details{white-space:pre-wrap;max-height:240px;overflow:auto;background:#12211d;color:#e8fff5;border-radius:12px;padding:10px;font-size:.84rem}.latest-item{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;margin:7px 0}@media(max-width:800px){main{padding:12px}}</style></head><body>
+<header><nav class="topnav"><a href="index.html">Home</a><a href="workbench.html">Workbench</a><a href="admin.html">Admin</a><a href="login.html">Login</a></nav><p class="small">AllottedLand.com · Private Admin</p><h1>Admin Review Panel</h1><p>Inspect pending records, testimonials, and People Powered Evidence Project submissions before anything becomes public.</p></header>
+<main>
+<section class="card" id="loginPanel"><h2>Admin key required</h2><p class="muted">No database data loads until the admin key is accepted.</p><div class="grid"><label>Admin key<input id="adminKey" type="password" autocomplete="off"></label><label><br><input id="rememberKey" type="checkbox" style="width:auto"> Remember on this browser</label></div><div class="actions"><button id="unlockBtn">Unlock admin panel</button><a class="button secondary" href="login.html">Use login page</a></div><div id="loginStatus" class="status">Enter admin key.</div></section>
+<div id="adminApp" class="hidden">
+<section class="card"><div class="actions" style="justify-content:space-between"><h2>Dashboard</h2><button id="logoutBtn" class="secondary">Lock / log out</button></div><div class="stats"><div class="stat"><strong id="dashApproved">—</strong><span>approved records</span></div><div class="stat"><strong id="dashPending">—</strong><span>pending records</span></div><div class="stat"><strong id="dashTestimonials">—</strong><span>pending testimonials</span></div><div class="stat"><strong id="dashEvidence">—</strong><span>pending evidence</span></div><div class="stat"><strong id="dashComplete">—</strong><span>complete sections</span></div><div class="stat"><strong id="dashNeeds">—</strong><span>needs review</span></div></div><div id="status" class="status">Dashboard ready.</div></section>
+<section class="card"><h2>Latest approved records</h2><div id="latestApproved"><p class="muted">Load dashboard to view latest approved records.</p></div></section>
+<section class="card"><div class="tabs"><button data-tab="records" class="active">Pending records</button><button data-tab="testimonials">Testimonials</button><button data-tab="evidence">Evidence project</button></div></section>
+<section class="card tabPanel" id="panel-records"><h2>Pending records</h2><div class="grid"><label>Township/Range filter<input id="trFilter" placeholder="T24N R14E"></label><label><br><button id="loadRecordsBtn">Load pending records</button></label></div><div class="actions"><button id="approveSelectedBtn">Approve selected</button><button id="rejectSelectedBtn" class="danger">Reject selected</button></div><div class="tableWrap"><table><thead><tr><th></th><th>Name</th><th>Map #</th><th>TR / Section</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="recordsBody"><tr><td colspan="6" class="muted">No pending records loaded.</td></tr></tbody></table></div></section>
+<section class="card tabPanel hidden" id="panel-testimonials"><h2>Pending testimonials</h2><button id="loadTestimonialsBtn">Load pending testimonials</button><div class="tableWrap"><table><thead><tr><th>Display</th><th>Publication</th><th>Story</th><th>Actions</th></tr></thead><tbody id="testimonialsBody"><tr><td colspan="4" class="muted">No pending testimonials loaded.</td></tr></tbody></table></div></section>
+<section class="card tabPanel hidden" id="panel-evidence"><h2>Pending People Powered Evidence submissions</h2><button id="loadEvidenceBtn">Load pending evidence</button><div class="tableWrap"><table><thead><tr><th>Family/County</th><th>Category</th><th>Summary</th><th>Actions</th></tr></thead><tbody id="evidenceBody"><tr><td colspan="4" class="muted">No pending evidence loaded.</td></tr></tbody></table></div></section>
+</div></main>
 <script>
-const $ = (id) => document.getElementById(id);
-let pending = [];
-let selected = new Set();
-let activeId = null;
-let adminKey = '';
-
-function showStatus(msg, isError=false){ const el=$('status'); el.hidden=false; el.textContent=msg; el.className='status'+(isError?' error':''); }
-function showLogin(msg, isError=false){ const el=$('loginStatus'); el.hidden=false; el.textContent=msg; el.className='status'+(isError?' error':''); }
-function key(){ return adminKey || $('loginAdminKey').value.trim(); }
-function headers(extra={}){ return { 'content-type':'application/json', 'X-Admin-Key': key(), ...extra }; }
-function safeParse(s){ try{return JSON.parse(s||'{}')}catch{return {}} }
-function recOf(row){ return safeParse(row.record_json); }
-function labelRow(row){ const r=recOf(row); return {name: row.verified_name || r.verified_name || '', num: row.number_shown_on_map || r.number_shown_on_map || r.map_number || '', tr: row.township_range || r.township_range || '', section: row.section || r.section || '', created: row.created_at || ''}; }
-function escapeHtml(str=''){ return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
-
-async function api(path, opts={}){
-  const res = await fetch(path, opts);
-  const data = await res.json().catch(()=>({error:'Non-JSON response'}));
-  if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-  return data;
-}
-
-async function unlockAdmin(){
-  if(!$('loginAdminKey').value.trim()) return showLogin('Enter the admin key first.', true);
-  try{
-    showLogin('Checking admin key...');
-    const dashboard=await api('/api/admin-dashboard',{headers:headers()});
-    adminKey=$('loginAdminKey').value.trim();
-    if($('rememberKey').checked) localStorage.setItem('allottedland_admin_key', adminKey); else localStorage.removeItem('allottedland_admin_key');
-    $('loginPanel').classList.add('hidden');
-    $('adminApp').classList.remove('hidden');
-    renderDashboard(dashboard);
-    await loadPending();
-  }catch(err){ showLogin(err.message || 'Could not unlock admin panel.', true); }
-}
-function logout(){ adminKey=''; sessionStorage.removeItem('allottedland_admin_unlocked'); $('loginAdminKey').value=''; $('adminApp').classList.add('hidden'); $('loginPanel').classList.remove('hidden'); }
-async function refreshDashboard(){ try{ renderDashboard(await api('/api/admin-dashboard',{headers:headers()})); }catch(err){ showStatus(err.message,true); } }
-function renderDashboard(data){
-  $('dashApproved').textContent=data.approved_records ?? 0;
-  $('dashPending').textContent=data.pending_records ?? 0;
-  $('dashComplete').textContent=(data.section_status && data.section_status.complete) || 0;
-  $('dashNeedsReview').textContent=(data.section_status && data.section_status['needs-review']) || 0;
-  const latest=Array.isArray(data.latest_approved)?data.latest_approved:[];
-  $('latestApproved').innerHTML=latest.length?latest.map(r=>`<div class="latest-item"><strong>${escapeHtml(r.verified_name||'Unnamed')}</strong><br><span class="muted">Map # ${escapeHtml(r.number_shown_on_map||'')} · ${escapeHtml(r.number_type||'')} · ${escapeHtml(r.township_range||'')} · Section ${escapeHtml(r.section||'')} · ${escapeHtml(r.created_at||'')}</span></div>`).join(''):'<p class="muted">No approved records yet.</p>';
-}
-
-async function loadPending(){
-  if(!key()) return showStatus('Admin key required.', true);
-  const tr=$('trFilter').value.trim();
-  const url='/api/pending-records'+(tr?'?township_range='+encodeURIComponent(tr):'');
-  try{
-    showStatus('Loading pending records...');
-    const data=await api(url,{headers:headers({})});
-    pending=data.pending || [];
-    selected.clear(); activeId=null; render();
-    showStatus(`Loaded ${pending.length} pending record(s).`);
-    await refreshDashboard();
-  }catch(err){ showStatus(err.message, true); }
-}
-function render(){
-  $('count').textContent=pending.length;
-  const body=$('pendingBody');
-  if(!pending.length){ body.innerHTML='<tr><td colspan="6" class="muted">No pending records found.</td></tr>'; }
-  else body.innerHTML=pending.map(row=>{
-    const l=labelRow(row); const checked=selected.has(row.id)?'checked':''; const active=row.id===activeId?' class="selected"':'';
-    return `<tr${active}><td><input type="checkbox" data-check="${escapeHtml(row.id)}" ${checked}></td><td><strong>${escapeHtml(l.name)}</strong><br><span class="small muted">${escapeHtml(row.id)}</span></td><td>${escapeHtml(l.num)}<br><span class="pill">${escapeHtml(recOf(row).number_type || row.number_type || '')}</span></td><td>${escapeHtml(l.tr)}<br>Sec. ${escapeHtml(l.section)}</td><td class="small">${escapeHtml(l.created)}</td><td class="row-actions"><button data-view="${escapeHtml(row.id)}">Inspect</button></td></tr>`
-  }).join('');
-  $('approveSelectedBtn').disabled = selected.size===0;
-  $('rejectSelectedBtn').disabled = selected.size===0;
-  bindTableEvents();
-}
-function bindTableEvents(){
-  document.querySelectorAll('[data-check]').forEach(cb=>cb.addEventListener('change',e=>{ const id=e.target.dataset.check; e.target.checked?selected.add(id):selected.delete(id); render(); }));
-  document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>selectRecord(btn.dataset.view)));
-}
-function selectRecord(id){
-  activeId=id; const row=pending.find(r=>r.id===id); if(!row)return;
-  const r=recOf(row);
-  $('detailEmpty').hidden=true; $('detailPanel').hidden=false;
-  $('editFirst').value=r.first_name || row.first_name || '';
-  $('editMiddle').value=r.middle_name || row.middle_name || '';
-  $('editLast').value=r.last_name || row.last_name || '';
-  $('editVerified').value=r.verified_name || row.verified_name || '';
-  $('editMapNumber').value=r.number_shown_on_map || r.map_number || row.number_shown_on_map || '';
-  $('editNumberType').value=r.number_type || row.number_type || 'unknown_map_number';
-  $('editTR').value=r.township_range || row.township_range || '';
-  $('editSection').value=r.section || row.section || '';
-  $('editStatusNote').value=r.status_restriction_notation || row.status_restriction_notation || '';
-  $('editConfidence').value=r.confidence || row.confidence || 'human-reviewed';
-  $('editNotes').value=r.notes || row.notes || '';
-  $('rawJson').textContent=JSON.stringify(r,null,2);
-  render();
-}
-function editedRecord(){
-  const row=pending.find(r=>r.id===activeId); const r=recOf(row||{});
-  const first=$('editFirst').value.trim(); const middle=$('editMiddle').value.trim(); const last=$('editLast').value.trim();
-  const verified=$('editVerified').value.trim() || [first,middle,last].filter(Boolean).join(' ');
-  const number=$('editMapNumber').value.trim(); const numberType=$('editNumberType').value;
-  return {...r, first_name:first, given_name:first, middle_name:middle, last_name:last, surname:last, verified_name:verified, map_number:number, number_shown_on_map:number, number_type:numberType, township_range:$('editTR').value.trim(), section:$('editSection').value.trim(), status_restriction_notation:$('editStatusNote').value.trim(), confidence:$('editConfidence').value, notes:$('editNotes').value.trim()};
-}
-async function saveEdit(){
-  if(!activeId) return;
-  try{
-    const record=editedRecord();
-    await api('/api/admin-update-pending',{method:'POST',headers:headers(),body:JSON.stringify({id:activeId,record})});
-    showStatus('Saved edits to pending record.');
-    const keepId=activeId;
-    await loadPending(); selectRecord(keepId);
-  }catch(err){ showStatus(err.message,true); }
-}
-async function approveIds(ids){
-  if(!ids.length)return;
-  try{ const data=await api('/api/admin-approve',{method:'POST',headers:headers(),body:JSON.stringify({ids})}); showStatus(`Approved ${data.approved || 0} record(s).`); await loadPending(); }
-  catch(err){ showStatus(err.message,true); }
-}
-async function rejectIds(ids){
-  if(!ids.length)return;
-  if(!confirm(`Reject/delete ${ids.length} pending record(s)?`)) return;
-  try{ const data=await api('/api/admin-reject',{method:'POST',headers:headers(),body:JSON.stringify({ids})}); showStatus(`Rejected ${data.rejected || 0} record(s).`); await loadPending(); }
-  catch(err){ showStatus(err.message,true); }
-}
-
-$('unlockBtn').addEventListener('click',unlockAdmin);
-$('loginAdminKey').addEventListener('keydown',e=>{ if(e.key==='Enter') unlockAdmin(); });
-$('logoutBtn').addEventListener('click',logout);
-$('refreshDashboardBtn').addEventListener('click',refreshDashboard);
-$('loadBtn').addEventListener('click',loadPending);
-$('approveSelectedBtn').addEventListener('click',()=>approveIds([...selected]));
-$('rejectSelectedBtn').addEventListener('click',()=>rejectIds([...selected]));
-$('clearSelectionBtn').addEventListener('click',()=>{selected.clear();render();});
-$('saveEditBtn').addEventListener('click',saveEdit);
-$('approveOneBtn').addEventListener('click',()=>approveIds([activeId]));
-$('rejectOneBtn').addEventListener('click',()=>rejectIds([activeId]));
-['editFirst','editMiddle','editLast'].forEach(id=>$(id).addEventListener('input',()=>{ if(!$('editVerified').value.trim()){ $('editVerified').value=[$('editFirst').value.trim(),$('editMiddle').value.trim(),$('editLast').value.trim()].filter(Boolean).join(' '); }}));
-const saved=localStorage.getItem('allottedland_admin_key'); if(saved){$('loginAdminKey').value=saved;$('rememberKey').checked=true;}
-</script>
-</body>
-</html>
+const $=id=>document.getElementById(id); let adminKey='', pendingRecords=[]; let selectedRecords=new Set();
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function status(msg,bad=false){$('status').className='status'+(bad?' error':'');$('status').textContent=msg} function loginStatus(msg,bad=false){$('loginStatus').className='status'+(bad?' error':'');$('loginStatus').textContent=msg}
+function headers(){return {'content-type':'application/json','X-Admin-Key':adminKey||$('adminKey').value.trim()}}
+async function api(path,opts={}){opts.headers={...(opts.headers||{}),...headers()};const r=await fetch(path,opts);const d=await r.json().catch(()=>({error:'Non-JSON response'}));if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d}
+function recOf(row){try{return JSON.parse(row.record_json||'{}')}catch{return {}}}
+async function unlock(){if(!$('adminKey').value.trim())return loginStatus('Enter the admin key.',true);try{loginStatus('Checking key...');const d=await api('/api/admin-dashboard');adminKey=$('adminKey').value.trim();if($('rememberKey').checked)localStorage.setItem('allottedland_admin_key',adminKey);else localStorage.removeItem('allottedland_admin_key');$('loginPanel').classList.add('hidden');$('adminApp').classList.remove('hidden');renderDashboard(d);await loadRecords();}catch(e){loginStatus(e.message,true)}}
+function logout(){adminKey='';localStorage.removeItem('allottedland_admin_key');sessionStorage.removeItem('allottedland_admin_key');$('adminKey').value='';$('adminApp').classList.add('hidden');$('loginPanel').classList.remove('hidden')}
+function renderDashboard(d){$('dashApproved').textContent=d.approved_records??0;$('dashPending').textContent=d.pending_records??0;$('dashTestimonials').textContent=d.pending_testimonials??0;$('dashEvidence').textContent=d.pending_evidence??0;$('dashComplete').textContent=(d.section_status&&d.section_status.complete)||0;$('dashNeeds').textContent=(d.section_status&&d.section_status['needs-review'])||0;const latest=d.latest_approved||[];$('latestApproved').innerHTML=latest.length?latest.map(r=>`<div class="latest-item"><strong>${esc(r.verified_name)}</strong><br><span class="muted">Map # ${esc(r.number_shown_on_map)} · ${esc(r.township_range)} · Section ${esc(r.section)} · ${esc(r.created_at)}</span></div>`).join(''):'<p class="muted">No approved records yet.</p>'}
+async function refreshDash(){try{renderDashboard(await api('/api/admin-dashboard'))}catch(e){status(e.message,true)}}
+async function loadRecords(){try{const tr=$('trFilter').value.trim();const d=await api('/api/pending-records'+(tr?'?township_range='+encodeURIComponent(tr):''));pendingRecords=d.pending||[];selectedRecords.clear();renderRecords();status(`Loaded ${pendingRecords.length} pending record(s).`);await refreshDash()}catch(e){status(e.message,true)}}
+function renderRecords(){const body=$('recordsBody');if(!pendingRecords.length){body.innerHTML='<tr><td colspan="6" class="muted">No pending records.</td></tr>';return}body.innerHTML=pendingRecords.map(row=>{const r=recOf(row);const id=row.id;return `<tr><td><input type="checkbox" data-sel="${esc(id)}"></td><td><strong>${esc(row.verified_name||r.verified_name)}</strong><br><span class="small">${esc(id)}</span></td><td>${esc(row.number_shown_on_map||r.number_shown_on_map||r.map_number||'')}</td><td>${esc(row.township_range||r.township_range||'')}<br>Sec. ${esc(row.section||r.section||'')}</td><td class="small">${esc(row.notes||r.notes||'')}</td><td class="actions"><button data-approve="${esc(id)}">Approve</button><button class="danger" data-reject="${esc(id)}">Reject</button><details><summary>JSON</summary><pre class="details">${esc(JSON.stringify(r,null,2))}</pre></details></td></tr>`}).join('');document.querySelectorAll('[data-sel]').forEach(c=>c.addEventListener('change',e=>{e.target.checked?selectedRecords.add(e.target.dataset.sel):selectedRecords.delete(e.target.dataset.sel)}));document.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click',()=>approveRecords([b.dataset.approve])));document.querySelectorAll('[data-reject]').forEach(b=>b.addEventListener('click',()=>rejectRecords([b.dataset.reject])))}
+async function approveRecords(ids){if(!ids.length)return;try{const d=await api('/api/admin-approve',{method:'POST',body:JSON.stringify({ids})});status(`Approved ${d.approved||0} record(s).`);await loadRecords()}catch(e){status(e.message,true)}} async function rejectRecords(ids){if(!ids.length)return;if(!confirm(`Reject ${ids.length} record(s)?`))return;try{const d=await api('/api/admin-reject',{method:'POST',body:JSON.stringify({ids})});status(`Rejected ${d.rejected||0} record(s).`);await loadRecords()}catch(e){status(e.message,true)}}
+async function loadTestimonials(){try{const d=await api('/api/pending-testimonials');const rows=d.pending||[];$('testimonialsBody').innerHTML=rows.length?rows.map(t=>`<tr><td>${esc(t.display_name||'Anonymous')}<br><span class="small">${esc(t.tribe||'')}</span></td><td>${esc(t.publication_choice||'')}</td><td>${esc(t.story||'')}</td><td class="actions"><button data-appt="${esc(t.id)}">Approve</button><button class="danger" data-rejt="${esc(t.id)}">Reject</button></td></tr>`).join(''):'<tr><td colspan="4" class="muted">No pending testimonials.</td></tr>';document.querySelectorAll('[data-appt]').forEach(b=>b.addEventListener('click',()=>approveTestimonial(b.dataset.appt)));document.querySelectorAll('[data-rejt]').forEach(b=>b.addEventListener('click',()=>rejectTestimonial(b.dataset.rejt)));await refreshDash()}catch(e){status(e.message,true)}}
+async function approveTestimonial(id){try{await api('/api/admin-approve-testimonial',{method:'POST',body:JSON.stringify({id,title:'Family story'})});status('Approved testimonial.');await loadTestimonials()}catch(e){status(e.message,true)}} async function rejectTestimonial(id){if(!confirm('Reject this testimonial?'))return;try{await api('/api/admin-reject-testimonial',{method:'POST',body:JSON.stringify({id})});status('Rejected testimonial.');await loadTestimonials()}catch(e){status(e.message,true)}}
+async function loadEvidence(){try{const d=await api('/api/pending-evidence');const rows=d.pending||[];$('evidenceBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.family_name||'')}<br><span class="small">${esc(x.county||'')} · ${esc(x.tribe||'')}</span></td><td>${esc(x.loss_method||'unknown')}<br><span class="small">${esc(x.decade||'')}</span></td><td>${esc(x.summary||'')}<br><span class="small">Source: ${esc(x.source_note||'')}</span></td><td class="actions"><button data-appe="${esc(x.id)}">Approve</button><button class="danger" data-reje="${esc(x.id)}">Reject</button></td></tr>`).join(''):'<tr><td colspan="4" class="muted">No pending evidence.</td></tr>';document.querySelectorAll('[data-appe]').forEach(b=>b.addEventListener('click',()=>approveEvidence(b.dataset.appe)));document.querySelectorAll('[data-reje]').forEach(b=>b.addEventListener('click',()=>rejectEvidence(b.dataset.reje)));await refreshDash()}catch(e){status(e.message,true)}}
+async function approveEvidence(id){try{await api('/api/admin-approve-evidence',{method:'POST',body:JSON.stringify({id})});status('Approved evidence.');await loadEvidence()}catch(e){status(e.message,true)}} async function rejectEvidence(id){if(!confirm('Reject this evidence submission?'))return;try{await api('/api/admin-reject-evidence',{method:'POST',body:JSON.stringify({id})});status('Rejected evidence.');await loadEvidence()}catch(e){status(e.message,true)}}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tabPanel').forEach(p=>p.classList.add('hidden'));$('panel-'+b.dataset.tab).classList.remove('hidden')}));
+$('unlockBtn').addEventListener('click',unlock);$('logoutBtn').addEventListener('click',logout);$('loadRecordsBtn').addEventListener('click',loadRecords);$('approveSelectedBtn').addEventListener('click',()=>approveRecords([...selectedRecords]));$('rejectSelectedBtn').addEventListener('click',()=>rejectRecords([...selectedRecords]));$('loadTestimonialsBtn').addEventListener('click',loadTestimonials);$('loadEvidenceBtn').addEventListener('click',loadEvidence);$('adminKey').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});const saved=localStorage.getItem('allottedland_admin_key')||sessionStorage.getItem('allottedland_admin_key');if(saved){$('adminKey').value=saved;$('rememberKey').checked=!!localStorage.getItem('allottedland_admin_key')}
+</script></body></html>

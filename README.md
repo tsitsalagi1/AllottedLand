@@ -91,3 +91,16 @@ The admin page does not load database content until the `ADMIN_KEY` is entered a
 
 ### v0.29b navigation note
 The Workbench header now includes a direct Admin link for trusted reviewers. The admin page still requires the ADMIN_KEY before database data loads.
+
+## v0.30 notes
+This version adds public Testimonials and People Powered Evidence Project pages, a `/login.html` key helper for reviewers/admins, and D1-backed pending review queues for testimonials and evidence submissions.
+
+After uploading v0.30, run this migration in Cloudflare D1 Console:
+
+```sql
+-- open migrations/0002_testimonials_evidence.sql and paste the whole file into D1 Console
+```
+
+The public source image still is not stored by the website. Workbench users load the LOC image locally in their browser, enter human-reviewed rows, and submit record data only.
+
+County lookup is now supported through `data/township_county_lookup.json`. Do not rely on a county suggestion until the township/range-to-county crosswalk has been independently verified.

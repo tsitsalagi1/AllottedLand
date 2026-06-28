@@ -11,15 +11,16 @@
 </head>
 <body>
 <header>
-  <div class="topnav"><a href="/">Home</a><a href="/workbench.html">Workbench</a><a href="/admin.html">Admin</a></div>
+  <div class="topnav"><a href="/">Home</a><a href="/workbench.html">Workbench</a><a href="/admin.html">Admin</a><a href="/login.html">Login</a></div>
   <div class="eyebrow">AllottedLand.com · Local full-map transcription tool</div>
-  <h1>Full Map Workbench v0.29</h1>
-  <p>Load one LOC township/range map image, calibrate the section grid over that image, click a section to zoom in, enter human-reviewed records, and track section completion. No crop files required. v0.26 is the primary production tool: the source image stays in your browser, while human-reviewed rows can be submitted to the website database.</p>
+  <h1>Full Map Workbench v0.30</h1>
+  <p>Use this workbench to enter map records. Step 1: download/open the LOC source map image. Step 2: load the image here and align the grid. Step 3: choose a section, zoom in, read the names and numbers, enter one row per person, then submit queued rows to the website for review or approval. The source image stays in your browser.</p>
 </header>
 <main>
   <section class="card">
     <h2>1. Load one full LOC page image</h2>
-    <p class="muted">This page runs in your browser. It does not upload the source image. Use the original source map image locally, then submit only human-reviewed record data to the website.</p>
+    <p class="muted">Download or open the correct Library of Congress map image first, then choose that image here. This page does not upload the source image; it only uses the file in your browser to help you read a section.</p>
+    <div class="note warn"><strong>LOC source image:</strong> <a id="locSourceLink" href="https://www.loc.gov/resource/g4021gm.gla00497/?sp=29&st=image" target="_blank" rel="noopener">Open current LOC page</a>. Change the LOC page number below if you are working on a different township/range page.</div>
     <div class="formgrid">
       <div><label>Full source map image</label><input id="sourceImageInput" type="file" accept="image/*"></div>
       <div><label>Optional existing grid JSON</label><input id="gridJsonInput" type="file" accept="application/json,.json"></div>
@@ -34,7 +35,7 @@
       <p class="muted">The source map image stays in your browser. The submit button sends only the human-reviewed row data, section status, and grid metadata to AllottedLand.com.</p>
       <div class="formgrid">
         <div><label>Reviewer contact or initials</label><input id="reviewerContact" placeholder="name, initials, or email"></div>
-        <div><label>Reviewer key (optional for trusted direct approval)</label><input id="reviewerKey" type="password" placeholder="leave blank for pending review"></div>
+        <div><label>Reviewer key</label><input id="reviewerKey" type="password" placeholder="loaded from login if saved; blank submits to pending review"></div>
       </div>
       <div class="toolbar noPrint" style="margin-top:12px">
         <button type="button" id="loadServerDataBtn" class="secondary">Load website records/progress</button>
@@ -43,6 +44,18 @@
       <div id="submitStatus" class="note">Rows will submit to <code>/api/submit-records</code> once the Cloudflare D1 backend is set up.</div>
     </section>
 
+  <section class="card">
+    <h2>How to use the Workbench</h2>
+    <ol>
+      <li><strong>Select the LOC page / township / range.</strong> Page 29 is currently the Cherokee Nation atlas page for T24N R14E.</li>
+      <li><strong>Load the full source map image.</strong> Do not upload source images to the website; the file stays in your browser.</li>
+      <li><strong>Calibrate the grid.</strong> Move the outside blue lines to the outside township/range section grid, then distribute and adjust internal lines.</li>
+      <li><strong>Pick a section.</strong> The section zoom is generated live from the full image.</li>
+      <li><strong>Enter exactly what you can read.</strong> Use First, Middle, and Last name fields. If there is no middle name or initial, leave Middle blank.</li>
+      <li><strong>Do not guess number types.</strong> Put the visible number in “Number shown on map” and leave the type as unknown/map number unless separately verified.</li>
+      <li><strong>Submit queued rows.</strong> A trusted reviewer key sends rows directly to approved records. Without a key, rows go to pending admin review.</li>
+    </ol>
+  </section>
 
   <div class="grid2">
     <div>
@@ -125,7 +138,7 @@
           <div><label>Number type</label><select id="numberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option><option value="other">other / note</option></select></div>
           <div><label>Status / restriction note</label><input id="statusNote" placeholder="H, minor, etc. exactly as shown"></div>
           <div><label>Tribe/Nation</label><input id="tribe" value="Cherokee Nation"></div>
-          <div><label>County</label><input id="county" placeholder="leave blank if unknown"></div>
+          <div><label>County suggestion</label><input id="county" placeholder="auto if township/range lookup exists; verify before relying"></div>
           <div><label>Confidence</label><select id="confidence"><option>human-reviewed</option><option>needs-review</option><option>uncertain</option></select></div>
           <div><label>Reviewer initials</label><input id="reviewer" placeholder="initials"></div>
           <div><label>Roll number</label><input id="rollNumber" placeholder="only if separately verified"></div>
@@ -173,6 +186,9 @@ const state = {
   xLines:[], yLines:[], drag:null, selectedSection:1,
   approvedRows:[], existingRows:[], sectionStatus:{}, mapScale:0.55, sectionScale:1.45
 };
+let countyLookup = {};
+async function loadCountyLookup(){ try{ const res=await fetch('data/township_county_lookup.json'); if(res.ok) countyLookup=await res.json(); }catch(e){} }
+function updateCountySuggestion(){ const key=($('townshipRange')?.value||'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,''); const hit=countyLookup[key] || countyLookup[$('townshipRange')?.value]; if(hit && hit.county && !$('county').value.trim()){ $('county').value=hit.county; $('county').title=(hit.note||'County suggested from township/range lookup. Verify before relying.'); } }
 const sectionOrder = [
   [6,5,4,3,2,1],
   [7,8,9,10,11,12],
@@ -198,7 +214,7 @@ function refreshMetaFields(){
   const sec = $('sectionSelect').value || state.selectedSection || 1;
   $('townshipRange').value = `T${$('township').value}N R${$('range').value}E`;
   $('legalDescription').value = `Section ${sec}, ${$('townshipRange').value}`;
-  $('sourceLink').value = defaultSource();
+  $('sourceLink').value = defaultSource(); const loc=$('locSourceLink'); if(loc) loc.href=defaultSource(); updateCountySuggestion();
 }
 ['locPage','township','range','sectionSelect'].forEach(id=>$(id).addEventListener('input', refreshMetaFields));
 function initControls(){
@@ -317,7 +333,7 @@ function interpretedNumbers(mapNumber, numberType){
   if(numberType==='census_card_number' && !out.census_card_number) out.census_card_number=mapNumber;
   return out;
 }
-function buildRow(){ const first=$('firstName').value.trim(), middle=$('middleName').value.trim(), last=$('lastName').value.trim(); const verified=$('verifiedName').value.trim() || buildName(); const sec=String(state.selectedSection); const mapNumber=$('mapNumber').value.trim(); const numberType=$('numberType').value; const nums=interpretedNumbers(mapNumber, numberType); return {verified_name:verified, first_name:first, middle_name:middle, last_name:last, surname:last, given_name:first, tribe:$('tribe').value.trim(), map_number:mapNumber, number_shown_on_map:mapNumber, number_type:numberType, roll_number:nums.roll_number, enrollment_number:nums.enrollment_number, census_card_number:nums.census_card_number, allotment_number:nums.allotment_number, status_restriction_notation:$('statusNote').value.trim(), loc_page:Number($('locPage').value)||'', township_range:$('townshipRange').value.trim(), township:$('township').value.trim(), range:$('range').value.trim(), section:sec, county:$('county').value.trim(), state:'Oklahoma', legal_description:$('legalDescription').value.trim(), source_link:$('sourceLink').value.trim(), confidence:$('confidence').value, needs_human_review:$('confidence').value==='human-reviewed'?'no':'yes', notes:$('notes').value.trim(), review_trace:{tool:'map_workbench_v0.25', image_name:state.imageName, grid:currentGridJson(), section_box: state.img ? sectionBox(state.selectedSection,Number($('sectionPad').value)||0) : {}, reviewer_initials:$('reviewer').value.trim(), reviewed_at:new Date().toISOString()}}; }
+function buildRow(){ const first=$('firstName').value.trim(), middle=$('middleName').value.trim(), last=$('lastName').value.trim(); const verified=$('verifiedName').value.trim() || buildName(); const sec=String(state.selectedSection); const mapNumber=$('mapNumber').value.trim(); const numberType=$('numberType').value; const nums=interpretedNumbers(mapNumber, numberType); return {verified_name:verified, first_name:first, middle_name:middle, last_name:last, surname:last, given_name:first, tribe:$('tribe').value.trim(), map_number:mapNumber, number_shown_on_map:mapNumber, number_type:numberType, roll_number:nums.roll_number, enrollment_number:nums.enrollment_number, census_card_number:nums.census_card_number, allotment_number:nums.allotment_number, status_restriction_notation:$('statusNote').value.trim(), loc_page:Number($('locPage').value)||'', township_range:$('townshipRange').value.trim(), township:$('township').value.trim(), range:$('range').value.trim(), section:sec, county:$('county').value.trim(), state:'Oklahoma', legal_description:$('legalDescription').value.trim(), source_link:$('sourceLink').value.trim(), confidence:$('confidence').value, needs_human_review:$('confidence').value==='human-reviewed'?'no':'yes', notes:$('notes').value.trim(), review_trace:{tool:'map_workbench_v0.30', image_name:state.imageName, grid:currentGridJson(), section_box: state.img ? sectionBox(state.selectedSection,Number($('sectionPad').value)||0) : {}, reviewer_initials:$('reviewer').value.trim(), reviewed_at:new Date().toISOString()}}; }
 function addRow(clearNames){ const row=buildRow(); if(!row.verified_name){ alert('Add at least a verified name. If the map number is missing or unclear, leave it blank and explain in Notes.'); return; } const dupe=dupeMessage(row); if(dupe && !$('allowDuplicate').checked){ const box=$('dupeBox'); box.textContent=dupe+' Check “Allow duplicate override” only if this is intentionally separate.'; box.classList.add('show'); return; } $('dupeBox').classList.remove('show'); state.approvedRows.push(row); const sec=String(state.selectedSection); state.sectionStatus[sec]={status:'has_rows', updated_at:new Date().toISOString(), rows:(state.sectionStatus[sec]?.rows||0)+1}; refreshRows(); buildSectionGrid(); if(clearNames){clearNameFields();} }
 function clearNameFields(){ ['firstName','middleName','lastName','verifiedName','mapNumber','statusNote','rollNumber','enrollmentNumber','censusCardNumber','notes'].forEach(id=>$(id).value=''); $('numberType').value='unknown_map_number'; $('verifiedName').dataset.manual=''; $('allowDuplicate').checked=false; }
 $('addRowBtn').addEventListener('click',()=>addRow(false)); $('addClearBtn').addEventListener('click',()=>addRow(true)); $('clearNameBtn').addEventListener('click',clearNameFields);
@@ -347,7 +363,7 @@ async function submitQueuedRows(){
   const status=$('submitStatus');
   if(!state.approvedRows.length){ alert('No queued rows to submit.'); return; }
   const payload={
-    client_version:'v0.26',
+    client_version:'v0.30',
     meta:apiMeta(),
     reviewer:{contact:getReviewerContact(), initials:$('reviewer')?.value||''},
     grid:currentGridJson(),
@@ -372,7 +388,7 @@ $('submitRowsBtn')?.addEventListener('click',submitQueuedRows);
 $('submitRowsBtn2')?.addEventListener('click',submitQueuedRows);
 
 $('clearRowsBtn').addEventListener('click',()=>{ if(confirm('Clear all approved rows in this page?')){state.approvedRows=[];refreshRows();}});
-initControls();
+loadCountyLookup().then(updateCountySuggestion); const savedReviewer=localStorage.getItem('allottedland_reviewer_key')||sessionStorage.getItem('allottedland_reviewer_key'); if(savedReviewer && $('reviewerKey')) $('reviewerKey').value=savedReviewer; initControls();
 </script>
 </body>
 </html>
