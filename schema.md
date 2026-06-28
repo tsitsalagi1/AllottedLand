@@ -438,3 +438,8 @@ Public navigation is now user-focused: Search, Family stories, Land Loss Project
 
 ## v0.52 partner_links.json
 Free-first outside resource cards for Universal Search results. Current active resource: FamilySearch, labeled as a free outside genealogy resource, not a paid affiliate link. Future paid partner/affiliate links should be clearly disclosed and should not sell user search/submission data.
+
+## v0.53 - FamilySearch start-here link
+- Added a FamilySearch link directly inside the Start Here panel so families can gather names, dates, relatives, and places before searching AllottedLand.com.
+- Removed the public-facing “Paid partner links are not active in this version” sentence from the homepage Start Here box.
+- Updated homepage cache-busting to v053.

@@ -311,3 +311,8 @@ Deployment note: deploy this as a full site folder with Wrangler, not as a chang
 - Added data/partner_links.json for future free-first partner/resource cards.
 - Updated Privacy Policy and Terms to explain outside resource links, future partner/affiliate disclosures, and the no-sale/no-paywall approach for families.
 - Kept paid partner links inactive in this version.
+
+## v0.53 - FamilySearch start-here link
+- Added a FamilySearch link directly inside the Start Here panel so families can gather names, dates, relatives, and places before searching AllottedLand.com.
+- Removed the public-facing “Paid partner links are not active in this version” sentence from the homepage Start Here box.
+- Updated homepage cache-busting to v053.
