@@ -1,3 +1,10 @@
+
+
+## v0.32 — Home mission, consent placement, and visual background
+- Moved search/research-path consent checkboxes next to the buttons they unlock.
+- Removed the separate “Before using the research tools” box from the home page.
+- Expanded the Mission panel with more detail about source-first, family-guided research.
+- Added a light angled map-pattern background outside the green header area.
 ## v0.29b — Workbench admin navigation
 
 - Adds an Admin link to the Workbench header so trusted reviewers can move from data entry to review without typing the URL.
