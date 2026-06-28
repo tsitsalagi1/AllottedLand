@@ -397,3 +397,16 @@ Census/TIGERweb results are geography leads only. They do not prove ownership, t
 
 ## v0.43 Census connector note
 `/api/census-lookup` accepts either `address=` or both `lat=` and `lon=`. Blank coordinate parameters are treated as null, not zero.
+
+## v0.47 Unified Search UX notes
+
+The homepage now treats Universal Search as the single public entry point. Visible standalone search forms for Dawes, current index, and source lookup were removed from the home page to reduce user confusion. Universal Search combines user clues into a one-search package and returns:
+
+1. Built research path
+2. Search summary
+3. Matching site/index records
+4. Official source leads
+5. Prepared official links
+6. Agency record request packets with copy buttons
+
+Local/index record matching should require strong evidence such as name, roll/card/allotment number, township/range/section, county, or exact identifiers. Generic words such as Cherokee, land, allotment, section, source, and record should not return all records.

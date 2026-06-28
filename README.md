@@ -308,3 +308,22 @@ Do not deploy a changed-files-only folder as the full website snapshot.
 
 ## v0.43 Census lookup note
 If Census returns no address match, use latitude/longitude. Rural, historic, or non-standard addresses may not geocode from Census address-range data.
+
+### v0.47 deployment note
+
+Deploy the full v0.47 folder with Wrangler. This version makes Universal Search the single homepage workflow. The older advanced search tools still exist as code/API paths, but the homepage no longer asks families to choose among multiple search forms.
+
+```powershell
+npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+```
+
+After deployment, hard refresh the browser with Ctrl+F5.
+
+Key test cases:
+
+- Click “I don’t know where to start.” Results should begin with Built research path.
+- Search `Claude Ketcher roll 1637`. It should not show unrelated public index rows unless they actually match.
+- Search `T24N R14E Section 1`. Matching map/index rows should appear.
+- Search an address. Census/geography leads should appear as research leads only.
+- Click “Print all / save PDF” after results appear. The PDF should include the built research path and result sections.
+- Click each Copy request button in the Agency record request packets section.

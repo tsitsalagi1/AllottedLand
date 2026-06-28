@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=046">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=047">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -41,7 +41,6 @@
       <div class="hero-actions">
         <a class="button" href="#unified-search">Search everything</a>
         <a class="button secondary" href="#unified-search">I don’t know where to start</a>
-        <a class="button secondary" href="#search">Search township/range</a>
         <a class="button tertiary" href="testimonials.html">Read family stories</a>
       </div>
     </div>
@@ -169,204 +168,37 @@
     </section>
 
 
-    <section id="source-hub" class="section source-hub-section">
-      <div class="panel source-hub-intro">
-        <p class="eyebrow dark">Official source lookup</p>
-        <h2>Search the outside record systems too.</h2>
-        <p>AllottedLand.com should not trap users inside one index. Use this hub to search official federal and state sources for Dawes records, census/enrollment cards, enrollment applications, allotment jackets, allotment maps, federal land records, and BIA/LTRO title-record paths.</p>
-        <p class="hint"><strong>Live API status:</strong> NARA requires a server-side <code>NARA_API_KEY</code>. LOC map search can run through the included public JSON connector. OHS, BIA/LTRO, and BLM/GLO are included as official-source linkouts because they do not provide a simple public allotment-title API for this project.</p>
+    <section class="section single-tool-note">
+      <div class="panel">
+        <p class="eyebrow dark">One tool, one path</p>
+        <h2>The Universal Search now replaces the old separate search boxes.</h2>
+        <p>Families should not have to know whether a clue belongs in a Dawes form, a map form, a source form, a county-record form, or a geography lookup. Put every clue in the Universal Search above. The site will build the research path first, then show matching site records, official-source leads, geography leads, and agency request packets.</p>
+        <p class="hint">Advanced source connectors still run behind the scenes when they are useful. The home page now keeps the user focused on one plain-English workflow.</p>
       </div>
-      <div class="source-hub-grid">
-        <form class="panel source-lookup-panel" id="sourceLookupForm" onsubmit="return false;">
-          <h2>Official-source lookup clues</h2>
-          <div class="grid">
-            <label class="wide">Name or keyword <input id="sourceName" placeholder="ancestor name, spelling variant, family surname" autocomplete="off"></label>
-            <label>Tribe / Nation <input id="sourceTribe" placeholder="Cherokee, Choctaw, Chickasaw, Creek, Seminole" autocomplete="off"></label>
-            <label>Roll / enrollment no. <input id="sourceRoll" placeholder="roll / enrollment number" autocomplete="off"></label>
-            <label>Census card no. <input id="sourceCard" placeholder="census card number" autocomplete="off"></label>
-            <label>Allotment no. <input id="sourceAllotment" placeholder="allotment number" autocomplete="off"></label>
-            <label>County / town / place <input id="sourcePlace" placeholder="county, town, creek, cemetery" autocomplete="off"></label>
-            <label>Township <input id="sourceTownship" placeholder="township #" autocomplete="off"></label>
-            <label>Range <input id="sourceRange" placeholder="range #" autocomplete="off"></label>
-            <label>Section <input id="sourceSection" placeholder="section #" autocomplete="off"></label>
-            <label class="wide">Extra keyword <input id="sourceKeyword" placeholder="Dawes, allotment jacket, tax deed, sheriff deed, oil lease, etc." autocomplete="off"></label>
-            <label class="wide">Address / place for Census lookup <input id="sourceAddress" placeholder="street address, city, state, or ZIP for Census geography leads" autocomplete="off"></label>
-            <label>Latitude <input id="sourceLat" placeholder="35.9154" autocomplete="off"></label>
-            <label>Longitude <input id="sourceLon" placeholder="-94.9699" autocomplete="off"></label>
-          </div>
-          <div class="buttons">
-            <button type="button" id="sourceUseCluesBtn" class="secondary">Use current page clues</button>
-            <button type="button" id="sourceNaraBtn">Search NARA API</button>
-            <button type="button" id="sourceLocBtn">Search LOC maps</button>
-            <button type="button" id="sourceNewsBtn">Search newspapers</button>
-            <button type="button" id="sourceFRBtn">Search Federal Register</button>
-            <button type="button" id="sourceResolveAddressBtn" class="secondary">Address → coordinates</button>
-            <button type="button" id="sourceCensusBtn">Census geography lookup</button>
-            <button type="button" id="sourceRequestsBtn" class="secondary">Build record request packet</button>
-            <button type="button" id="sourceLinksBtn" class="secondary">Build official links</button>
-            <button type="button" id="sourcePrintBtn" class="ghost">Print source leads / save PDF</button>
-          </div>
-          <p id="sourceStatus" class="status">Enter a clue or copy clues from the research-path form, then search or build official-source links.</p>
-        </form>
-        <section class="panel source-results-panel" aria-live="polite">
-          <div class="results-head"><h2>Official source leads</h2><span>Federal / state sources</span></div>
-          <div id="sourceResults" class="results source-results"><p class="muted">NARA/LOC result cards and official source links will appear here.</p></div>
-          <div id="sourceLinkResults" class="source-link-results"></div>
-        </section>
-      </div>
-      <div class="panel source-card-panel">
-        <h2>Source systems included in this build</h2>
-        <div id="sourceCards" class="source-card-grid"></div>
-      </div>
-    </section>
-
-
-    <section id="dawes" class="section dawes-section">
-      <div class="panel dawes-intro-panel">
-        <p class="eyebrow dark">Fast search layer</p>
-        <h2>Search Dawes record leads before the maps are finished.</h2>
-        <p>The Dawes search layer is a quick public index for Five Tribes research. It helps families find a person, roll/enrollment number, census card number, tribe, category, age, sex, and blood degree first — then follow the trail to census cards, enrollment packets, allotment jackets, maps, county records, and land-loss evidence.</p>
-        <p class="hint">This search uses <code>data/dawes_index.json</code>. The starter file includes a small test record and an import-ready schema. Add bulk Dawes rows there as the public index is cleaned and verified.</p>
-      </div>
-      <div class="dawes-search-grid">
-        <section class="panel search-panel dawes-search-panel" aria-labelledby="dawesSearchTitle">
-          <h2 id="dawesSearchTitle">Search Dawes / Five Tribes index</h2>
-          <div class="grid">
-            <label class="wide">Name or keyword
-              <input id="dawesQuery" placeholder="name, spelling variant, roll number, card number, tribe, category" autocomplete="off">
-            </label>
-            <label>Tribe / Nation
-              <select id="dawesTribe">
-                <option value="">Any tribe / nation</option>
-                <option value="Cherokee">Cherokee</option>
-                <option value="Choctaw">Choctaw</option>
-                <option value="Chickasaw">Chickasaw</option>
-                <option value="Creek">Muscogee / Creek</option>
-                <option value="Seminole">Seminole</option>
-              </select>
-            </label>
-            <label>Enrollment category
-              <select id="dawesCategory">
-                <option value="">Any category</option>
-                <option value="blood">Citizen by Blood / Minor / Newborn</option>
-                <option value="freedmen">Freedmen / Minor Freedmen / Newborn Freedmen</option>
-                <option value="intermarried">Intermarried White / Citizen by Marriage</option>
-                <option value="adopted">Adopted / Delaware Adopted</option>
-                <option value="rejected">Denied / Doubtful / Rejected</option>
-              </select>
-            </label>
-            <label>Roll / enrollment no.
-              <input id="dawesRoll" placeholder="example: 11384" autocomplete="off">
-            </label>
-            <label>Census card no.
-              <input id="dawesCard" placeholder="example: 4747" autocomplete="off">
-            </label>
-          </div>
-          <div class="buttons consent-actions">
-            <label class="inline-agree dawes-inline-agree"><input type="checkbox" id="dawesAgree"> I understand Dawes matches are research leads and agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
-            <button type="button" id="dawesSearchBtn" disabled>Search Dawes leads</button>
-            <button type="button" class="secondary" id="dawesClearBtn">Clear</button>
-            <button type="button" class="ghost" id="printDawesBtn" disabled>Print / save PDF</button>
-          </div>
-          <p class="hint">Check the agreement box, enter at least one search clue, then search. Use the print button after selecting or finding results. Your browser can save the branded research packet as a PDF.</p>
-        </section>
-
-        <section class="panel results-panel dawes-results-panel" aria-live="polite">
-          <div class="results-head">
-            <h2>Dawes lead results</h2>
-            <span id="dawesCount">0 results</span>
-          </div>
-          <div id="dawesStatus" class="status">Loading Dawes index…</div>
-          <div id="dawesResults" class="results dawes-results"></div>
-        </section>
-      </div>
-    </section>
-
-
-
-    <section id="search" class="section layout">
-      <section class="panel search-panel">
-        <h2>Search the current index</h2>
-        <p class="hint">Phase 1 searches the Library of Congress 1909 Cherokee Nation atlas by township/range. Name, roll number, and allotment-number search activates as verified records are added.</p>
-        <div class="grid">
-          <label>First name <input id="givenName" placeholder="first name" autocomplete="off"></label>
-          <label>Last name <input id="surname" placeholder="last name" autocomplete="off"></label>
-          <label>Roll / enrollment no. <input id="rollNumber" placeholder="roll / enrollment #" autocomplete="off"></label>
-          <label>Allotment no. <input id="allotmentNumber" placeholder="Allotment #" autocomplete="off"></label>
-          <label>Township <input id="township" placeholder="township #" autocomplete="off"></label>
-          <label>Range <input id="range" placeholder="range #" autocomplete="off"></label>
-          <label>Township + range <input id="townshipRange" placeholder="T21N R12E" autocomplete="off"></label>
-          <label>Section <input id="section" placeholder="section #" autocomplete="off"></label>
-          <label class="wide">Any keyword <input id="keyword" placeholder="name, status, legal description, notes" autocomplete="off"></label>
-        </div>
-        <div class="buttons consent-actions">
-          <label class="inline-agree"><input type="checkbox" id="searchAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
-          <button id="searchBtn" disabled>Search</button>
-          <button id="clearBtn" class="secondary">Clear</button>
-          <button type="button" class="ghost" id="printSiteResultsBtn">Print results / save PDF</button>
-        </div>
-      </section>
-
-      <section class="panel results-panel">
-        <div class="results-head">
-          <h2>Results</h2>
-          <span id="count">0 results</span>
-        </div>
-        <div id="status" class="status">Loading data…</div>
-        <div id="results" class="results"></div>
-      </section>
-
-      <section class="panel viewer-panel">
-        <div class="viewer-head">
-          <h2>Map viewer</h2>
-          <a id="openLoc" target="_blank" rel="noopener" class="button-link hidden">Open at LOC</a>
-        </div>
-        <div id="viewer" class="viewer-empty">Select a result to preview the LOC map page.</div>
-      </section>
     </section>
 
     <section id="process" class="section process-grid">
       <div class="panel">
-        <h2>The land-finding process</h2>
+        <h2>How to read the Universal Search results</h2>
         <ol class="steps">
-          <li><strong>Identify the ancestor.</strong> Start with name variants, tribe/Nation, relatives, dates, county, town, cemetery, creek, or family story.</li>
-          <li><strong>Find enrollment records.</strong> For Five Tribes research, look for Dawes census card, roll/enrollment number, and enrollment jacket.</li>
-          <li><strong>Find the allotment jacket.</strong> The allotment jacket is the key record for land location, legal description, acreage, and sometimes plats or disputes.</li>
-          <li><strong>Match the legal description to a map.</strong> Use township, range, and section to open the correct allotment map.</li>
-          <li><strong>Route to the modern county.</strong> Search county clerk records for deeds, mortgages, releases, sheriff deeds, tax deeds, oil and gas leases, liens, and probate-related filings.</li>
-          <li><strong>Check federal title if needed.</strong> If land may be trust or restricted, county records are not enough; request BIA/LTRO title records or a Title Status Report where appropriate.</li>
+          <li><strong>Built research path comes first.</strong> This is the roadmap. It tells the family what record to look for, where to search, and why the record matters.</li>
+          <li><strong>Matching site records come second.</strong> These are records already loaded into AllottedLand.com. If nothing matches yet, that does not mean no record exists; it means the site index is still being built.</li>
+          <li><strong>Official source leads come next.</strong> These cards point users to NARA, OHS, LOC maps, Federal Register, historic newspapers, Census/TIGERweb geography, BIA/LTRO, and BLM/GLO paths.</li>
+          <li><strong>Agency request packets are last.</strong> Copy the request for the agency or county office. Each request is written in plain English so the office understands what the user is asking for.</li>
         </ol>
       </div>
       <div class="panel">
-        <h2>Evidence checklist</h2>
+        <h2>What the family should collect</h2>
         <ul class="checklist">
-          <li>Ancestor name and spelling variants</li>
-          <li>Tribe / Nation</li>
-          <li>Dawes roll or enrollment number</li>
-          <li>Census card number</li>
-          <li>Allotment jacket or allotment record</li>
-          <li>Legal description: township, range, section</li>
-          <li>Historical allotment map page</li>
-          <li>Modern county and county clerk search</li>
-          <li>BIA/LTRO title records if trust/restricted</li>
-          <li>Record showing how land was transferred, lost, retained, or divided</li>
+          <li>Ancestor name, spelling variants, relatives, and tribe/Nation</li>
+          <li>Dawes roll/enrollment number and census card number</li>
+          <li>Enrollment application/testimony packet</li>
+          <li>Allotment jacket or application for allotment</li>
+          <li>Legal description: township, range, section, acreage, county</li>
+          <li>Allotment map page or source image</li>
+          <li>County deed, mortgage, release, sheriff deed, tax deed, probate, guardianship, or oil/gas record</li>
+          <li>BIA/LTRO title records or Title Status Report path if trust/restricted land may be involved</li>
         </ul>
-      </div>
-    </section>
-
-    <section id="requests" class="section two-col">
-      <div class="panel">
-        <h2>County record request builder</h2>
-        <p>After the wizard runs, a copy-paste request appears here. It is written for county clerk land records and can be adjusted for the specific county.</p>
-        <textarea id="countyRequest" class="requestBox" readonly placeholder="Build a research path to generate a request."></textarea>
-        <div class="buttons">
-          <button type="button" id="copyRequest">Copy request</button>
-        </div>
-      </div>
-      <div class="panel disclaimer">
-        <h2>Important disclaimer</h2>
-        <p>This site is a free research index. It does not determine ownership, title, heirship, citizenship, enrollment, land recovery claims, or legal rights. Always verify results against original records, county records, tribal records, BIA/LTRO records, and National Archives records.</p>
-        <p>Search results may include OCR text, user-submitted corrections, or partial data. Treat unverified matches as leads, not proof.</p>
       </div>
     </section>
 
@@ -423,109 +255,8 @@
   </footer>
 
 
-  <script src="assets/dawes-search.js?v=039"></script>
-  <script src="assets/print-packet.js?v=044"></script>
-  <script src="assets/source-connectors.js?v=044"></script>
-  <script src="assets/unified-search.js?v=046"></script>
-  <script src="assets/app.js?v=039"></script>
-  <script>
-  (function () {
-    const $ = (id) => document.getElementById(id);
-    const clean = (v) => String(v || '').trim();
-    const lower = (v) => clean(v).toLowerCase();
-    async function getJSON(url) {
-      const res = await fetch(url, { headers: { 'accept': 'application/json' } });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }
-    function recordCard(r) {
-      const name = clean(r.verified_name) || [r.first_name, r.middle_name, r.last_name].filter(Boolean).join(' ') || 'Unnamed record';
-      const num = clean(r.number_shown_on_map || r.map_number || r.allotment_number || r.roll_number);
-      const numberType = clean(r.number_type || 'map number');
-      const tr = clean(r.township_range);
-      const sec = clean(r.section);
-      const source = clean(r.source_link);
-      return `<article class="result-card record-result">
-        <h3>${escapeHTML(name)}</h3>
-        <p><strong>Map number:</strong> ${escapeHTML(num || 'not entered')} ${numberType ? '· ' + escapeHTML(numberType) : ''}</p>
-        <p><strong>Location:</strong> ${escapeHTML([tr, sec ? 'Section ' + sec : ''].filter(Boolean).join(' · ') || 'not entered')}</p>
-        ${source ? `<p><a href="${escapeAttr(source)}" target="_blank" rel="noopener">Open source map</a></p>` : ''}
-      </article>`;
-    }
-    function escapeHTML(s) {
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-    function escapeAttr(s) { return escapeHTML(s).replace(/`/g, '&#96;'); }
-    function matchesFilters(r) {
-      const first = lower($('givenName')?.value);
-      const last = lower($('surname')?.value);
-      const num = lower($('allotmentNumber')?.value || $('rollNumber')?.value);
-      const keyword = lower($('keyword')?.value);
-      if (first && !lower(r.first_name || r.given_name || r.verified_name).includes(first)) return false;
-      if (last && !lower(r.last_name || r.surname || r.verified_name).includes(last)) return false;
-      if (num && !lower([r.number_shown_on_map, r.map_number, r.allotment_number, r.roll_number].join(' ')).includes(num)) return false;
-      if (keyword && !lower(JSON.stringify(r)).includes(keyword)) return false;
-      return true;
-    }
-    async function runRecordSearch(event) {
-      if (event) event.preventDefault();
-      const results = $('results');
-      const status = $('status');
-      const count = $('count');
-      if (!results) return;
-      const params = new URLSearchParams();
-      const tr = clean($('townshipRange')?.value);
-      const sec = clean($('section')?.value);
-      if (tr) params.set('township_range', tr);
-      if (sec) params.set('section', sec);
-      if (status) status.textContent = 'Searching approved records…';
-      try {
-        const data = await getJSON('/api/records' + (params.toString() ? '?' + params.toString() : ''));
-        const records = (Array.isArray(data.records) ? data.records : []).filter(matchesFilters);
-        results.innerHTML = records.length ? records.map(recordCard).join('') : '<p class="muted">No approved public records matched that search yet. Try township/range, or check pending records in the admin panel.</p>';
-        if (count) count.textContent = records.length + ' approved record' + (records.length === 1 ? '' : 's');
-        if (status) status.textContent = 'Approved-record search connected to website database.';
-      } catch (e) {
-        if (status) status.textContent = 'Could not reach approved-records API. Check deployment, Functions, and D1 binding.';
-      }
-    }
+  <script src="assets/print-packet.js?v=047"></script>
+  <script src="assets/unified-search.js?v=047"></script>
 
-    function buildAgreed(){ return !!document.getElementById('buildAgree')?.checked; }
-    function searchAgreed(){ return !!document.getElementById('searchAgree')?.checked; }
-    function setToolGate(){
-      const buildBtn = $('buildPathBtn');
-      const searchBtn = $('searchBtn');
-      if (buildBtn) buildBtn.disabled = !buildAgreed();
-      if (searchBtn) searchBtn.disabled = !searchAgreed();
-      try {
-        localStorage.setItem('allottedland_build_agreement', buildAgreed() ? 'yes' : 'no');
-        localStorage.setItem('allottedland_search_agreement', searchAgreed() ? 'yes' : 'no');
-      } catch(e) {}
-    }
-    function requireAgree(kind){
-      const ok = kind === 'search' ? searchAgreed() : buildAgreed();
-      if (ok) return true;
-      const target = kind === 'search' ? $('searchAgree') : $('buildAgree');
-      alert('Please check the Privacy Policy / Terms of Use agreement next to this button before continuing.');
-      target?.scrollIntoView({behavior:'smooth', block:'center'});
-      return false;
-    }
-    document.addEventListener('submit', function(e){ if(e.target && e.target.id === 'wizardForm' && !requireAgree('build')){ e.preventDefault(); e.stopImmediatePropagation(); }}, true);
-    document.addEventListener('DOMContentLoaded', function () {
-      const buildAgree = $('buildAgree');
-      const searchAgree = $('searchAgree');
-      try {
-        if (buildAgree && localStorage.getItem('allottedland_build_agreement') === 'yes') buildAgree.checked = true;
-        if (searchAgree && localStorage.getItem('allottedland_search_agreement') === 'yes') searchAgree.checked = true;
-      } catch(e) {}
-      [buildAgree, searchAgree].forEach(el => { if (el) el.addEventListener('change', setToolGate); });
-      setToolGate();
-      const btn = $('searchBtn');
-      if (btn) btn.addEventListener('click', function(e){ if(!requireAgree('search')){ e.preventDefault(); return; } runRecordSearch(e); });
-      const clear = $('clearBtn');
-      if (clear) clear.addEventListener('click', function () { setTimeout(runRecordSearch, 0); });
-    });
-  })();
-  </script>
 </body>
 </html>

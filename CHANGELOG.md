@@ -266,3 +266,14 @@ Notes:
 - Updated `sources.html`, schema notes, and connector source cards.
 
 Deployment note: deploy this as a full site folder with Wrangler, not as a changed-files-only patch.
+
+## v0.47 — One-tool homepage cleanup and plain-English request packets
+
+- Replaced the separate homepage search boxes with one Universal Search workflow.
+- Removed the visible standalone Dawes, current-index, and official-source lookup forms from the homepage so families do not have to choose the right tool before starting.
+- Fixed Universal Search local/index matching so generic terms like Cherokee, section, land, or source do not return every indexed row.
+- Updated Unified Results so the first section is always the Built Research Path, followed by summary, matching records, official-source leads, prepared links, and agency request packets.
+- Rewrote agency request packets in plain English for NARA/OHS, county clerk/court, BIA/LTRO, and BLM/GLO.
+- Added a Copy request button to each agency packet.
+- Fixed browser print/Ctrl+P behavior so the branded print packet auto-builds from visible Universal Search results instead of printing an empty packet.
+- Added print support for individual Universal Search result cards.
