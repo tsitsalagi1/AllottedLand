@@ -1,3 +1,16 @@
+
+## v0.44 address-to-coordinate lookup
+
+Adds an address resolver for Census/TIGERweb research leads:
+
+- New endpoint: `/api/address-resolve?address=...`
+- Uses the U.S. Census Geocoder first.
+- If Census cannot match the address, uses OpenStreetMap Nominatim as a low-volume fallback to produce latitude/longitude.
+- The Census geography lookup can now use resolved coordinates to request Census geoLookup and TIGERweb AIANNH/OTSA/off-reservation-trust geography leads.
+- Results remain research leads only; users must verify coordinates and official records.
+
+OpenStreetMap/Nominatim usage must stay end-user-triggered and low-volume. Do not use this endpoint for bulk geocoding.
+
 ## v0.36 — Dawes quick-search layer and branded PDF packet
 
 This release adds a fast homepage search layer for Dawes / Five Tribes record leads. It loads `data/dawes_index.json` and lets users search by name, tribe, enrollment category, roll/enrollment number, census card number, and keyword before the full allotment-map transcription is complete.

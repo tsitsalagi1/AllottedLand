@@ -1,3 +1,16 @@
+
+## v0.44 Address resolver endpoint
+
+`GET /api/address-resolve?address=...` returns:
+
+- `resolved.lat`
+- `resolved.lon`
+- `resolved.provider`
+- `resolved.label`
+- printable source lead cards
+
+The resolver uses Census first and OpenStreetMap Nominatim only as a fallback. It is for end-user-triggered, low-volume research lookup, not bulk geocoding.
+
 ## v0.36 — Dawes quick-search index schema
 
 `data/dawes_index.json` powers the new homepage Dawes / Five Tribes quick-search layer. It is a lightweight static JSON file so the site can help users find record leads before every allotment map is indexed.

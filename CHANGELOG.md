@@ -1,3 +1,12 @@
+
+## v0.44 — Address-to-coordinate lookup for Census/TIGERweb
+
+- Added `/api/address-resolve` endpoint.
+- Added “Address → coordinates” button to the Official Source Lookup form.
+- Census lookup now attempts address-to-coordinate fallback if Census cannot match a street address directly.
+- Added OpenStreetMap/Nominatim attribution and verification warnings.
+- Removed the need for ordinary users to manually find latitude/longitude before using Census/TIGERweb geography leads.
+
 # v0.43 — Census coordinate bug hotfix
 
 - Fixed `/api/census-lookup` so missing `lat` / `lon` parameters remain blank instead of being treated as `0`.
