@@ -3,10 +3,6 @@ import { json, readJson, makeId, normalizeRecord, uniqueKey } from './_util.js';
 export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ error: 'D1 binding DB is not configured.' }, 500);
   const body = await readJson(request);
-  const consent = body.consent || {};
-  if (!consent.privacy || !consent.terms || !consent.submission || !consent.permission) {
-    return json({ error: 'Privacy Policy, Terms of Use, Submission Consent, and permission confirmations are required before submitting records.' }, 400);
-  }
   const records = Array.isArray(body.records) ? body.records.map(normalizeRecord) : [];
   if (!records.length) return json({ error: 'No records were submitted.' }, 400);
   if (records.length > 200) return json({ error: 'Too many records in one submission. Limit is 200.' }, 400);

@@ -3,7 +3,7 @@ export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ error: 'D1 binding DB is not configured.' }, 500);
   const body = await readJson(request);
   const consent = body.consent || {};
-  if (!consent.privacy || !consent.terms || !consent.submission || !consent.permission || !consent.age) return json({ error: 'Privacy, terms, submission consent, permission, and age/guardian confirmation are required.' }, 400);
+  if (!consent.privacy || !consent.terms || !consent.submission || !consent.permission) return json({ error: 'Privacy, terms, submission consent, and permission are required.' }, 400);
   const story = String(body.story || '').trim();
   if (story.length < 20) return json({ error: 'Story is too short.' }, 400);
   const now = new Date().toISOString();

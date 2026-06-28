@@ -160,6 +160,18 @@
           <li>Added official-source data roadmap notes for NARA, LOC, OHS, and BIA/LTRO.</li>
         </ul>
       </article>
+
+<section class="section panel">
+  <p class="eyebrow dark">v0.40</p>
+  <h2>Official source connector resilience hotfix</h2>
+  <ul class="checklist">
+    <li>LOC lookup now returns printable official search-link cards instead of failing when the LOC JSON request is blocked or rate-limited.</li>
+    <li>NARA lookup now tries broader searches and returns official fallback source leads when no live rows are returned.</li>
+    <li>NARA v2 result parsing was improved for nested Catalog records.</li>
+    <li>Homepage connector assets now use v040 cache busting.</li>
+  </ul>
+</section>
+
 </main>
 
 <footer class="site-footer">

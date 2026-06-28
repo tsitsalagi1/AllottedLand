@@ -203,3 +203,18 @@ Notes:
 - NARA live API results require a Cloudflare Pages secret named `NARA_API_KEY`.
 - OHS, BIA/LTRO, and BLM GLO are included as official linkout / request paths unless an official public API is identified and approved for this use.
 - Do not scrape NARA live API for bulk data. Use NARA AWS Catalog dataset for bulk metadata work.
+
+## v0.40 — Official source connector resilience hotfix
+
+- Fixed LOC source lookup so a 403/rate-limit/proxy block no longer leaves users with no useful result. The connector now returns printable official LOC search-link cards when live JSON cannot be fetched.
+- Broadened NARA live API searches and added multiple fallback searches instead of forcing one over-specific Dawes/allotment phrase.
+- Added NARA fallback result cards when the API key is missing, placeholder, blocked, or the live API returns no rows.
+- Improved NARA result normalization for nested v2 Catalog API records.
+- Updated cache-busting query strings to `v=040` for the homepage connector assets.
+
+## v0.41 — Full deployment repair package
+
+- Rebuilt a complete deployable site snapshot instead of a changed-files-only patch.
+- Restored core static assets such as `assets/styles.css`, `assets/app.js`, data files, docs, and all public pages.
+- Preserved v0.40 connector resilience fixes and v0.39 official-source connectors.
+- Use this folder for Wrangler deployments. Do not deploy a changed-files-only patch folder as the entire Cloudflare Pages site.

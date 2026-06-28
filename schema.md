@@ -319,3 +319,12 @@ Returns normalized LOC result cards with title, URL, date, description, and thum
 - BIA Branch of Land Titles and Records / LTRO
 - BLM General Land Office Records
 - NARA Catalog AWS bulk dataset
+
+## v0.40 source connector behavior
+
+Official source lookup endpoints may return either live API results or printable fallback source-link cards.
+
+- `/api/nara-search?q=...` returns `fallback: false` when live NARA rows are available and `fallback: true` when it returns official NARA search/guide leads.
+- `/api/loc-search?q=...` returns `fallback: false` when LOC JSON rows are available and `fallback: true` when it returns official LOC search-link leads after a 403/rate-limit/proxy block or zero-row JSON response.
+
+Fallback rows are intentional records for user guidance and printing; they are not database records and should not be treated as proof of title, enrollment, heirship, ownership, or legal rights.

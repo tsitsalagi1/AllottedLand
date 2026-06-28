@@ -222,3 +222,26 @@ The LOC connector does not require a key. It uses `/api/loc-search` to query the
 - NARA AWS dataset: bulk metadata path for future offline import work.
 
 All output remains labeled as research leads. Users should verify every lead against the official record page or original source record.
+
+
+## v0.40 connector hotfix
+
+This release keeps the same v0.39 Official Source Lookup interface but makes it safer for real public use. If the Library of Congress JSON endpoint returns HTTP 403, rate limiting, or another proxy failure, `/api/loc-search` now returns official LOC search-link cards with printable source leads instead of an error. `/api/nara-search` now tries broader searches and returns official NARA search/guide cards when the live API returns zero rows or the `NARA_API_KEY` is missing/placeholder.
+
+Deploy with Wrangler from this folder:
+
+```powershell
+npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+```
+
+Then hard refresh `https://allottedland.com` with Ctrl+F5.
+
+## v0.41 deployment warning
+
+This package is a full Cloudflare Pages deployment snapshot. Deploy this entire folder with Wrangler:
+
+```powershell
+npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+```
+
+Do not deploy a changed-files-only folder as the whole site. Cloudflare Pages deployments replace the deployed asset snapshot with the folder you deploy. A partial folder can leave the live site missing shared CSS, JavaScript, data, and supporting pages.
