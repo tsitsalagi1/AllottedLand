@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: /api/unified-search
-// v0.48: one-search research planner for AllottedLand.com.
+// v0.51: one-search research planner for AllottedLand.com.
 // Builds research paths, matching approved-record leads, source links, and agency request packets.
 const json = (body, status = 200) => new Response(JSON.stringify(body, null, 2), {
   status,
@@ -45,12 +45,12 @@ function sourceLeads(q){
   const newsQ = [q, 'tax sale sheriff sale guardian probate allotment'].join(' ');
   const frQ = [q, 'Bureau of Indian Affairs allotment land'].join(' ');
   return [
-    { group:'NARA', title:'Search NARA Catalog', type:'official source search', url:`https://catalog.archives.gov/search?q=${escUrl(qDawes)}`, description:'Search for Dawes rolls, census/enrollment cards, enrollment packets, allotment jackets, maps, RG 48, and RG 75 source leads.' },
+    { group:'NARA', title:'Search NARA Catalog', type:'official source search', url:`https://catalog.archives.gov/search?q=${escUrl(qDawes)}`, description:'Search for Dawes rolls, census/enrollment cards, enrollment packets, allotment jackets, maps, RG 48, and RG 75 record leads.' },
     { group:'NARA', title:'NARA Dawes research guide', type:'research guide', url:'https://www.archives.gov/research/native-americans/dawes', description:'Plain guide explaining Final Dawes Rolls, census cards, enrollment applications, allotment jackets, maps, and the proper order of research.' },
     { group:'OHS', title:'Oklahoma Historical Society Dawes search', type:'state source search', url:'https://www.okhistory.org/research/dawes', description:'Search by first name, last name, tribal nation, roll number, or card number, then use the card/roll result to find packets.' },
-    { group:'LOC Maps', title:'Library of Congress map search', type:'official map search', url:`https://www.loc.gov/maps/?q=${escUrl(mapQ)}&fa=location:oklahoma`, description:'Search allotment maps, Indian Territory maps, township/range atlas pages, and map-image source leads.' },
+    { group:'LOC Maps', title:'Library of Congress map search', type:'official map search', url:`https://www.loc.gov/maps/?q=${escUrl(mapQ)}&fa=location:oklahoma`, description:'Search allotment maps, Indian Territory maps, township/range atlas pages, and map-image record leads.' },
     { group:'Newspapers', title:'Chronicling America newspaper search', type:'historic newspaper search', url:`https://www.loc.gov/collections/chronicling-america/?q=${escUrl(newsQ)}`, description:'Search historic newspapers for tax-sale, sheriff-sale, probate, guardianship, oil/gas, and local legal notices.' },
-    { group:'Federal notices', title:'Federal Register search', type:'federal notice search', url:`https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=${escUrl(frQ)}`, description:'Search BIA notices, tribal ordinances, land acquisitions, rules, and federal policy/source leads. Verify legal reliance against the official PDF/govinfo source.' },
+    { group:'Federal notices', title:'Federal Register search', type:'federal notice search', url:`https://www.federalregister.gov/documents/search?conditions%5Bterm%5D=${escUrl(frQ)}`, description:'Search BIA notices, tribal ordinances, land acquisitions, rules, and federal policy records. Verify legal reliance against the official PDF/govinfo source.' },
     { group:'Census/TIGERweb', title:'Census Geocoder / TIGERweb', type:'geography lead', url:'https://geocoding.geo.census.gov/geocoder/', description:'Use addresses or coordinates to find Census geography leads. This is not final proof of title, ownership, or Indian Country status.' },
     { group:'BIA/LTRO', title:'BIA Land Titles and Records request path', type:'official title-record request path', url:'https://www.bia.gov/bia/ots/dtaot/bltr', description:'Use for trust/restricted title documents, patents, deeds, probate orders, leases, rights-of-way, plats, and Title Status Report direction.' },
     { group:'BLM/GLO', title:'BLM General Land Office Records', type:'official federal land-record search', url:'https://glorecords.blm.gov/', description:'Search federal land patents, survey plats, field notes, tract books, and township land catalog leads.' }

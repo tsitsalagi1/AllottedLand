@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or family information." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=050">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=051">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -29,18 +29,12 @@
   <a href="index.html#universal-search">Search</a>
   <a href="testimonials.html">Family stories</a>
   <a href="evidence.html">Land Loss Project</a>
-  <a href="sources.html">Source guide</a>
-  <a href="contact.html">Contact</a>
+  <a href="about.html">About / Contact</a>
 </nav>
     <div class="hero">
       <p class="eyebrow">AllottedLand.com · Beta / Phase 1</p>
       <h1>Find your family’s allotted land.</h1>
       <p class="subtitle">A free public research tool helping Native families search historical allotment maps and records by name, roll number, tribe, township, range, section, county, or family information.</p>
-      <div class="hero-actions">
-        <a class="button" href="#unified-search">Search everything</a>
-        <a class="button secondary" href="#unified-search">I don’t know where to start</a>
-        <a class="button tertiary" href="testimonials.html">Read family stories</a>
-      </div>
     </div>
   </header>
 
@@ -48,33 +42,16 @@
     <section id="unified-search" class="section unified-search-section unified-primary-section">
       <div class="panel unified-start-panel">
         <p class="eyebrow dark">Start here</p>
-        <h2>One search builds the whole research path.</h2>
-        <p class="mission-lead">AllottedLand.com helps Native families turn the information they already have into a record trail: Dawes records, census/enrollment cards, allotment jackets, maps, county land records, BIA/LTRO title records, historic newspapers, and official source links.</p>
-        <p>Use the field boxes below. Leave anything blank if you do not know it. The site will build the research path first, then show matching site records, official source leads, prepared official links, and copy-ready agency request packets.</p>
-        <div class="mission-detail-grid compact" aria-label="What this search does">
-          <div><strong>Search one place</strong><span>Names, roll/card numbers, tribe, township/range/section, county, address, coordinates, family story, and land-loss information all go through one form.</span></div>
-          <div><strong>Start with records</strong><span>Every result is treated as a research lead. The packet tells the family what original record to verify next.</span></div>
-          <div><strong>Print the path</strong><span>Families can save a branded PDF packet with the research path, results, source links, and request text.</span></div>
+        <h2>One search builds the family research path.</h2>
+        <p class="mission-lead">Use the boxes below for whatever information the family has: names, spelling variants, roll or card numbers, tribe/Nation, allotment number, township/range/section, county, address, old town, cemetery, deed notes, tax-sale or sheriff-sale information, or family story.</p>
+        <p>The search will first build a step-by-step research path. Then it will show matching site records, official source leads, prepared official links, and request text you can copy for archives, county offices, BIA/LTRO, or land-record offices.</p>
+        <div class="mission-detail-grid compact" aria-label="How the search helps">
+          <div><strong>Search one place</strong><span>The family does not need to know which form or source to use first. Put the information in one place and let the site organize the next steps.</span></div>
+          <div><strong>Check original records</strong><span>Each result is a research lead. Use the path to verify it against Dawes records, allotment jackets, maps, county records, BIA/LTRO records, and other original sources.</span></div>
+          <div><strong>Print or save the path</strong><span>Save a PDF packet with the research path, matching leads, source links, and request text.</span></div>
         </div>
+        <p class="muted"><strong>Family stories and land-loss information:</strong> after using Search, families may share a story on the <a href="testimonials.html">Family stories</a> page or submit documented land-loss information through the <a href="evidence.html">Land Loss Project</a>.</p>
       </div>
-
-      <section class="section two-col intro-helper-grid">
-        <div class="panel feature-panel story-panel">
-          <p class="eyebrow dark">Family stories</p>
-          <h2>Testimonials and the Land Loss Project</h2>
-          <p>Families can share how the site helped them find records, and may separately submit documented land-loss information for review and aggregate charts.</p>
-          <p><a class="link-button" href="testimonials.html">Open testimonials</a> <a class="link-button" href="evidence.html">Open Land Loss Project</a></p>
-        </div>
-        <div class="panel before-search-panel">
-          <h2>Before you search</h2>
-          <p><strong>Do not worry if you only know one thing.</strong> A name, roll number, county, cemetery, old town, address, deed note, or family story can start the search.</p>
-          <ul class="checklist compact-list">
-            <li>Put names, spelling variants, relatives, and tribe/Nation in the family fields.</li>
-            <li>Put roll, census-card, allotment, township/range/section, county, and address details in the land fields.</li>
-            <li>Use land-loss fields for tax sale, sheriff sale, probate, guardianship, mortgage, deed, oil/gas, or court information.</li>
-          </ul>
-        </div>
-      </section>
 
       <form class="panel unified-search-panel unified-wide-panel" id="unifiedSearchForm" onsubmit="return false;">
         <div class="unified-form-head">
@@ -107,8 +84,8 @@
                 <option value="Other / Unknown">Other / not sure</option>
               </select>
             </label>
-            <label>Ancestor first name <input id="wizFirst" placeholder="example: Claude" autocomplete="off"></label>
-            <label>Ancestor last name <input id="wizLast" placeholder="example: Ketcher" autocomplete="off"></label>
+            <label>Ancestor first name <input id="wizFirst" placeholder="first name, if known" autocomplete="off"></label>
+            <label>Ancestor last name <input id="wizLast" placeholder="last name or family name" autocomplete="off"></label>
             <label>Name variants <input id="wizVariants" placeholder="spelling variants, nicknames, married names" autocomplete="off"></label>
             <label>Enrollment category
               <select id="uniCategory">
@@ -188,16 +165,16 @@
 
   <footer class="site-footer">
   <div class="footer-grid">
-    <div><strong>AllottedLand.com</strong><p>One family-land search path. Results are research leads, not proof of title, ownership, enrollment, heirship, or legal rights.</p></div>
-    <div><strong>For families</strong><p><a href="index.html#universal-search">Search everything</a><br><a href="testimonials.html">Family stories</a><br><a href="evidence.html">Land Loss Project</a><br><a href="sources.html">Source guide</a></p></div>
-    <div><strong>Project</strong><p><a href="about.html">About</a><br><a href="privacy.html">Privacy</a><br><a href="terms.html">Terms</a><br><a href="submission-policy.html">Submission consent</a><br><a href="login.html">Reviewer login</a></p></div>
+    <div><strong>AllottedLand.com</strong><p>One search path for family allotment research. Results are leads, not proof of title, ownership, enrollment, heirship, or legal rights.</p></div>
+    <div><strong>For families</strong><p><a href="index.html#universal-search">Search</a><br><a href="testimonials.html">Family stories</a><br><a href="evidence.html">Land Loss Project</a></p></div>
+    <div><strong>Project</strong><p><a href="about.html">About / Contact</a><br><a href="privacy.html">Privacy</a><br><a href="terms.html">Terms</a><br><a href="submission-policy.html">Submission consent</a></p></div>
   </div>
-  <p class="small-note">Contact: <a href="contact.html">allottedland@gmail.com</a></p>
+  <p class="small-note">Questions, corrections, or removal requests: <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
 </footer>
 
 
-  <script src="assets/print-packet.js?v=049"></script>
-  <script src="assets/unified-search.js?v=049"></script>
+  <script src="assets/print-packet.js?v=051"></script>
+  <script src="assets/unified-search.js?v=051"></script>
 
 </body>
 </html>

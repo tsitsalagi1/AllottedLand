@@ -208,7 +208,7 @@
     state.filtered = filterRecords();
     state.hasSearched = true;
     if (status) status.textContent = state.filtered.length
-      ? 'Search complete. Add results to the branded PDF packet or print the current matches.'
+      ? 'Search complete. Add results to the PDF research packet or print the current matches.'
       : 'No matches found in the current Dawes index.';
     renderResults(state.filtered);
   }

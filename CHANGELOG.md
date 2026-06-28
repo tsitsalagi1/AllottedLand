@@ -298,9 +298,9 @@ Deployment note: deploy this as a full site folder with Wrangler, not as a chang
 - Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
 
 
-## v0.50 - public-page simplification
+## v0.51 - public-page simplification
 
 - Simplified public pages except admin and workbench.
-- Replaced public navigation with a user-focused nav: Search, Family stories, Land Loss Project, Source guide, Contact.
-- Rewrote About, Source Guide, Contact, Privacy, Terms, Submission Consent, Reviewer Login, Help Index Maps, and Updates pages in plain user-focused language.
+- Replaced public navigation with a user-focused nav: Search, Family stories, Land Loss Project, Search guidance, Contact.
+- Rewrote About, Search Guidance, Contact, Privacy, Terms, Submission Consent, Reviewer Login, Help Index Maps, and Updates pages in plain user-focused language.
 - Kept admin and workbench unchanged for reviewers.

@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.49 unified search + simplified results and request packets
+/* AllottedLand.com v0.51 unified search + simplified results and request packets
    One home-page tool: users enter any information, the site builds a research path first,
    then shows only matching local/index records and source leads.
 */
@@ -9,7 +9,7 @@
   const attr = (s) => esc(s).replace(/`/g,'&#96;');
   const norm = (v) => text(v).toLowerCase().replace(/[’]/g,"'").replace(/\s+/g,' ');
   const digits = (v) => text(v).replace(/[^0-9]/g, '');
-  const MAX_LOCAL = 16;
+  const MAX_LOCAL = 10;
   const MAX_SOURCE = 8;
   const STOP = new Set('i me my the a an and or of for to in on at by with from into help find search everything where what know start record records source sources lead leads official family land allotted allotment allotments dawes five civilized tribes cherokee nation county ok oklahoma indian territory look looking'.split(/\s+/));
 
@@ -72,25 +72,30 @@
     let strong = false;
 
     const qRolls = [c.roll, c.card, c.allotment, ...(digits(q) ? [digits(q)] : [])].filter(Boolean);
+    let idMatched = false;
     for (const n of qRolls) {
-      if (n.length >= 2 && b.includes(n)) { score += 55; strong = true; }
+      if (n.length >= 2 && b.includes(n)) { score += 55; strong = true; idMatched = true; }
     }
 
     const names = [];
     if (c.first || c.last) names.push([c.first, c.last].filter(Boolean).join(' '));
     const qm = text(q).match(/\b([A-Z][A-Za-z'’.-]+)\s+([A-Z][A-Za-z'’.-]+)\b/);
     if (qm && !looksAddress(qm[0])) names.push(qm[0]);
+    let nameMatched = false;
+    const hasNameInput = names.some(Boolean);
     for (const n of names) {
       const nt = cleanTokens(n);
-      if (nt.length >= 2 && title.includes(nt.join(' '))) { score += 60; strong = true; }
-      else if (nt.length >= 2 && nt.every(t => title.includes(t))) { score += 46; strong = true; }
-      else if (nt.length === 1 && nt[0].length > 3 && title.includes(nt[0])) { score += 24; strong = true; }
+      if (nt.length >= 2 && title.includes(nt.join(' '))) { score += 60; strong = true; nameMatched = true; }
+      else if (nt.length >= 2 && nt.every(t => title.includes(t))) { score += 46; strong = true; nameMatched = true; }
+      else if (nt.length === 1 && nt[0].length > 3 && title.includes(nt[0])) { score += 24; strong = true; nameMatched = true; }
     }
 
     const qt = c.township && c.range ? {t:String(c.township), r:String(c.range), sec:String(c.section||'')} : extractTRS(q);
     const rt = rowTRS(item);
-    if (qt.t && qt.r && rt.t === qt.t && rt.r === qt.r) { score += 45; strong = true; }
-    if (qt.sec && rt.sec === qt.sec && (qt.t && qt.r ? (rt.t === qt.t && rt.r === qt.r) : true)) { score += 12; if (qt.t && qt.r) strong = true; }
+    const hasSpecificPersonOrId = hasNameInput || qRolls.length > 0;
+    if (qt.t && qt.r && rt.t === qt.t && rt.r === qt.r && !hasSpecificPersonOrId) { score += 45; strong = true; }
+    if (qt.sec && rt.sec === qt.sec && (qt.t && qt.r ? (rt.t === qt.t && rt.r === qt.r) : true) && !hasSpecificPersonOrId) { score += 12; if (qt.t && qt.r) strong = true; }
+    if (hasSpecificPersonOrId && !nameMatched && !idMatched) return 0;
 
     const countyWords = text([c.place, c.legal, c.notice, q].filter(Boolean).join(' ')).match(/\b([A-Za-z]+)\s+County\b/i);
     if (countyWords && b.includes(norm(countyWords[1])) && b.includes('county')) { score += 18; strong = true; }
@@ -260,9 +265,9 @@
         const label = s.provider || 'Official source';
         if (Array.isArray(s.results) && s.results.length) for (const r of s.results.slice(0, MAX_SOURCE)) flatSources.push({...r, provider:label});
       }
-      sections.push(section('Official source leads', flatSources.length ? `<p class="section-help"><strong>What these are:</strong> These are live or fallback leads from official source systems such as NARA, Federal Register, historic newspapers, Census/TIGERweb, or other public repositories. Use them to open the source record or source search, then save or print what you find.</p>${flatSources.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No live official-source cards yet.</strong> Use the prepared official links below. They open the right agency/source searches even when a live API does not return results.</p>', `${flatSources.length} lead(s)`));
+      sections.push(section('Official source leads', flatSources.length ? `<p class="section-help"><strong>What these are:</strong> These are possible matches or search leads from official record systems such as NARA, Federal Register, historic newspapers, Census/TIGERweb, and other public source sites. Open the source and verify the record there before relying on it.</p>${flatSources.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No official-source cards yet.</strong> Use the prepared official links below. They open the right source searches even when the site cannot retrieve a result automatically.</p>', `${flatSources.length} lead(s)`));
       const officialLinks = (planner.official_source_leads || []).map(r => sourceCard(r, r.group)).join('');
-      sections.push(section('Prepared official links', `<p class="section-help"><strong>What these do:</strong> These links are safety-net searches and agency paths. They are useful when the live connector has no result yet, when an API blocks a request, or when the family needs to continue the search directly on an official site.</p>${officialLinks}`, `${(planner.official_source_leads||[]).length} link(s)`));
+      sections.push(section('Prepared official links', `<p class="section-help"><strong>What these do:</strong> These links are safety-net searches and agency paths. They are useful when the official source search does not return a result, when an outside site blocks an automated request, or when the family needs to continue the search directly on an official site.</p>${officialLinks}`, `${(planner.official_source_leads||[]).length} link(s)`));
       sections.push(section('Agency record request packets', `<p class="section-help"><strong>What these are:</strong> Copy the request for the agency, archive, county clerk, court clerk, BIA/LTRO office, or land-record office. Each request tells the office what record trail the family is trying to locate and lists the record types to check.</p>${(planner.record_request_packet || []).map(requestCard).join('')}`, `${(planner.record_request_packet||[]).length} request(s)`));
       if (output) output.innerHTML = sections.join('');
       if ($('unifiedCount')) $('unifiedCount').textContent = `${siteCards.length + flatSources.length} matching result/lead card(s)`;
@@ -277,7 +282,7 @@
     const output = $('unifiedResults');
     if (!output || !text(output.textContent) || /results will appear/i.test(output.textContent)) { alert('Run the unified search first.'); return; }
     if (window.AllottedPrint?.buildPacket) {
-      window.AllottedPrint.buildPacket('AllottedLand.com Unified Research Packet', 'This packet captures the built research path, matching site/index records, official source leads, prepared official links, and agency request text.', [`<section class="print-result"><h2>Unified search results</h2>${output.innerHTML}</section>`]);
+      window.AllottedPrint.buildPacket('AllottedLand.com Research Packet', 'This packet includes the research path, matching site records, source leads, official links, and agency request text.', [`<section class="print-result"><h2>Unified search results</h2>${output.innerHTML}</section>`]);
     } else window.print();
   }
   function clearUnified(){

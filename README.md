@@ -348,6 +348,6 @@ Key test cases:
 - Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
 
 
-### v0.50 public-page simplification
+### v0.51 public-page simplification
 
 All public-facing pages except `admin.html` and `workbench.html` were simplified around a single user goal: help families search first, understand the record path, and avoid confusing tool sprawl. Reviewer/admin tools remain available but are not promoted in the public navigation.
