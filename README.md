@@ -1,4 +1,16 @@
 
+
+## v0.46 — Unified horizontal family-land search
+
+- Replaced the separate Guided Family-Land Finder homepage section with one Universal Search form.
+- Expanded the form to include the questions from the older What do you know?, Official-source lookup clues, Dawes search, and current-index search workflows.
+- Moved Unified Results directly below the Universal Search form.
+- Reordered unified output so the Built Research Path appears first, followed by summary, local/index matches, official-source leads, prepared links, and record-request packet.
+- Added an “I don’t know where to start” button that builds a starter research path when the user has no clue yet.
+- Improved built research path cards to explain what to look for and where to search for each record type.
+- Added guards so older advanced-tool JavaScript does not fail when the old wizard section is no longer present on the homepage.
+
+
 ## v0.45 Unified Search
 
 The homepage now has a one-search engine. Users can enter a name, Dawes roll number, census card number, address, latitude/longitude, township/range/section, county, family story, or legal-notice clue. The site will:

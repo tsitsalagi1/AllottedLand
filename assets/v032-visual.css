@@ -199,3 +199,33 @@ body #printPacket.print-packet{
 .unified-results .mini-card h3{margin:0 0 6px;color:var(--accent,#173f35);}
 @media(max-width:980px){.unified-search-grid{grid-template-columns:1fr}}
 @media print{.unified-result-section,.unified-card,.unified-source-card{page-break-inside:avoid}.unified-results .requestBox{max-height:none;overflow:visible;background:#fff!important}}
+
+/* v0.46 unified horizontal form: replaces guided family-land finder on homepage */
+.unified-primary-section{padding-top:10px;}
+.unified-primary-section .unified-wide-panel{max-width:1100px;margin:18px auto 0;}
+.unified-primary-section .unified-results-below{max-width:1100px;margin:18px auto 0;min-height:260px;}
+.unified-form-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px;}
+.unified-form-head h2{font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.05;margin:.2rem 0 .5rem;}
+.unified-form-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:430px;}
+.unified-description-label textarea{min-height:150px;border:2px solid var(--accent,#173f35);font-size:1.02rem;line-height:1.45;background:rgba(255,253,248,.98);}
+.unified-details{border:1px solid var(--al-line,#d8cdbd);border-radius:14px;background:rgba(246,241,232,.62);padding:10px 12px;margin:12px 0;}
+.unified-details summary{cursor:pointer;font-weight:900;color:var(--accent,#173f35);font-size:1.05rem;}
+.unified-details summary::marker{color:var(--accent,#173f35);}
+.unified-question-grid{margin-top:12px;}
+.unified-question-grid label{font-weight:800;}
+.unified-question-grid input,.unified-question-grid select,.unified-question-grid textarea{margin-top:5px;}
+.unified-main-actions{border-top:1px solid var(--al-line,#d8cdbd);padding-top:14px;margin-top:14px;}
+.unified-results-below .results-head h2{font-size:clamp(1.6rem,2.5vw,2.25rem);}
+.unified-results .path-step-card{background:rgba(255,253,248,.96);}
+.unified-results .path-step-card h3{font-size:1.04rem;line-height:1.2;}
+.where-to-search,.look-for{font-size:.92rem;margin:.55rem 0 0;color:#2f3b46;}
+.where-to-search strong,.look-for strong{color:var(--accent,#173f35);}
+@media(max-width:860px){
+  .unified-form-head{display:block;}
+  .unified-form-badges{justify-content:flex-start;max-width:none;margin-top:10px;}
+  .unified-primary-section .unified-wide-panel,.unified-primary-section .unified-results-below{max-width:none;}
+}
+@media print{
+  .unified-details{break-inside:avoid;}
+  .where-to-search,.look-for{color:#111!important;}
+}

@@ -268,17 +268,17 @@ function clearWizard(){
   $('researchPath').innerHTML = '<h2>Your research path will appear here.</h2><p class="muted">Fill out the “What do you know?” form and the site will create a step-by-step plan, possible map matches, county record direction, BIA/LTRO direction, and a copy-paste records request.</p>';
 }
 
-['givenName','surname','rollNumber','allotmentNumber','township','range','townshipRange','section','keyword'].forEach(id => $(id).addEventListener('input', runSearch));
-$('searchBtn').addEventListener('click', runSearch);
-$('clearBtn').addEventListener('click', () => { document.querySelectorAll('#search input').forEach(i=>i.value=''); runSearch(); });
-$('wizardForm').addEventListener('submit', buildResearchPath);
-$('fillExample').addEventListener('click', fillExample);
-$('clearWizard').addEventListener('click', clearWizard);
-$('copyRequest').addEventListener('click', async () => {
-  const text = $('countyRequest').value;
+['givenName','surname','rollNumber','allotmentNumber','township','range','townshipRange','section','keyword'].forEach(id => { if ($(id)) $(id).addEventListener('input', runSearch); });
+if ($('searchBtn')) $('searchBtn').addEventListener('click', runSearch);
+if ($('clearBtn')) $('clearBtn').addEventListener('click', () => { document.querySelectorAll('#search input').forEach(i=>i.value=''); runSearch(); });
+if ($('wizardForm')) $('wizardForm').addEventListener('submit', buildResearchPath);
+if ($('fillExample')) $('fillExample').addEventListener('click', fillExample);
+if ($('clearWizard')) $('clearWizard').addEventListener('click', clearWizard);
+if ($('copyRequest')) $('copyRequest').addEventListener('click', async () => {
+  const text = $('countyRequest')?.value || '';
   if(!text) return;
   try{ await navigator.clipboard.writeText(text); $('copyRequest').textContent='Copied'; setTimeout(()=>$('copyRequest').textContent='Copy request',1200); }
-  catch(e){ $('countyRequest').select(); document.execCommand('copy'); }
+  catch(e){ $('countyRequest')?.select(); document.execCommand('copy'); }
 });
 window.showMap = showMap;
 loadData();

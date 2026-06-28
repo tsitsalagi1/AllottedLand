@@ -46,23 +46,79 @@ function sourceLeads(q, detected){
 }
 function researchPath(q, detected){
   const steps = [];
-  steps.push({ title:'Start with the clue exactly as entered', body:`Search term: ${q}. Keep spelling variants, married names, nicknames, county/town clues, roll/card numbers, and legal descriptions together in the packet.` });
-  if (detected.includes('person/family name') || detected.includes('dawes/enrollment clue')) {
-    steps.push({ title:'Dawes / enrollment path', body:'Search Dawes Final Roll, census card, enrollment packet, and allotment jacket. Capture roll number, census card number, enrollment category, age, sex, blood degree, and family-card relationships when found.' });
+  const starter = /do not know where to start|don't know where to start|start anywhere|general five tribes/i.test(q);
+  steps.push({
+    title:'1. Preserve the clue exactly and make a working file',
+    body:`Start by saving the exact clue package: ${q}. Keep spelling variants, married names, nicknames, county/town clues, roll or card numbers, old legal descriptions, book/page references, and family stories together.`,
+    where:'Your family notes, old deeds, county records, cemetery records, Bible records, screenshots, letters, BIA replies, and AllottedLand.com printable packet.',
+    lookFor:'Every spelling variant, date, place name, legal description, roll/card/allotment number, and document source.'
+  });
+  if (starter || detected.includes('person/family name') || detected.includes('dawes/enrollment clue')) {
+    steps.push({
+      title:'2. Find the Dawes Final Roll entry',
+      body:'For Five Tribes research, first try to identify the person on the Final Dawes Rolls. The roll entry gives the roll/enrollment number and often points to the census card number that unlocks the family-card trail.',
+      where:'AllottedLand.com Dawes lead index, Oklahoma Historical Society Dawes search, NARA Catalog, and NARA Dawes guide.',
+      lookFor:'Roll/enrollment number, name, tribe, enrollment category, age, sex, blood degree, and census card number.'
+    });
+    steps.push({
+      title:'3. Pull the Dawes census/enrollment card',
+      body:'The census card is usually the family-group record. It can connect relatives and explain whether a person was approved, doubtful, rejected, minor, newborn, Freedmen, intermarried, adopted, or transferred between card types.',
+      where:'NARA Catalog Enrollment Cards series, OHS research path, FamilySearch/Ancestry access at NARA facilities when needed.',
+      lookFor:'Card number, family members, relationship to head, parents, earlier-roll references, births/deaths/marriage notes, rejected/doubtful marks, and related card numbers.'
+    });
+    steps.push({
+      title:'4. Pull the enrollment application / testimony packet',
+      body:'The enrollment application can contain testimony, affidavits, residence/post-office clues, family statements, correspondence, and variant spellings that may not appear in a short index result.',
+      where:'NARA Catalog Applications for Enrollment series, NARA Fort Worth, FamilySearch/Ancestry where available, and OHS ordering guidance.',
+      lookFor:'Application number, card number, testimony, residence, parent/relative names, objections, appeals, affidavits, and correspondence.'
+    });
   }
-  if (detected.includes('township-range-section')) {
-    steps.push({ title:'Land-grid / map path', body:'Use township, range, and section to find LOC map pages, BLM/GLO survey records, county legal-description indexes, and modern county routing.' });
+  if (starter || detected.includes('dawes/enrollment clue') || detected.includes('person/family name') || detected.includes('township-range-section')) {
+    steps.push({
+      title:'5. Find the land allotment jacket',
+      body:'If the enrollment was approved, the allotment jacket is the key bridge from person to land. It should be searched by enrollment number and name, not only by census-card number.',
+      where:'NARA Dawes Land Allotment Jackets / Applications for Allotment, FamilySearch, Ancestry, NARA research facilities, and any BIA/LTRO clues.',
+      lookFor:'Enrollment number, legal description, township/range/section, physical location, improvements, plat maps, correspondence, and contested allotment notices.'
+    });
   }
-  if (detected.includes('address/place') || detected.includes('coordinates')) {
-    steps.push({ title:'Place / geography path', body:'Resolve the place to coordinates, verify the map pin, then run Census/TIGERweb geography lookup for county, tract/block, AIANNH/OTSA/off-reservation trust geography leads. Treat as geography leads only.' });
+  if (starter || detected.includes('township-range-section')) {
+    steps.push({
+      title:'6. Use township/range/section to find map and survey records',
+      body:'Once you have a legal description, search map pages and federal land/survey records. A map page is not a title opinion, but it can show where to look next.',
+      where:'AllottedLand.com map index, Library of Congress maps, NARA allotment maps, BLM/GLO survey plats and tract books, county GIS/county clerk legal-description indexes.',
+      lookFor:'Township, range, section, map page, section number, allottee name or map number, adjacent names, rivers/railroads/townsites, and source image links.'
+    });
   }
-  if (detected.includes('land-loss/legal-notice clue')) {
-    steps.push({ title:'Land-loss notice path', body:'Search county clerk indexes and historic newspapers for deeds, tax deeds, sheriff deeds, mortgage foreclosures, probate, guardian sales, oil/gas leases, liens, judgments, and notices.' });
+  if (starter || detected.includes('address/place') || detected.includes('coordinates')) {
+    steps.push({
+      title:'7. Resolve modern places to coordinates and geography leads',
+      body:'Modern addresses, cemeteries, towns, and landmarks should be converted to a map point, then checked against Census/TIGERweb geography. Treat this as a geography lead only.',
+      where:'AllottedLand.com Address → coordinates, Census Geocoder, Census/TIGERweb AIANNH layers, county GIS, and official tribal/federal maps.',
+      lookFor:'Latitude/longitude, county, tract/block, AIANNH/OTSA/off-reservation trust leads, and whether the map pin is actually on the land being researched.'
+    });
   }
-  if (detected.includes('federal-notice clue')) {
-    steps.push({ title:'Federal notice path', body:'Search Federal Register, NARA, BIA/LTRO, and agency source pages for BIA notices, rules, ordinances, land acquisitions, consultations, or official agency actions.' });
+  if (starter || detected.includes('land-loss/legal-notice clue')) {
+    steps.push({
+      title:'8. Search county and newspaper land-loss records',
+      body:'If the land may have left the family, look for the legal mechanism: tax sale, sheriff sale, mortgage foreclosure, guardian sale, probate sale, partition, deed, lease, oil/gas transaction, or court judgment.',
+      where:'County clerk, county treasurer, district court/probate/guardianship files, sheriff sale records, tax sale records, Chronicling America/newspapers, and AllottedLand.com Land Loss Project intake.',
+      lookFor:'Book/page, instrument number, case number, judgment, notice publication, buyer/lender names, sale date, debt amount, acreage, legal description, and whether federal approval appears.'
+    });
   }
-  steps.push({ title:'Proof path', body:'Verify every lead against original source records: NARA/OHS Dawes records, allotment jackets, county clerk books/pages, court files, BIA/LTRO title records, tribal records, and official map images.' });
+  if (starter || detected.includes('federal-notice clue')) {
+    steps.push({
+      title:'9. Search federal agency records and notices',
+      body:'Federal notices can identify agency actions, BIA/Interior involvement, tribal ordinances, land acquisitions, repatriation notices, environmental records, and policy trails connected to land history.',
+      where:'Federal Register API/results, NARA Catalog, BIA/LTRO, DOI/BIA pages, Regulations.gov when added, and agency FOIA/contact paths.',
+      lookFor:'Agency, docket or notice number, FR citation, date, official PDF/govinfo link, BIA region/office, tribe, county, land description, and contact person.'
+    });
+  }
+  steps.push({
+    title:'10. Verify title and restriction status through BIA/LTRO and original records',
+    body:'The final proof path is not a website search result. Verify against title records, patents, deeds, probate orders, leases, rights-of-way, plats, county records, court records, tribal records, and original archival records.',
+    where:'BIA/LTRO Title Status Report path, county clerk and court records, NARA/OHS original images, tribal records offices, BLM/GLO, and legal counsel if needed.',
+    lookFor:'Patent, deed, probate order, lease, right-of-way, plat, TSR, restriction/removal approval, tax deed, sheriff deed, release, mortgage, and chain-of-title documents.'
+  });
   return steps;
 }
 function requestPacket(q, detected){

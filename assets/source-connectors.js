@@ -28,14 +28,14 @@
       roll: field('sourceRoll') || field('wizRoll') || field('dawesRoll'),
       card: field('sourceCard') || field('wizCard') || field('dawesCard'),
       allotment: field('sourceAllotment') || field('wizAllotment'),
-      place: field('sourcePlace') || field('wizPlace'),
+      place: field('sourcePlace') || field('wizPlace') || field('uniLegal'),
       township: field('sourceTownship') || field('wizTownship'),
       range: field('sourceRange') || field('wizRange'),
       section: field('sourceSection') || field('wizSection'),
-      keyword: field('sourceKeyword') || field('keyword') || field('dawesQuery'),
-      address: field('sourceAddress'),
-      lat: field('sourceLat'),
-      lon: field('sourceLon')
+      keyword: field('sourceKeyword') || field('uniSourceKeyword') || field('uniNotice') || field('uniLegal') || field('keyword') || field('dawesQuery') || field('unifiedQuery'),
+      address: field('sourceAddress') || field('uniAddress'),
+      lat: field('sourceLat') || field('uniLat'),
+      lon: field('sourceLon') || field('uniLon')
     };
   }
   function builtQuery(extra){

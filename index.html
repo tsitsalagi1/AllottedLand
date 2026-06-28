@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=043">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=046">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -40,7 +40,7 @@
       <p class="subtitle">A free public research tool helping Native families search historical allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues.</p>
       <div class="hero-actions">
         <a class="button" href="#unified-search">Search everything</a>
-        <a class="button secondary" href="#start">I don’t know where to start</a>
+        <a class="button secondary" href="#unified-search">I don’t know where to start</a>
         <a class="button secondary" href="#search">Search township/range</a>
         <a class="button tertiary" href="testimonials.html">Read family stories</a>
       </div>
@@ -65,92 +65,108 @@
 
 
 
-    <section id="unified-search" class="section unified-search-section">
+    <section id="unified-search" class="section unified-search-section unified-primary-section">
       <div class="panel unified-intro-panel">
-        <p class="eyebrow dark">One-search research engine</p>
-        <h2>Search everything from one clue.</h2>
-        <p>Enter a name, Dawes roll or census card number, address, latitude/longitude, township/range/section, county, legal description, tax-sale clue, family story, or agency keyword. AllottedLand.com will build a research path, search the local index, create official source leads, and prepare a printable packet.</p>
-        <p class="hint"><strong>Beta notice:</strong> official-source connectors return research leads, not proof. NARA live results require the server-side <code>NARA_API_KEY</code>. LOC/Chronicling America may return official fallback links when live JSON is blocked or rate-limited.</p>
+        <p class="eyebrow dark">One-search family land finder</p>
+        <h2>Search everything. Start anywhere.</h2>
+        <p>Use one form for every kind of clue: family names, Dawes roll or census-card numbers, tribe, allotment number, township/range/section, county, address, coordinates, legal-description details, land-loss notices, old deeds, family stories, or official-source keywords. If you do not know where to start, leave the clue box blank and click <strong>Search everything</strong>; the site will build a starter research path.</p>
+        <p class="hint"><strong>Research-lead notice:</strong> results are not proof of title, ownership, citizenship, heirship, or legal rights. Use the packet to find the original records: NARA/OHS Dawes records, allotment jackets, LOC maps, county records, BIA/LTRO title records, Federal Register notices, newspapers, and Census/TIGERweb geography leads.</p>
       </div>
-      <div class="unified-search-grid">
-        <form class="panel unified-search-panel" id="unifiedSearchForm" onsubmit="return false;">
-          <h2>Universal search</h2>
-          <label class="wide">Any clue
-            <textarea id="unifiedQuery" rows="4" placeholder="Examples: Claude Ketcher · roll 1637 · census card 4747 · T24N R14E section 24 · 17675 S Muskogee Ave, Tahlequah, OK · Cherokee tax sale Craig County 1924"></textarea>
-          </label>
-          <div class="buttons consent-actions">
-            <label class="inline-agree"><input type="checkbox" id="unifiedAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
-            <button type="button" id="unifiedSearchBtn">Search everything</button>
-            <button type="button" id="unifiedUseCluesBtn" class="secondary">Use guided-search clues</button>
-            <button type="button" id="unifiedClearBtn" class="secondary">Clear</button>
-            <button type="button" id="unifiedPrintBtn" class="ghost">Print all / save PDF</button>
+
+      <form class="panel unified-search-panel unified-wide-panel" id="unifiedSearchForm" onsubmit="return false;">
+        <div class="unified-form-head">
+          <div>
+            <p class="eyebrow dark">Universal search form</p>
+            <h2>What do you know?</h2>
+            <p class="muted">Fill in one box, several boxes, or nothing at all. The form replaces the old guided family-land finder and also sends the same clues to Dawes, map-index, official-source, Census, newspaper, Federal Register, and record-request paths.</p>
           </div>
-          <p id="unifiedStatus" class="status">Enter one clue to search all available site data and source connectors.</p>
-        </form>
-        <section class="panel unified-results-panel" aria-live="polite">
-          <div class="results-head">
-            <h2>Unified results</h2>
-            <span id="unifiedCount">0 leads</span>
+          <div class="unified-form-badges" aria-label="Search coverage">
+            <span class="pill">Build research path</span>
+            <span class="pill">Dawes leads</span>
+            <span class="pill">Map/index leads</span>
+            <span class="pill">Official sources</span>
+            <span class="pill">Print packet</span>
           </div>
-          <div id="unifiedResults" class="results unified-results"><p class="muted">Unified search results will appear here.</p></div>
-        </section>
-      </div>
-    </section>
-
-
-    <section id="start" class="section two-col">
-      <div class="panel intro-panel">
-        <p class="eyebrow dark">Guided family-land finder</p>
-        <h2>I don’t know where to start.</h2>
-        <p>Enter whatever you know: name, spelling variant, roll number, county, town, creek, cemetery, family story, township, range, or section. The wizard builds a research path and creates a copy-paste county record request.</p>
-        <div class="info-box">
-          <strong>Best clues to gather:</strong>
-          <p>Ancestor names, tribal Nation, relatives, approximate dates, old towns, cemeteries, counties, Dawes roll/enrollment number, census card number, allotment number, legal description, or old deeds.</p>
         </div>
-      </div>
 
-      <form class="panel wizard" id="wizardForm">
-        <h2>What do you know?</h2>
-        <div class="grid">
-          <label>Tribe / Nation
-            <select id="wizTribe">
-              <option value="Cherokee Nation">Cherokee Nation</option>
-              <option value="Choctaw Nation">Choctaw Nation</option>
-              <option value="Chickasaw Nation">Chickasaw Nation</option>
-              <option value="Muscogee / Creek Nation">Muscogee / Creek Nation</option>
-              <option value="Seminole Nation">Seminole Nation</option>
-              <option value="Other / Unknown">Other / not sure</option>
-            </select>
-          </label>
-          <label>Ancestor first name <input id="wizFirst" placeholder="ancestor first name" autocomplete="off"></label>
-          <label>Ancestor last name <input id="wizLast" placeholder="ancestor last name" autocomplete="off"></label>
-          <label>Name variants <input id="wizVariants" placeholder="spelling variants, nicknames, married names" autocomplete="off"></label>
-          <label>Roll / enrollment no. <input id="wizRoll" placeholder="roll / enrollment #" autocomplete="off"></label>
-          <label>Census card no. <input id="wizCard" placeholder="Card number" autocomplete="off"></label>
-          <label>Allotment no. <input id="wizAllotment" placeholder="Allotment number" autocomplete="off"></label>
-          <label>Known county or town <input id="wizPlace" placeholder="county, town, creek, cemetery, or place clue" autocomplete="off"></label>
-          <label>Township <input id="wizTownship" placeholder="township #" autocomplete="off"></label>
-          <label>Range <input id="wizRange" placeholder="range #" autocomplete="off"></label>
-          <label>Section <input id="wizSection" placeholder="section #" autocomplete="off"></label>
-          <label class="wide">Family story or notes <textarea id="wizStory" placeholder="Example: family story, old town, cemetery, oil lease, tax sale, deed, or county clue"></textarea></label>
+        <label class="wide unified-description-label">Describe the clue in your own words
+          <textarea id="unifiedQuery" rows="5" placeholder="Example: Claude Ketcher roll 1637; Craig County sheriff sale 1924; T26N R21E Section 9; old family land near Tahlequah; 17675 S Muskogee Ave, Tahlequah, OK; Cherokee tax sale or oil lease clue"></textarea>
+        </label>
+
+        <details class="unified-details" open>
+          <summary>Person / Dawes / family clues</summary>
+          <div class="grid unified-question-grid">
+            <label>Tribe / Nation
+              <select id="wizTribe">
+                <option value="">Any / not sure</option>
+                <option value="Cherokee Nation">Cherokee Nation</option>
+                <option value="Choctaw Nation">Choctaw Nation</option>
+                <option value="Chickasaw Nation">Chickasaw Nation</option>
+                <option value="Muscogee / Creek Nation">Muscogee / Creek Nation</option>
+                <option value="Seminole Nation">Seminole Nation</option>
+                <option value="Other / Unknown">Other / not sure</option>
+              </select>
+            </label>
+            <label>Ancestor first name <input id="wizFirst" placeholder="first name" autocomplete="off"></label>
+            <label>Ancestor last name <input id="wizLast" placeholder="last name / surname" autocomplete="off"></label>
+            <label>Name variants <input id="wizVariants" placeholder="spelling variants, nicknames, married names" autocomplete="off"></label>
+            <label>Enrollment category
+              <select id="uniCategory">
+                <option value="">Any / unknown</option>
+                <option value="Citizen by Blood">Citizen by Blood / Minor / Newborn</option>
+                <option value="Freedmen">Freedmen / Minor Freedmen / Newborn Freedmen</option>
+                <option value="Intermarried White">Intermarried White / Citizen by Marriage</option>
+                <option value="Adopted">Adopted / Delaware Adopted</option>
+                <option value="Denied Rejected Doubtful">Denied / Doubtful / Rejected</option>
+              </select>
+            </label>
+            <label>Roll / enrollment no. <input id="wizRoll" placeholder="roll / enrollment #" autocomplete="off"></label>
+            <label>Census card no. <input id="wizCard" placeholder="card number" autocomplete="off"></label>
+            <label>Allotment no. <input id="wizAllotment" placeholder="allotment number" autocomplete="off"></label>
+          </div>
+        </details>
+
+        <details class="unified-details" open>
+          <summary>Land / place / map clues</summary>
+          <div class="grid unified-question-grid">
+            <label class="wide">Known county, town, creek, cemetery, or place <input id="wizPlace" placeholder="county, town, creek, cemetery, old community, or place clue" autocomplete="off"></label>
+            <label class="wide">Address or modern place for coordinate/Census lookup <input id="uniAddress" placeholder="street address, city/state, ZIP, courthouse, cemetery, or landmark" autocomplete="off"></label>
+            <label>Latitude <input id="uniLat" placeholder="35.8521695" autocomplete="off"></label>
+            <label>Longitude <input id="uniLon" placeholder="-94.9909623" autocomplete="off"></label>
+            <label>Township <input id="wizTownship" placeholder="township #" autocomplete="off"></label>
+            <label>Range <input id="wizRange" placeholder="range #" autocomplete="off"></label>
+            <label>Section <input id="wizSection" placeholder="section #" autocomplete="off"></label>
+            <label class="wide">Legal description / county book-page / case clue <input id="uniLegal" placeholder="T26N R21E S9, deed book/page, probate case, tax sale, sheriff deed, oil lease, patent, or court clue" autocomplete="off"></label>
+          </div>
+        </details>
+
+        <details class="unified-details" open>
+          <summary>Land-loss / official-source clues</summary>
+          <div class="grid unified-question-grid">
+            <label class="wide">Land-loss or legal-notice clue <input id="uniNotice" placeholder="tax sale, sheriff sale, guardian sale, probate, mortgage, foreclosure, oil/gas lease, restricted land, deed, judgment" autocomplete="off"></label>
+            <label class="wide">Official-source keyword <input id="uniSourceKeyword" placeholder="Dawes, allotment jacket, enrollment application, BIA, LTRO, Federal Register, LOC map, Chronicling America, GLO, NARA" autocomplete="off"></label>
+            <label class="wide">Family story or notes <textarea id="wizStory" rows="4" placeholder="Tell what the family knows: names, old towns, nearby landmarks, counties, possible land loss, documents seen, dates, relatives, or agencies contacted."></textarea></label>
+          </div>
+        </details>
+
+        <div class="buttons consent-actions unified-main-actions">
+          <label class="inline-agree"><input type="checkbox" id="unifiedAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
+          <button type="button" id="unifiedSearchBtn">Search everything</button>
+          <button type="button" id="unifiedStarterBtn" class="secondary">I don’t know where to start</button>
+          <button type="button" id="unifiedClearBtn" class="secondary">Clear</button>
+          <button type="button" id="unifiedPrintBtn" class="ghost">Print all / save PDF</button>
         </div>
-        <div class="buttons consent-actions">
-          <label class="inline-agree"><input type="checkbox" id="buildAgree"> I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
-          <button type="submit" id="buildPathBtn" disabled>Build research path</button>
-          <button type="button" class="secondary" id="fillExample">Use map-only sample</button>
-          <button type="button" class="ghost" id="clearWizard">Clear</button>
-          <button type="button" class="ghost" id="printPathBtn">Print path / save PDF</button>
-        </div>
+        <p id="unifiedStatus" class="status">Enter any clue, or click “I don’t know where to start,” to build a research path and search all available source leads.</p>
       </form>
-    </section>
 
-    <section class="section" aria-live="polite">
-      <div id="researchPath" class="panel path-panel">
-        <h2>Your research path will appear here.</h2>
-        <p class="muted">Fill out the “What do you know?” form and the site will create a step-by-step plan, possible map matches, county record direction, BIA/LTRO direction, and a copy-paste records request.</p>
-      </div>
+      <section class="panel unified-results-panel unified-results-below" aria-live="polite">
+        <div class="results-head">
+          <h2>Unified results</h2>
+          <span id="unifiedCount">0 leads</span>
+        </div>
+        <div id="unifiedResults" class="results unified-results"><p class="muted">Results will appear here. The first section will be the built research path: what to look for, where to search, and what each record can prove.</p></div>
+      </section>
     </section>
-
 
 
     <section id="source-hub" class="section source-hub-section">
@@ -410,7 +426,7 @@
   <script src="assets/dawes-search.js?v=039"></script>
   <script src="assets/print-packet.js?v=044"></script>
   <script src="assets/source-connectors.js?v=044"></script>
-  <script src="assets/unified-search.js?v=045"></script>
+  <script src="assets/unified-search.js?v=046"></script>
   <script src="assets/app.js?v=039"></script>
   <script>
   (function () {
