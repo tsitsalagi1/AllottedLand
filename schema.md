@@ -418,3 +418,14 @@ The homepage now treats Universal Search as the single public entry point. Visib
 6. Agency record request packets with copy buttons
 
 Local/index record matching should require strong evidence such as name, roll/card/allotment number, township/range/section, county, or exact identifiers. Generic words such as Cherokee, land, allotment, section, source, and record should not return all records.
+
+
+## v0.49 — Homepage simplification and field-first Universal Search
+
+- Combined the repeated homepage instruction panels into one Start Here panel.
+- Moved Testimonials / Land Loss Project above the Universal Search form.
+- Removed the redundant homepage “Submissions require consent” panel because consent is handled at the submit forms.
+- Made Universal Search field-first instead of starting with a large text box.
+- Removed the visible Search Summary section from results.
+- Added plain explanations for Official source leads and Prepared official links.
+- Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.

@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.48 unified search + plain-English research packet
+/* AllottedLand.com v0.49 unified search + simplified results and request packets
    One home-page tool: users enter any information, the site builds a research path first,
    then shows only matching local/index records and source leads.
 */
@@ -240,7 +240,7 @@
     try { localStorage.setItem('allottedland_unified_agreement','yes'); } catch(e) {}
     fillLegacyFields(q);
     const output = $('unifiedResults');
-    if (output) output.innerHTML = '<p class="status">Building the plain-English research path first. Then searching matching site records and official source leads…</p>';
+    if (output) output.innerHTML = '<p class="status">Building the research path first. Then searching matching site records and official source leads…</p>';
     status('Running one-search family land finder…');
     try {
       const [planner, local, sources] = await Promise.all([
@@ -251,20 +251,19 @@
       const sections = [];
       const detected = (planner.detected_types || []).join(', ');
       sections.push(section('Built research path', `<p class="hint"><strong>Start here.</strong> These steps explain what record to look for, where to search for it, and why it matters. A result card is only a lead; the research path tells the family what to do next.</p><div class="path-grid">${(planner.research_path || []).map(pathCard).join('')}</div>`, `${(planner.research_path||[]).length} step(s)`));
-      sections.push(section('Search summary', `<p><strong>Information searched:</strong> ${esc(q)}</p><p><strong>Information type detected:</strong> ${esc(detected || 'general research information')}</p><p class="hint">${esc(planner.notice || 'Research leads only. Verify all source records.')}</p>`, 'plain-English summary'));
       const siteCards = [];
       if ((planner.approved_records || []).length) siteCards.push(...(planner.approved_records || []).map(r => sourceCard(r, 'Approved site record')));
       if (local.length) siteCards.push(...local.map(x => localCard(x.item, x.type)));
-      sections.push(section('Matching site/index records', siteCards.length ? siteCards.join('') : '<p class="muted"><strong>No matching site records yet.</strong> This is normal while the map database is still being built. Use the research path, official source leads, and request packet below to keep moving.</p>', `${siteCards.length} match(es)`));
+      sections.push(section('Matching site/index records', siteCards.length ? `<p class="section-help"><strong>What this means:</strong> These are records already loaded into AllottedLand.com that match the information you entered. A match is a lead, not proof. Open the source and compare it to the original record.</p>${siteCards.join('')}` : '<p class="muted"><strong>No matching site records yet.</strong> This is normal while the map database is still being built. Use the research path, official source leads, and request packet below to keep moving.</p>', `${siteCards.length} match(es)`));
       const flatSources = [];
       for (const s of sources) {
         const label = s.provider || 'Official source';
         if (Array.isArray(s.results) && s.results.length) for (const r of s.results.slice(0, MAX_SOURCE)) flatSources.push({...r, provider:label});
       }
-      sections.push(section('Official source leads', flatSources.length ? flatSources.map(r => sourceCard(r, r.provider)).join('') : '<p class="muted">Live source connectors did not return usable cards yet. Use the prepared official links below; they open the right agency/source searches.</p>', `${flatSources.length} lead(s)`));
+      sections.push(section('Official source leads', flatSources.length ? `<p class="section-help"><strong>What these are:</strong> These are live or fallback leads from official source systems such as NARA, Federal Register, historic newspapers, Census/TIGERweb, or other public repositories. Use them to open the source record or source search, then save or print what you find.</p>${flatSources.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No live official-source cards yet.</strong> Use the prepared official links below. They open the right agency/source searches even when a live API does not return results.</p>', `${flatSources.length} lead(s)`));
       const officialLinks = (planner.official_source_leads || []).map(r => sourceCard(r, r.group)).join('');
-      sections.push(section('Prepared official links', officialLinks, `${(planner.official_source_leads||[]).length} link(s)`));
-      sections.push(section('Agency record request packets', `<p class="hint">Copy the request for the agency you are contacting. These are written in plain English so the office understands what record trail the family is trying to locate.</p>${(planner.record_request_packet || []).map(requestCard).join('')}`, `${(planner.record_request_packet||[]).length} request(s)`));
+      sections.push(section('Prepared official links', `<p class="section-help"><strong>What these do:</strong> These links are safety-net searches and agency paths. They are useful when the live connector has no result yet, when an API blocks a request, or when the family needs to continue the search directly on an official site.</p>${officialLinks}`, `${(planner.official_source_leads||[]).length} link(s)`));
+      sections.push(section('Agency record request packets', `<p class="section-help"><strong>What these are:</strong> Copy the request for the agency, archive, county clerk, court clerk, BIA/LTRO office, or land-record office. Each request tells the office what record trail the family is trying to locate and lists the record types to check.</p>${(planner.record_request_packet || []).map(requestCard).join('')}`, `${(planner.record_request_packet||[]).length} request(s)`));
       if (output) output.innerHTML = sections.join('');
       if ($('unifiedCount')) $('unifiedCount').textContent = `${siteCards.length + flatSources.length} matching result/lead card(s)`;
       status('Unified search complete. Start with the built research path, then use the matching records, source links, and copy-paste request packets below.');
@@ -278,7 +277,7 @@
     const output = $('unifiedResults');
     if (!output || !text(output.textContent) || /results will appear/i.test(output.textContent)) { alert('Run the unified search first.'); return; }
     if (window.AllottedPrint?.buildPacket) {
-      window.AllottedPrint.buildPacket('AllottedLand.com Unified Research Packet', 'This packet captures the built research path, matching site/index records, official source leads, and agency request text.', [`<section class="print-result"><h2>Unified search results</h2>${output.innerHTML}</section>`]);
+      window.AllottedPrint.buildPacket('AllottedLand.com Unified Research Packet', 'This packet captures the built research path, matching site/index records, official source leads, prepared official links, and agency request text.', [`<section class="print-result"><h2>Unified search results</h2>${output.innerHTML}</section>`]);
     } else window.print();
   }
   function clearUnified(){

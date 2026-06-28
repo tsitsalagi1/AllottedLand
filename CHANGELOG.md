@@ -285,3 +285,14 @@ Deployment note: deploy this as a full site folder with Wrangler, not as a chang
 - Added a Copy request button to each agency packet.
 - Fixed browser print/Ctrl+P behavior so the branded print packet auto-builds from visible Universal Search results instead of printing an empty packet.
 - Added print support for individual Universal Search result cards.
+
+
+## v0.49 — Homepage simplification and field-first Universal Search
+
+- Combined the repeated homepage instruction panels into one Start Here panel.
+- Moved Testimonials / Land Loss Project above the Universal Search form.
+- Removed the redundant homepage “Submissions require consent” panel because consent is handled at the submit forms.
+- Made Universal Search field-first instead of starting with a large text box.
+- Removed the visible Search Summary section from results.
+- Added plain explanations for Official source leads and Prepared official links.
+- Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
