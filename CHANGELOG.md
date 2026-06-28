@@ -165,3 +165,12 @@ The agent also now checks common Windows install locations automatically.
 - Added server-side consent checks for Workbench record submissions, testimonials, and evidence submissions.
 - Updated Privacy Policy, Terms of Use, and Submission Consent Policy language for the live beta submission workflow.
 - Added a legal/compliance notes document for ongoing review.
+
+## v0.37 — Dawes search screen/PDF hotfix
+
+- Fixed the branded print packet appearing on the live homepage screen.
+- Added an inline Dawes research-lead consent checkbox before Dawes searching/printing.
+- Disabled Dawes search and print buttons until the checkbox is checked.
+- Stopped the Dawes starter record from appearing as a result before the user runs a search.
+- Requires at least one Dawes search clue before showing results.
+- Added cache-busting query strings to the Dawes CSS/JS references in `index.html`.

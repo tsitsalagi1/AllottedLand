@@ -103,3 +103,20 @@ section.card,
   .print-disclaimer{font-size:11px;border-top:3px solid #173f35;}
   a[href]::after{content:'' !important;}
 }
+
+/* v0.37 hotfix: keep the PDF packet hidden on the normal web page.
+   It should appear only inside the browser print/save-PDF output. */
+#printPacket,
+#printPacket.print-packet,
+body #printPacket.print-packet{
+  display:none !important;
+}
+.dawes-inline-agree{max-width:100%;}
+.dawes-search-panel button:disabled{opacity:.55;cursor:not-allowed;}
+@media print{
+  #printPacket,
+  #printPacket.print-packet,
+  body #printPacket.print-packet{
+    display:block !important;
+  }
+}

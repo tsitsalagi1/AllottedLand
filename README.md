@@ -147,3 +147,15 @@ County lookup is now supported through `data/township_county_lookup.json`. Do no
 Public search and research-path tools now require a Privacy Policy / Terms of Use checkbox before the buttons activate. Testimonial, evidence-project, and Workbench submission buttons remain disabled until required consent boxes are checked. Server-side Functions also reject submissions missing required consent confirmations.
 
 This is not a substitute for legal review. The project should continue to review privacy, accessibility, child-privacy, data-retention, and state privacy requirements before wider public launch.
+
+## v0.37 hotfix deployment notes
+
+Upload/overwrite these changed files after v0.36:
+
+- `index.html`
+- `assets/dawes-search.js`
+- `assets/v032-visual.css`
+- `CHANGELOG.md`
+- `changelog.html` if using the public changelog page
+
+This release fixes the Dawes search/PDF display bug. The print packet is hidden on screen and appears only in the browser print/save-PDF output. Dawes results no longer display before a user enters a search clue and clicks Search.

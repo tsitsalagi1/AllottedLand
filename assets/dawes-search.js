@@ -1,6 +1,7 @@
-/* AllottedLand.com v0.36 Dawes search + branded print packet
-   Static-data approach: data/dawes_index.json can be expanded by CSV import
-   without waiting on the map-indexing workflow.
+/* AllottedLand.com v0.37 Dawes search + branded print packet fixes
+   - No automatic results before the user searches
+   - Dawes search/PDF gated by research-only consent checkbox
+   - Print packet never displays on-screen; it only appears in print/save-PDF output
 */
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -8,7 +9,8 @@
     records: [],
     filtered: [],
     selected: new Map(),
-    loaded: false
+    loaded: false,
+    hasSearched: false
   };
   const text = (v) => String(v == null ? '' : v).trim();
   const lower = (v) => text(v).toLowerCase();
@@ -29,8 +31,31 @@
     const full = text(r.full_name) || compact([r.first_name, r.middle_name, r.last_name]).join(' ') || 'Unnamed person';
     const tribe = text(r.tribe || r.nation);
     const category = text(r.enrollment_category || r.category || r.category_abbreviation);
-    const id = text(r.id) || ['dawes', tribe, category, r.roll_number, r.census_card_number, full, index].map(lower).join('-').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const id = text(r.id) || ['dawes', tribe, category, r.roll_number, r.census_card_number, full, index]
+      .map(lower).join('-').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     return Object.assign({}, r, { id, full_name: full, tribe, enrollment_category: category });
+  }
+
+  function dawesAgreed() {
+    return !!$('dawesAgree')?.checked;
+  }
+
+  function setDawesGate() {
+    const searchBtn = $('dawesSearchBtn');
+    const printBtn = $('printDawesBtn');
+    const ok = dawesAgreed();
+    if (searchBtn) searchBtn.disabled = !ok;
+    if (printBtn) printBtn.disabled = !ok;
+    try { localStorage.setItem('allottedland_dawes_agreement', ok ? 'yes' : 'no'); } catch (e) {}
+  }
+
+  function requireDawesAgree() {
+    if (dawesAgreed()) return true;
+    const target = $('dawesAgree');
+    alert('Please check the Dawes research-lead agreement box before searching or printing.');
+    target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target?.focus();
+    return false;
   }
 
   async function loadDawesIndex() {
@@ -40,16 +65,20 @@
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const payload = await response.json();
       state.records = (Array.isArray(payload.records) ? payload.records : []).map(normalizeRecord);
-      state.filtered = state.records.slice(0, 25);
+      state.filtered = [];
       state.loaded = true;
+      state.hasSearched = false;
       if (status) status.textContent = state.records.length
-        ? 'Dawes index loaded. Search by name, tribe, roll number, census card number, or category.'
+        ? `Dawes index loaded (${state.records.length} record${state.records.length === 1 ? '' : 's'}). Enter a name, roll number, census card number, tribe, or category to search.`
         : 'Dawes index file loaded, but it has no records yet. Add rows to data/dawes_index.json.';
-      renderResults(state.filtered, true);
+      renderEmptyStart();
     } catch (error) {
       if (status) status.textContent = 'Could not load data/dawes_index.json. Add the file and redeploy the site.';
       state.records = [];
-      renderResults([], true);
+      state.filtered = [];
+      state.loaded = false;
+      state.hasSearched = false;
+      renderResults([], { emptyReason: 'load-error' });
     }
   }
 
@@ -66,6 +95,11 @@
     if (!bucket) return true;
     const hay = searchableText(r);
     return (categoryBuckets[bucket] || [bucket]).some((term) => hay.includes(term));
+  }
+
+  function hasCriteria() {
+    return ['dawesQuery', 'dawesTribe', 'dawesCategory', 'dawesRoll', 'dawesCard']
+      .some((id) => text($(id)?.value));
   }
 
   function filterRecords() {
@@ -133,36 +167,65 @@
     </article>`;
   }
 
-  function renderResults(records, initial) {
+  function renderEmptyStart() {
+    const count = $('dawesCount');
+    const results = $('dawesResults');
+    if (count) count.textContent = '0 results';
+    if (results) results.innerHTML = '<p class="muted">No search has been run yet. Check the agreement box, enter a name, spelling variant, roll number, census card number, tribe, or category, then click Search Dawes leads.</p>';
+  }
+
+  function renderResults(records, opts = {}) {
     const results = $('dawesResults');
     const count = $('dawesCount');
     if (count) count.textContent = records.length + ' result' + (records.length === 1 ? '' : 's');
     if (!results) return;
     if (!records.length) {
-      results.innerHTML = initial
-        ? '<p class="muted">No Dawes records are loaded yet, or the starter index is empty. Add bulk rows to <code>data/dawes_index.json</code>.</p>'
-        : '<p class="muted">No Dawes records matched. Try a spelling variant, last name only, roll number, or census card number.</p>';
+      if (opts.emptyReason === 'load-error') {
+        results.innerHTML = '<p class="muted">No Dawes records are available because the index file could not be loaded.</p>';
+      } else if (!state.records.length) {
+        results.innerHTML = '<p class="muted">The Dawes index is empty. Add bulk rows to <code>data/dawes_index.json</code>.</p>';
+      } else if (!state.hasSearched) {
+        renderEmptyStart();
+      } else {
+        results.innerHTML = '<p class="muted">No Dawes records matched. Try a spelling variant, last name only, roll number, or census card number.</p>';
+      }
       return;
     }
     results.innerHTML = records.slice(0, 100).map(resultCard).join('') + (records.length > 100 ? '<p class="muted">Showing first 100 matches. Narrow the search for more precise results.</p>' : '');
   }
 
   function runSearch() {
+    if (!requireDawesAgree()) return;
     if (!state.loaded) return;
-    state.filtered = filterRecords();
     const status = $('dawesStatus');
+    if (!hasCriteria()) {
+      state.filtered = [];
+      state.hasSearched = false;
+      if (status) status.textContent = 'Enter at least one Dawes search clue before running the search.';
+      renderEmptyStart();
+      return;
+    }
+    state.filtered = filterRecords();
+    state.hasSearched = true;
     if (status) status.textContent = state.filtered.length
-      ? 'Search complete. Add results to the branded PDF packet or print all current matches.'
+      ? 'Search complete. Add results to the branded PDF packet or print the current matches.'
       : 'No matches found in the current Dawes index.';
-    renderResults(state.filtered, false);
+    renderResults(state.filtered);
   }
 
   function clearSearch() {
-    ['dawesQuery', 'dawesTribe', 'dawesCategory', 'dawesRoll', 'dawesCard'].forEach((id) => { const el = $(id); if (el) el.value = ''; });
-    state.filtered = state.records.slice(0, 25);
-    renderResults(state.filtered, true);
+    ['dawesQuery', 'dawesTribe', 'dawesCategory', 'dawesRoll', 'dawesCard'].forEach((id) => {
+      const el = $(id);
+      if (el) el.value = '';
+    });
+    state.filtered = [];
+    state.selected.clear();
+    state.hasSearched = false;
+    renderEmptyStart();
     const status = $('dawesStatus');
-    if (status) status.textContent = state.records.length ? 'Showing the first Dawes records in the local index.' : 'Dawes index file loaded, but it has no records yet.';
+    if (status) status.textContent = state.records.length
+      ? `Dawes index loaded (${state.records.length} record${state.records.length === 1 ? '' : 's'}). Enter a name, roll number, census card number, tribe, or category to search.`
+      : 'Dawes index file loaded, but it has no records yet.';
   }
 
   function toggleSelected(id) {
@@ -170,7 +233,7 @@
     if (!record) return;
     if (state.selected.has(id)) state.selected.delete(id);
     else state.selected.set(id, record);
-    renderResults(state.filtered.length ? state.filtered : state.records.slice(0, 25), false);
+    renderResults(state.filtered);
   }
 
   function printRecordHTML(r, index) {
@@ -197,10 +260,11 @@
   }
 
   function buildPrintPacket() {
+    if (!requireDawesAgree()) return;
     const selected = Array.from(state.selected.values());
-    const records = selected.length ? selected : (state.filtered.length ? state.filtered : state.records.slice(0, 25));
+    const records = selected.length ? selected : (state.hasSearched ? state.filtered : []);
     if (!records.length) {
-      alert('No Dawes records are available to print yet. Add records to data/dawes_index.json or run a search first.');
+      alert('No Dawes results are available to print yet. Run a search first, or select one or more search results for the PDF packet.');
       return;
     }
     const content = $('printPacketContent');
@@ -214,6 +278,11 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('dawesResults')) return;
+    try {
+      if ($('dawesAgree') && localStorage.getItem('allottedland_dawes_agreement') === 'yes') $('dawesAgree').checked = true;
+    } catch (e) {}
+    $('dawesAgree')?.addEventListener('change', setDawesGate);
+    setDawesGate();
     loadDawesIndex();
     $('dawesSearchBtn')?.addEventListener('click', runSearch);
     $('dawesClearBtn')?.addEventListener('click', clearSearch);

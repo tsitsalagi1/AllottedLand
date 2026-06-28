@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=037">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -158,11 +158,12 @@
             </label>
           </div>
           <div class="buttons consent-actions">
-            <button type="button" id="dawesSearchBtn">Search Dawes leads</button>
+            <label class="inline-agree dawes-inline-agree"><input type="checkbox" id="dawesAgree"> I understand Dawes matches are research leads and agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms</a></label>
+            <button type="button" id="dawesSearchBtn" disabled>Search Dawes leads</button>
             <button type="button" class="secondary" id="dawesClearBtn">Clear</button>
-            <button type="button" class="ghost" id="printDawesBtn">Print / save PDF</button>
+            <button type="button" class="ghost" id="printDawesBtn" disabled>Print / save PDF</button>
           </div>
-          <p class="hint">Use the print button after selecting or finding results. Your browser can save the branded research packet as a PDF.</p>
+          <p class="hint">Check the agreement box, enter at least one search clue, then search. Use the print button after selecting or finding results. Your browser can save the branded research packet as a PDF.</p>
         </section>
 
         <section class="panel results-panel dawes-results-panel" aria-live="polite">
@@ -176,7 +177,7 @@
       </div>
     </section>
 
-    <section id="printPacket" class="print-packet" aria-hidden="true">
+    <section id="printPacket" class="print-packet" aria-hidden="true" style="display:none;">
       <div class="print-brand">
         <p class="print-eyebrow">AllottedLand.com</p>
         <h1>Family Allotment Research Lead Packet</h1>
@@ -314,7 +315,7 @@
   </footer>
 
 
-  <script src="assets/dawes-search.js"></script>
+  <script src="assets/dawes-search.js?v=037"></script>
   <script src="assets/app.js"></script>
   <script>
   (function () {
