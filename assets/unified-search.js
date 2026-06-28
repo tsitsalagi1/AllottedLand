@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.51 unified search + simplified results and request packets
+/* AllottedLand.com v0.52 unified search + free-first genealogy resource layer
    One home-page tool: users enter any information, the site builds a research path first,
    then shows only matching local/index records and source leads.
 */
@@ -165,6 +165,17 @@
     return `<article class="card unified-source-card"><h3>${esc(title)}</h3><div class="meta"><span class="pill">${esc(provider)}</span>${r.date ? `<span class="pill">${esc(r.date)}</span>` : ''}${r.sourceId ? `<span class="pill">${esc(r.sourceId)}</span>` : ''}</div>${desc ? `<p>${esc(desc)}</p>` : ''}${url ? `<p><a class="link-button" href="${esc(url)}" target="_blank" rel="noopener">Open official source</a></p>` : ''}</article>`;
   }
   function pathCard(step){ return `<article class="mini-card path-step-card"><h3>${esc(step.title)}</h3><p>${esc(step.body)}</p>${step.where ? `<p class="where-to-search"><strong>Where to search:</strong> ${esc(step.where)}</p>` : ''}${step.lookFor ? `<p class="look-for"><strong>Look for:</strong> ${esc(step.lookFor)}</p>` : ''}</article>`; }
+  function partnerCard(p){
+    const label = p.label || p.type || 'Free resource';
+    const desc = p.description || '';
+    const note = p.note ? `<p class="small-note">${esc(p.note)}</p>` : '';
+    return `<article class="card unified-source-card partner-resource-card"><h3>${esc(p.name || 'Helpful resource')}</h3><div class="meta"><span class="pill">${esc(label)}</span>${p.category ? `<span class="pill">${esc(p.category)}</span>` : ''}</div>${desc ? `<p>${esc(desc)}</p>` : ''}${p.url ? `<p><a class="link-button" href="${esc(p.url)}" target="_blank" rel="noopener">Open resource</a></p>` : ''}${note}</article>`;
+  }
+  async function partnerResources(){
+    const data = await loadJson('data/partner_links.json', {partners:[]});
+    const rows = Array.isArray(data) ? data : (data.partners || []);
+    return rows.filter(p => p && p.active !== false).sort((a,b)=>(a.order||99)-(b.order||99));
+  }
   function requestCard(req){
     const body = req.body || '';
     return `<article class="card request-lead-card"><div class="request-card-head"><h3>${esc(req.title)}</h3><button type="button" class="link-button secondary copy-request-btn no-print" data-copy-text="${attr(body)}">Copy request</button></div>${req.summary ? `<p>${esc(req.summary)}</p>` : ''}<pre class="requestBox">${esc(body)}</pre></article>`;
@@ -248,14 +259,18 @@
     if (output) output.innerHTML = '<p class="status">Building the research path first. Then searching matching site records and official source leads…</p>';
     status('Running one-search family land finder…');
     try {
-      const [planner, local, sources] = await Promise.all([
+      const [planner, local, sources, partners] = await Promise.all([
         api('/api/unified-search', new URLSearchParams({q})),
         searchLocal(q),
-        sourceCalls(q)
+        sourceCalls(q),
+        partnerResources()
       ]);
       const sections = [];
       const detected = (planner.detected_types || []).join(', ');
       sections.push(section('Built research path', `<p class="hint"><strong>Start here.</strong> These steps explain what record to look for, where to search for it, and why it matters. A result card is only a lead; the research path tells the family what to do next.</p><div class="path-grid">${(planner.research_path || []).map(pathCard).join('')}</div>`, `${(planner.research_path||[]).length} step(s)`));
+      if (partners.length) {
+        sections.push(section('Free genealogy starting point', `<p class="section-help"><strong>Why this is shown:</strong> Many families need to build a basic family tree before they know which names, relatives, dates, roll numbers, counties, or records to search here. This free resource can help organize that information. AllottedLand.com is not sharing your search with this site unless you choose to open the link.</p>${partners.map(partnerCard).join('')}`, `${partners.length} resource(s)`));
+      }
       const siteCards = [];
       if ((planner.approved_records || []).length) siteCards.push(...(planner.approved_records || []).map(r => sourceCard(r, 'Approved site record')));
       if (local.length) siteCards.push(...local.map(x => localCard(x.item, x.type)));

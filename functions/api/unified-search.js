@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: /api/unified-search
-// v0.51: one-search research planner for AllottedLand.com.
+// v0.52: one-search research planner for AllottedLand.com.
 // Builds research paths, matching approved-record leads, source links, and agency request packets.
 const json = (body, status = 200) => new Response(JSON.stringify(body, null, 2), {
   status,
@@ -45,6 +45,7 @@ function sourceLeads(q){
   const newsQ = [q, 'tax sale sheriff sale guardian probate allotment'].join(' ');
   const frQ = [q, 'Bureau of Indian Affairs allotment land'].join(' ');
   return [
+    { group:'Free genealogy starting point', title:'FamilySearch', type:'free outside genealogy resource', url:'https://www.familysearch.org/', description:'Build a free family tree and gather names, relatives, dates, places, and record hints before searching Dawes, allotment, county, and land records. AllottedLand.com does not share your search with FamilySearch unless you choose to open the link.' },
     { group:'NARA', title:'Search NARA Catalog', type:'official source search', url:`https://catalog.archives.gov/search?q=${escUrl(qDawes)}`, description:'Search for Dawes rolls, census/enrollment cards, enrollment packets, allotment jackets, maps, RG 48, and RG 75 record leads.' },
     { group:'NARA', title:'NARA Dawes research guide', type:'research guide', url:'https://www.archives.gov/research/native-americans/dawes', description:'Plain guide explaining Final Dawes Rolls, census cards, enrollment applications, allotment jackets, maps, and the proper order of research.' },
     { group:'OHS', title:'Oklahoma Historical Society Dawes search', type:'state source search', url:'https://www.okhistory.org/research/dawes', description:'Search by first name, last name, tribal nation, roll number, or card number, then use the card/roll result to find packets.' },
@@ -75,13 +76,13 @@ function researchPath(q, detected){
     steps.push({
       title:'3. Use the census card number to find the family card',
       body:'The census card is usually the family-group record. It may show relatives, relationship to head of household, parents, card transfers, rejected/doubtful status, and related cards.',
-      where:'NARA Catalog Enrollment Cards series, OHS research path, FamilySearch/Ancestry access where available, and NARA research facilities.',
+      where:'NARA Catalog Enrollment Cards series, OHS research path, FamilySearch where available, and NARA research facilities.',
       lookFor:'Card number, family members, relationships, parents, age, sex, blood degree, earlier-roll references, birth/death/marriage notes, and rejected/doubtful markings.'
     });
     steps.push({
       title:'4. Pull the enrollment application or testimony packet',
       body:'The enrollment application can explain the short index result. It may contain testimony, affidavits, residence or post-office information, objections, correspondence, and family evidence.',
-      where:'NARA Catalog Applications for Enrollment series, NARA Fort Worth, OHS ordering guidance, FamilySearch/Ancestry when available.',
+      where:'NARA Catalog Applications for Enrollment series, NARA Fort Worth, OHS ordering guidance, and FamilySearch when available.',
       lookFor:'Application number, census card number, testimony, residence, parent and relative names, affidavits, correspondence, objections, and appeal information.'
     });
   }
@@ -89,7 +90,7 @@ function researchPath(q, detected){
     steps.push({
       title:'5. Find the land allotment jacket',
       body:'If the person was approved, the allotment jacket is the bridge from person to land. It is the record most likely to give the legal land description.',
-      where:'NARA Dawes Land Allotment Jackets / Applications for Allotment, FamilySearch, Ancestry, NARA research facilities, and BIA/LTRO information.',
+      where:'NARA Dawes Land Allotment Jackets / Applications for Allotment, FamilySearch when available, NARA research facilities, and BIA/LTRO information.',
       lookFor:'Enrollment number, legal description, township/range/section, physical location, improvements, plat maps, correspondence, and contested allotment notices.'
     });
   }

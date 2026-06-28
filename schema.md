@@ -434,3 +434,7 @@ Local/index record matching should require strong evidence such as name, roll/ca
 ## v0.51 public information architecture
 
 Public navigation is now user-focused: Search, Family stories, Land Loss Project, Search guidance, and Contact. Admin and Workbench pages remain operational but are not part of the family-facing workflow.
+
+
+## v0.52 partner_links.json
+Free-first outside resource cards for Universal Search results. Current active resource: FamilySearch, labeled as a free outside genealogy resource, not a paid affiliate link. Future paid partner/affiliate links should be clearly disclosed and should not sell user search/submission data.

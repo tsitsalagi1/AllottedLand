@@ -304,3 +304,10 @@ Deployment note: deploy this as a full site folder with Wrangler, not as a chang
 - Replaced public navigation with a user-focused nav: Search, Family stories, Land Loss Project, Search guidance, Contact.
 - Rewrote About, Search Guidance, Contact, Privacy, Terms, Submission Consent, Reviewer Login, Help Index Maps, and Updates pages in plain user-focused language.
 - Kept admin and workbench unchanged for reviewers.
+
+
+## v0.52 - Free-first FamilySearch resource layer
+- Added FamilySearch as the first free outside genealogy starting point in Universal Search results.
+- Added data/partner_links.json for future free-first partner/resource cards.
+- Updated Privacy Policy and Terms to explain outside resource links, future partner/affiliate disclosures, and the no-sale/no-paywall approach for families.
+- Kept paid partner links inactive in this version.

@@ -348,6 +348,13 @@ Key test cases:
 - Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
 
 
-### v0.51 public-page simplification
+### v0.52 public-page simplification
 
 All public-facing pages except `admin.html` and `workbench.html` were simplified around a single user goal: help families search first, understand the record path, and avoid confusing tool sprawl. Reviewer/admin tools remain available but are not promoted in the public navigation.
+
+
+## v0.52 - Free-first FamilySearch resource layer
+- Added FamilySearch as the first free outside genealogy starting point in Universal Search results.
+- Added data/partner_links.json for future free-first partner/resource cards.
+- Updated Privacy Policy and Terms to explain outside resource links, future partner/affiliate disclosures, and the no-sale/no-paywall approach for families.
+- Kept paid partner links inactive in this version.

@@ -1,0 +1,18 @@
+{
+  "version": "0.52",
+  "purpose": "Free-first helpful resources for families doing genealogy before allotment/map research. No paid partners are active in this version.",
+  "partners": [
+    {
+      "order": 1,
+      "active": true,
+      "name": "FamilySearch",
+      "label": "Free resource",
+      "category": "Family tree and records",
+      "url": "https://www.familysearch.org/",
+      "affiliate": false,
+      "paid": false,
+      "description": "Use FamilySearch to build a free family tree, gather names, spelling variants, relatives, dates, places, and record hints before searching Dawes, allotment, county, and land records.",
+      "note": "FamilySearch is an outside website with its own account, privacy, and use rules. AllottedLand.com does not control FamilySearch and does not send your search there unless you open the link."
+    }
+  ]
+}
