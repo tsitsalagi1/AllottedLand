@@ -6,7 +6,7 @@
   <title>AllottedLand.com — Find your family’s allotted land</title>
   <meta name="description" content="A free public research tool helping Native families search allotment maps and records by name, roll number, tribe, township, range, section, county, or partial family clues." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=037">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=039">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -115,6 +115,50 @@
       </div>
     </section>
 
+
+
+    <section id="source-hub" class="section source-hub-section">
+      <div class="panel source-hub-intro">
+        <p class="eyebrow dark">Official source lookup</p>
+        <h2>Search the outside record systems too.</h2>
+        <p>AllottedLand.com should not trap users inside one index. Use this hub to search official federal and state sources for Dawes records, census/enrollment cards, enrollment applications, allotment jackets, allotment maps, federal land records, and BIA/LTRO title-record paths.</p>
+        <p class="hint"><strong>Live API status:</strong> NARA requires a server-side <code>NARA_API_KEY</code>. LOC map search can run through the included public JSON connector. OHS, BIA/LTRO, and BLM/GLO are included as official-source linkouts because they do not provide a simple public allotment-title API for this project.</p>
+      </div>
+      <div class="source-hub-grid">
+        <form class="panel source-lookup-panel" id="sourceLookupForm" onsubmit="return false;">
+          <h2>Official-source lookup clues</h2>
+          <div class="grid">
+            <label class="wide">Name or keyword <input id="sourceName" placeholder="ancestor name, spelling variant, family surname" autocomplete="off"></label>
+            <label>Tribe / Nation <input id="sourceTribe" placeholder="Cherokee, Choctaw, Chickasaw, Creek, Seminole" autocomplete="off"></label>
+            <label>Roll / enrollment no. <input id="sourceRoll" placeholder="roll / enrollment number" autocomplete="off"></label>
+            <label>Census card no. <input id="sourceCard" placeholder="census card number" autocomplete="off"></label>
+            <label>Allotment no. <input id="sourceAllotment" placeholder="allotment number" autocomplete="off"></label>
+            <label>County / town / place <input id="sourcePlace" placeholder="county, town, creek, cemetery" autocomplete="off"></label>
+            <label>Township <input id="sourceTownship" placeholder="township #" autocomplete="off"></label>
+            <label>Range <input id="sourceRange" placeholder="range #" autocomplete="off"></label>
+            <label>Section <input id="sourceSection" placeholder="section #" autocomplete="off"></label>
+            <label class="wide">Extra keyword <input id="sourceKeyword" placeholder="Dawes, allotment jacket, tax deed, sheriff deed, oil lease, etc." autocomplete="off"></label>
+          </div>
+          <div class="buttons">
+            <button type="button" id="sourceUseCluesBtn" class="secondary">Use current page clues</button>
+            <button type="button" id="sourceNaraBtn">Search NARA API</button>
+            <button type="button" id="sourceLocBtn">Search LOC maps</button>
+            <button type="button" id="sourceLinksBtn" class="secondary">Build official links</button>
+            <button type="button" id="sourcePrintBtn" class="ghost">Print source leads / save PDF</button>
+          </div>
+          <p id="sourceStatus" class="status">Enter a clue or copy clues from the research-path form, then search or build official-source links.</p>
+        </form>
+        <section class="panel source-results-panel" aria-live="polite">
+          <div class="results-head"><h2>Official source leads</h2><span>Federal / state sources</span></div>
+          <div id="sourceResults" class="results source-results"><p class="muted">NARA/LOC result cards and official source links will appear here.</p></div>
+          <div id="sourceLinkResults" class="source-link-results"></div>
+        </section>
+      </div>
+      <div class="panel source-card-panel">
+        <h2>Source systems included in this build</h2>
+        <div id="sourceCards" class="source-card-grid"></div>
+      </div>
+    </section>
 
 
     <section id="dawes" class="section dawes-section">
@@ -319,9 +363,10 @@
   </footer>
 
 
-  <script src="assets/dawes-search.js?v=038"></script>
-  <script src="assets/print-packet.js?v=038"></script>
-  <script src="assets/app.js"></script>
+  <script src="assets/dawes-search.js?v=039"></script>
+  <script src="assets/print-packet.js?v=039"></script>
+  <script src="assets/source-connectors.js?v=039"></script>
+  <script src="assets/app.js?v=039"></script>
   <script>
   (function () {
     const $ = (id) => document.getElementById(id);

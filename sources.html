@@ -6,7 +6,7 @@
   <title>Source Records — AllottedLand.com</title>
   <meta name="description" content="Source records used or planned for AllottedLand.com: LOC allotment maps, Dawes/NARA records, county clerk records, BIA/LTRO records, and future source layers." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css">
+  <link rel="stylesheet" href="assets/v032-visual.css?v=039">
 </head>
 <body>
 <header class="site-header">
@@ -73,6 +73,21 @@
     <p><a class="link-button" href="evidence.html#submit">Submit a Land Loss Project clue</a></p>
   </section>
 
+
+  <section class="panel">
+    <h2>Official source connector hub</h2>
+    <p>The homepage now includes an Official Source Lookup section. It combines live API-capable sources with official linkout/search paths so users can keep moving even when a source does not expose a simple public API.</p>
+    <ul class="checklist">
+      <li><strong>NARA Catalog API:</strong> server-side connector at <code>/api/nara-search</code>. Requires a Cloudflare Pages secret named <code>NARA_API_KEY</code>. The API key must not be placed in browser JavaScript.</li>
+      <li><strong>Library of Congress JSON/YAML API:</strong> connector at <code>/api/loc-search</code> for map/source leads.</li>
+      <li><strong>OHS Dawes Rolls:</strong> official linkout/search path for first name, last name, tribal nation, roll number, and card number.</li>
+      <li><strong>BIA/LTRO:</strong> official title-record request path for trust/restricted land records and Title Status Reports.</li>
+      <li><strong>BLM GLO Records:</strong> official federal land-record linkout for patents, surveys, land-status records, tract books, and township land catalog research.</li>
+      <li><strong>NARA AWS bulk dataset:</strong> planned offline/bulk metadata path for larger import work, instead of scraping the live NARA API.</li>
+    </ul>
+    <p><a class="link-button" href="index.html#source-hub">Open the Official Source Lookup hub</a></p>
+  </section>
+
   <section class="panel disclaimer">
     <h2>Verification rule</h2>
     <p>All search results should be treated as research leads until verified with original source records. The goal is to make the trail easier to follow, not to replace official records.</p>
@@ -82,10 +97,12 @@
     <p class="eyebrow dark">Data-source roadmap</p>
     <h2>Possible official/public data feeds</h2>
     <ul class="checklist">
-      <li><strong>NARA Catalog API:</strong> candidate for Dawes record metadata, digital-object metadata, OCR/extracted text, and source links.</li>
-      <li><strong>Library of Congress JSON / IIIF APIs:</strong> candidate for map metadata, item/resource data, image services, and citation/source links.</li>
-      <li><strong>Oklahoma Historical Society Dawes database:</strong> useful as a public search reference for names, tribe, roll number, card number, and order paths; use only in a permission-respecting way.</li>
-      <li><strong>BIA/LTRO:</strong> official route for trust/restricted title documents and Title Status Reports; generally a record-request path, not a public bulk API.</li>
+      <li><strong>NARA Catalog API:</strong> official live lookup for archival descriptions, authority records, digital-object metadata, OCR/extracted text, and source links. Use it for lookups and printed leads, not bulk scraping.</li>
+      <li><strong>NARA AWS Catalog dataset:</strong> best bulk metadata path for later RG 75 / RG 48 import work.</li>
+      <li><strong>Library of Congress JSON/YAML API:</strong> public API for map metadata, item/resource data, images, and source links.</li>
+      <li><strong>Oklahoma Historical Society Dawes database:</strong> official state search reference for names, tribe, roll number, card number, and packet-order paths.</li>
+      <li><strong>BIA/LTRO:</strong> official route for trust/restricted title documents, patents, deeds, probate orders, leases, rights-of-way, plats, and Title Status Reports; generally a record-request path, not a public bulk API.</li>
+      <li><strong>BLM GLO Records:</strong> official federal land-record path for patents, survey plats, field notes, land-status records, tract books, and township catalog leads.</li>
     </ul>
     <p class="hint">All automated imports should preserve source attribution and keep results labeled as research leads unless verified against original records.</p>
   </section>

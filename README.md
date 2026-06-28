@@ -184,3 +184,41 @@ The next data layer should prefer official/public source paths:
 4. BIA/LTRO as the official record path for trust/restricted title documents, including patents, deeds, probate orders, leases, rights-of-way, cadastral surveys, plats, and title status records.
 
 Do not scrape paywalled/restricted sites such as Ancestry, Fold3, or FamilySearch. Link out or use user-provided/downloaded records only where permitted.
+
+## v0.39 official source connector hub
+
+Upload these changed files over v0.38:
+
+- `index.html`
+- `sources.html`
+- `assets/source-connectors.js`
+- `assets/v032-visual.css`
+- `functions/api/nara-search.js`
+- `functions/api/loc-search.js`
+- `data/source_catalog.json`
+- `README.md`
+- `CHANGELOG.md`
+- `changelog.html`
+
+### Cloudflare setup
+
+Set this Pages environment variable if you want live NARA API results:
+
+```text
+NARA_API_KEY=your_read_only_nara_catalog_api_key
+```
+
+Do not place the NARA key in browser JavaScript or in the public GitHub repository. The site calls `/api/nara-search`, and the Cloudflare Function adds the `x-api-key` header server-side.
+
+The LOC connector does not require a key. It uses `/api/loc-search` to query the Library of Congress JSON/YAML map endpoint and return lightweight source leads.
+
+### Source behavior
+
+- NARA Catalog API: live source leads when `NARA_API_KEY` is configured; official link fallback if not configured.
+- LOC JSON/YAML API: live map/source leads through `/api/loc-search`.
+- OHS Dawes Rolls: official state linkout/search path.
+- BIA/LTRO: official title-record request path.
+- BLM GLO Records: official federal land-record linkout.
+- NARA AWS dataset: bulk metadata path for future offline import work.
+
+All output remains labeled as research leads. Users should verify every lead against the official record page or original source record.

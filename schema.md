@@ -257,3 +257,65 @@ Submissions should include a consent object when sent to backend APIs:
 ```
 
 Workbench record submissions require privacy, terms, submission, and permission confirmations. Public testimonial and evidence submissions also require age/guardian confirmation.
+
+## v0.39 source connector endpoints
+
+### `/api/nara-search`
+
+Cloudflare Pages Function for National Archives Catalog source leads.
+
+Required environment variable:
+
+```text
+NARA_API_KEY
+```
+
+Query parameters:
+
+- `q` — required source clue string.
+- `limit` — optional, clamped to 1–20.
+
+Returns:
+
+```json
+{
+  "query": "Ketcher Cherokee roll 1637",
+  "provider": "NARA Catalog API",
+  "results": [
+    {
+      "title": "NARA Catalog source lead",
+      "naId": "...",
+      "date": "...",
+      "description": "...",
+      "url": "https://catalog.archives.gov/id/...",
+      "thumbnail": "..."
+    }
+  ],
+  "official_url": "https://catalog.archives.gov/search?q=...",
+  "notice": "This product uses the National Archives Catalog API but is not endorsed or certified by the National Archives and Records Administration."
+}
+```
+
+Do not cache or store full NARA API responses. Use this for live lookup and printable leads only.
+
+### `/api/loc-search`
+
+Cloudflare Pages Function for Library of Congress map/source leads.
+
+Query parameters:
+
+- `q` — required source clue string.
+- `limit` — optional, clamped to 1–20.
+
+Returns normalized LOC result cards with title, URL, date, description, and thumbnail where available.
+
+## v0.39 source catalog
+
+`data/source_catalog.json` documents the source systems included in the homepage Official Source Lookup hub:
+
+- NARA Catalog API
+- Library of Congress JSON/YAML API
+- Oklahoma Historical Society Dawes Rolls Search
+- BIA Branch of Land Titles and Records / LTRO
+- BLM General Land Office Records
+- NARA Catalog AWS bulk dataset

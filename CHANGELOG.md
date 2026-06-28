@@ -188,3 +188,18 @@ The agent also now checks common Windows install locations automatically.
 - Added print buttons for “Build research path” results and “Search the current index” results.
 - Added CSS for printable preformatted county-request text and result cards.
 - Data roadmap: NARA Catalog API, LOC JSON/IIIF APIs, OHS Dawes database fields, and BIA/LTRO record paths should be treated as source-linked leads, not proof.
+
+## v0.39 — Official Source Connector Hub
+
+- Added homepage Official Source Lookup section for NARA, LOC, OHS, BIA/LTRO, BLM GLO, and NARA AWS bulk dataset paths.
+- Added `assets/source-connectors.js` for source clue collection, official link generation, NARA lookup, LOC map lookup, source result cards, and branded print/save-PDF packets.
+- Added `/api/nara-search` Cloudflare Pages Function. It requires `NARA_API_KEY` and keeps the key server-side.
+- Added `/api/loc-search` Cloudflare Pages Function for public Library of Congress map-source leads.
+- Added `data/source_catalog.json` to document the source systems and their best use.
+- Updated `sources.html` with the official-source connector hub and source roadmap.
+- Added CSS for source connector cards, thumbnails, result cards, source links, and print behavior.
+
+Notes:
+- NARA live API results require a Cloudflare Pages secret named `NARA_API_KEY`.
+- OHS, BIA/LTRO, and BLM GLO are included as official linkout / request paths unless an official public API is identified and approved for this use.
+- Do not scrape NARA live API for bulk data. Use NARA AWS Catalog dataset for bulk metadata work.
