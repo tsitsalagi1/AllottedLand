@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.34 — Site-wide map pattern background
+- Applied the same angled map-pattern background through the shared visual stylesheet across all included pages.
+- Added the shared visual stylesheet link to recovered static pages: About, Contact, and Source Records.
+- Kept the green header/hero treatment intact so the map pattern stays behind the page body content.
+
+
 ## v0.33 — Green header restoration and Land Loss Project rename
 - Restored the solid green header so the map-pattern background does not affect the hero/nav area.
 - Renamed the public evidence initiative from People Powered Evidence Project to Land Loss Project.

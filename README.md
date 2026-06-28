@@ -1,3 +1,7 @@
+## v0.34 — Site-wide map background
+
+This release makes the angled source-map pattern consistent across all included pages by using the shared `assets/v032-visual.css` override and adding that stylesheet to About, Contact, and Source Records. The green header remains solid for readability.
+
 ## v0.33 — Green header + Land Loss Project
 
 This release keeps the original green header color while leaving the angled source-map pattern in the page body only. It also renames the public evidence initiative to **Land Loss Project** while preserving the existing `evidence.html` URL.
