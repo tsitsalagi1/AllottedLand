@@ -374,3 +374,46 @@ body #printPacket.print-packet{
   .site-header .topnav a{min-height:36px;}
   .site-header .topnav .brand-link{min-height:46px;}
 }
+
+/* v0.57 URGENT NAV PILL ALIGNMENT FIX
+   Duplicated here because this stylesheet loads after styles.css on most pages. */
+.topnav{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px;
+}
+.topnav > a{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  align-self:center !important;
+  line-height:1.1 !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:8px 12px !important;
+  white-space:nowrap;
+}
+.topnav > a:not(.brand-link){
+  min-height:36px !important;
+}
+.topnav > .brand-link{
+  min-height:0 !important;
+  padding:6px 10px !important;
+  gap:10px !important;
+}
+.topnav > .brand-link span{
+  display:inline-flex !important;
+  align-items:center !important;
+  line-height:1.05 !important;
+}
+.topnav .brand-logo-icon{
+  display:block !important;
+  width:40px !important;
+  height:40px !important;
+  flex:0 0 40px !important;
+}
+@media(max-width:640px){
+  .topnav > a{padding:7px 10px !important;}
+  .topnav > a:not(.brand-link){min-height:34px !important;}
+  .topnav .brand-logo-icon{width:34px !important;height:34px !important;flex-basis:34px !important;}
+}
