@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.52 unified search + free-first genealogy resource layer
+/* AllottedLand.com v0.54 unified search bugfix audit
    One home-page tool: users enter any information, the site builds a research path first,
    then shows only matching local/index records and source leads.
 */
@@ -132,6 +132,27 @@
       story: val('wizStory')
     };
   }
+  function fieldSummary(c){
+    const rows = [];
+    const add = (label, value) => { if (text(value)) rows.push(`<li><strong>${esc(label)}:</strong> ${esc(value)}</li>`); };
+    add('Tribe / Nation', c.tribe);
+    add('Ancestor name', [c.first, c.last].filter(Boolean).join(' '));
+    add('Name variants', c.variants);
+    add('Enrollment category', c.category);
+    add('Roll / enrollment number', c.roll);
+    add('Census card number', c.card);
+    add('Allotment number', c.allotment);
+    add('Place', c.place);
+    add('Address', c.address);
+    add('Coordinates', c.lat && c.lon ? `${c.lat}, ${c.lon}` : '');
+    add('Township / Range / Section', [c.township && `T${c.township}`, c.range && `R${c.range}`, c.section && `Section ${c.section}`].filter(Boolean).join(' '));
+    add('Legal / county / case information', c.legal);
+    add('Land-loss or legal notice information', c.notice);
+    add('Official-source keyword', c.sourceKeyword);
+    add('Other information', c.description);
+    add('Detailed family notes', c.story);
+    return rows.length ? `<ul class="info-summary-list">${rows.join('')}</ul>` : '<p>No specific information was entered. The starter research path was generated.</p>';
+  }
   function hasAnyClue(c){ return Object.values(c).some(Boolean); }
   function buildUnifiedQuery(starter){
     const c = collectUniversalClues();
@@ -246,7 +267,6 @@
 
   function starterFill(){
     if ($('unifiedQuery') && !val('unifiedQuery')) $('unifiedQuery').value = 'I do not know where to start. Help me find Dawes, allotment, map, county, BIA/LTRO, and land-loss source records.';
-    if (!$('unifiedAgree')?.checked) $('unifiedAgree').checked = true;
     runUnified(true);
   }
 
@@ -268,6 +288,7 @@
       const sections = [];
       const detected = (planner.detected_types || []).join(', ');
       sections.push(section('Built research path', `<p class="hint"><strong>Start here.</strong> These steps explain what record to look for, where to search for it, and why it matters. A result card is only a lead; the research path tells the family what to do next.</p><div class="path-grid">${(planner.research_path || []).map(pathCard).join('')}</div>`, `${(planner.research_path||[]).length} step(s)`));
+      sections.push(section('Information searched', `<p class="section-help"><strong>What this is:</strong> This is the information the family entered. Use it to double-check spellings, numbers, places, and dates before sending request text to an office.</p>${fieldSummary(collectUniversalClues())}`, 'review before requesting records'));
       if (partners.length) {
         sections.push(section('Free genealogy starting point', `<p class="section-help"><strong>Why this is shown:</strong> Many families need to build a basic family tree before they know which names, relatives, dates, roll numbers, counties, or records to search here. This free resource can help organize that information. AllottedLand.com is not sharing your search with this site unless you choose to open the link.</p>${partners.map(partnerCard).join('')}`, `${partners.length} resource(s)`));
       }

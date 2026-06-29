@@ -1,4 +1,4 @@
-/* AllottedLand.com v0.48 universal branded print packet
+/* AllottedLand.com v0.54 universal print packet
    Supports both the on-page Print buttons and browser Ctrl+P.
    If users print the page directly, it builds a packet from visible unified results.
 */
@@ -7,6 +7,29 @@
   const text = (v) => String(v == null ? '' : v).trim();
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
+  function visibleInformationSummary(){
+    const fields = [
+      ['Tribe / Nation','wizTribe'], ['Ancestor first name','wizFirst'], ['Ancestor last name','wizLast'],
+      ['Name variants','wizVariants'], ['Enrollment category','uniCategory'], ['Roll / enrollment number','wizRoll'],
+      ['Census card number','wizCard'], ['Allotment number','wizAllotment'], ['Place','wizPlace'],
+      ['Address','uniAddress'], ['Latitude','uniLat'], ['Longitude','uniLon'], ['Township','wizTownship'],
+      ['Range','wizRange'], ['Section','wizSection'], ['Legal / county / case information','uniLegal'],
+      ['Land-loss or legal-notice information','uniNotice'], ['Official-source keyword','uniSourceKeyword'],
+      ['Other information','unifiedQuery'], ['Detailed family notes','wizStory']
+    ];
+    const rows = [];
+    for (const [label,id] of fields) {
+      const el = $(id);
+      if (!el) continue;
+      let value = '';
+      if (el.tagName === 'SELECT') {
+        value = el.options?.[el.selectedIndex || 0]?.text || el.value || '';
+        if (/^(Any|Other) \/|unknown|not sure/i.test(value)) value = '';
+      } else value = el.value || '';
+      if (text(value)) rows.push(`<li><strong>${esc(label)}:</strong> ${esc(value)}</li>`);
+    }
+    return rows.length ? `<ul class="info-summary-list">${rows.join('')}</ul>` : '';
+  }
   function packetReady(){ return $('printPacket') && $('printPacketContent'); }
   function stripForPrint(node){
     const clone = node.cloneNode(true);
@@ -63,7 +86,7 @@
     if (!packetReady() || !unifiedResultsReady()) return false;
     const content = $('printPacketContent');
     if (text(content.textContent)) return true;
-    const queryText = $('unifiedQuery')?.value ? `<p><strong>Information entered:</strong> ${esc($('unifiedQuery').value)}</p>` : '';
+    const queryText = visibleInformationSummary();
     const results = $('unifiedResults');
     const date = $('printPacketDate');
     if (date) date.textContent = new Date().toLocaleString();
@@ -125,7 +148,7 @@
   }
 
   window.addEventListener('beforeprint', () => {
-    // If the user hits Ctrl+P/browser print instead of the site button, fill the branded packet automatically.
+    // If the user hits Ctrl+P/browser print instead of the site button, fill the print packet automatically.
     autoBuildUnifiedPacket();
   });
   document.addEventListener('DOMContentLoaded', () => {

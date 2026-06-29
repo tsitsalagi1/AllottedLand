@@ -322,3 +322,26 @@ body #printPacket.print-packet{
 .doc-main .panel .button{margin-top:.5rem;}
 .site-footer .footer-grid{align-items:start;}
 @media print{.site-header .topnav,.site-footer{display:none!important}.doc-main{max-width:100%;}.doc-main .panel{box-shadow:none;}}
+/* v0.54 audit fixes */
+.info-summary-list{margin:10px 0 0;padding-left:20px;line-height:1.55}
+.info-summary-list li{margin:4px 0}
+@media print{.info-summary-list{break-inside:avoid;page-break-inside:avoid}}
+
+
+/* AllottedLand.com plat-map logo icon */
+.brand-link{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+}
+.brand-logo-icon{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  object-fit:cover;
+  flex:0 0 auto;
+  box-shadow:0 1px 3px rgba(0,0,0,.18);
+}
+@media(max-width:640px){
+  .brand-logo-icon{width:34px;height:34px;border-radius:9px;}
+}

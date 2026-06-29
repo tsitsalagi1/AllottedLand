@@ -56,3 +56,22 @@ a{color:var(--accent)}
   margin: 1rem 0;
 }
 .code-card pre { margin: 0; white-space: pre-wrap; }
+
+
+/* AllottedLand.com plat-map logo icon */
+.brand-link{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+}
+.brand-logo-icon{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  object-fit:cover;
+  flex:0 0 auto;
+  box-shadow:0 1px 3px rgba(0,0,0,.18);
+}
+@media(max-width:640px){
+  .brand-logo-icon{width:34px;height:34px;border-radius:9px;}
+}
