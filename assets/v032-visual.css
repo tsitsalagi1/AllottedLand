@@ -345,3 +345,32 @@ body #printPacket.print-packet{
 @media(max-width:640px){
   .brand-logo-icon{width:34px;height:34px;border-radius:9px;}
 }
+
+/* v0.56 global header nav alignment hotfix
+   Keeps nav/button text vertically centered after adding the larger plat-map logo icon. */
+.site-header .topnav{
+  align-items:center;
+}
+.site-header .topnav a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  line-height:1;
+}
+.site-header .topnav .brand-link{
+  min-height:52px;
+  align-items:center;
+}
+.site-header .topnav .brand-link span{
+  display:inline-flex;
+  align-items:center;
+  line-height:1;
+}
+.site-header .topnav .brand-logo-icon{
+  display:block;
+}
+@media(max-width:640px){
+  .site-header .topnav a{min-height:36px;}
+  .site-header .topnav .brand-link{min-height:46px;}
+}
