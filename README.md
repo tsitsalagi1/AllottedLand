@@ -1,3 +1,11 @@
+## v0.54 — Code audit bugfixes
+
+- Checked JavaScript syntax, JSON files, HTML asset references, duplicate IDs, and Cloudflare Pages Function imports.
+- Fixed the starter-search button so it no longer auto-checks the Privacy/Terms agreement.
+- Fixed print packet information capture so field-box searches are included in the printed packet, not only the optional notes box.
+- Added a concise “Information searched” results section so families can review the exact names, numbers, places, and record clues before contacting agencies.
+- Updated cache-busting to `v=054`.
+
 # v0.48 Universal Search Readability Cleanup
 
 - Renamed public-facing “clue” language to “Information you have” / “Information I have.”

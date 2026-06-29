@@ -1,0 +1,148 @@
+[
+  {
+    "source_key": "nara_catalog_api",
+    "name": "National Archives Catalog API",
+    "type": "federal_api_server_side_key_required",
+    "url": "https://catalog.archives.gov/api/v2/records/search",
+    "public_info_url": "https://www.archives.gov/research/catalog/help/api",
+    "site_endpoint": "/api/nara-search",
+    "best_for": [
+      "Final Dawes Rolls",
+      "Dawes census cards",
+      "enrollment applications",
+      "land allotment jackets",
+      "allotment maps",
+      "RG 48",
+      "RG 75"
+    ],
+    "notes": "Requires NARA_API_KEY set as a Cloudflare Pages secret. Do not expose the API key in browser JavaScript. Do not scrape or bulk-download the Catalog through the live API."
+  },
+  {
+    "source_key": "loc_json_api",
+    "name": "Library of Congress JSON/YAML API",
+    "type": "public_api",
+    "url": "https://www.loc.gov/maps/?fo=json",
+    "public_info_url": "https://www.loc.gov/apis/json-and-yaml/",
+    "site_endpoint": "/api/loc-search",
+    "best_for": [
+      "historical maps",
+      "atlases",
+      "item metadata",
+      "image/resource links",
+      "LOC citations"
+    ],
+    "notes": "No API key required for normal JSON/YAML lookups. Rate limits and responsible use still apply."
+  },
+  {
+    "source_key": "census_geocoder_tigerweb",
+    "name": "U.S. Census Geocoder and TIGERweb AIANNH MapServer",
+    "type": "public_geography_api_no_key",
+    "url": "https://geocoding.geo.census.gov/geocoder/",
+    "public_info_url": "https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html",
+    "site_endpoint": "/api/census-lookup",
+    "best_for": [
+      "address geocoding",
+      "county/tract/block leads",
+      "Federal American Indian Reservations",
+      "Off-Reservation Trust Lands",
+      "Oklahoma Tribal Statistical Areas",
+      "Census geography source leads"
+    ],
+    "notes": "Geography leads only; not proof of title, ownership, trust/restricted status, or final Indian Country legal status."
+  },
+  {
+    "source_key": "federal_register_api",
+    "name": "FederalRegister.gov API",
+    "type": "public_api_no_key",
+    "url": "https://www.federalregister.gov/api/v1/documents.json",
+    "public_info_url": "https://www.federalregister.gov/developers/documentation/api/v1",
+    "site_endpoint": "/api/fr-search",
+    "best_for": [
+      "BIA notices",
+      "Indian Affairs rules",
+      "tribal ordinances",
+      "land acquisitions",
+      "environmental notices",
+      "official PDFs"
+    ],
+    "notes": "No API key required. Verify legal reliance against the official PDF/govinfo link shown by FederalRegister.gov."
+  },
+  {
+    "source_key": "chronicling_america_loc",
+    "name": "Chronicling America / Library of Congress Collection API",
+    "type": "public_api_or_official_link",
+    "url": "https://www.loc.gov/collections/chronicling-america/",
+    "public_info_url": "https://www.loc.gov/apis/additional-apis/chronicling-america-api/",
+    "site_endpoint": "/api/chronicling-search",
+    "best_for": [
+      "historic newspapers",
+      "tax sale notices",
+      "sheriff sales",
+      "guardian sale notices",
+      "probate notices",
+      "oil and gas notices",
+      "surname/place clues"
+    ],
+    "notes": "Beginning in 2025, Chronicling America is accessed through the loc.gov API. The connector returns official fallback links if proxy access is blocked."
+  },
+  {
+    "source_key": "ohs_dawes",
+    "name": "Oklahoma Historical Society Dawes Rolls Search",
+    "type": "official_state_search_link",
+    "url": "https://www.okhistory.org/research/dawes",
+    "best_for": [
+      "first name",
+      "last name",
+      "tribal nation",
+      "roll number",
+      "card number",
+      "packet ordering"
+    ],
+    "notes": "Official state research page. Use linkout/search path unless permission or an official API is available."
+  },
+  {
+    "source_key": "bia_ltro",
+    "name": "BIA Branch of Land Titles and Records / LTRO",
+    "type": "official_record_request_path",
+    "url": "https://www.bia.gov/bia/ots/dtaot/bltr",
+    "best_for": [
+      "Indian Land Record of Title",
+      "Title Status Reports",
+      "patents",
+      "deeds",
+      "probate orders",
+      "leases",
+      "rights-of-way",
+      "plats"
+    ],
+    "notes": "Authority source for trust and restricted land title records. Not treated as a public bulk API."
+  },
+  {
+    "source_key": "blm_glo",
+    "name": "BLM General Land Office Records",
+    "type": "official_federal_search_link",
+    "url": "https://glorecords.blm.gov/",
+    "best_for": [
+      "federal land patents",
+      "survey plats",
+      "field notes",
+      "land status records",
+      "tract books",
+      "township land catalog"
+    ],
+    "notes": "Useful for patents and PLSS context, especially surrounding title and survey history."
+  },
+  {
+    "source_key": "nara_aws_bulk",
+    "name": "National Archives Catalog AWS Bulk Dataset",
+    "type": "bulk_metadata_dataset",
+    "url": "https://www.archives.gov/developer/national-archives-catalog-dataset",
+    "best_for": [
+      "bulk archival descriptions",
+      "digital object URLs",
+      "RG 75 import work",
+      "RG 48 import work"
+    ],
+    "notes": "Use this for large-scale metadata processing instead of scraping the live NARA API."
+  }
+]

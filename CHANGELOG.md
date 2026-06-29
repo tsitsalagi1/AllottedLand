@@ -1,318 +1,598 @@
-# v0.48 Universal Search Readability Cleanup
-
-- Renamed public-facing “clue” language to “Information you have” / “Information I have.”
-- Moved the user guidance boxes above Universal Search so families read the instructions before searching.
-- Kept Universal Search as the single public homepage tool instead of exposing several separate search forms.
-- Tightened site/index matching so person or roll-number searches do not show every township/section neighbor as a direct match.
-- Improved print CSS so agency request packet text prints fully instead of appearing as scroll boxes.
-
-
-
-## v0.46 — Unified horizontal family-land search
-
-- Replaced the separate Guided Family-Land Finder homepage section with one Universal Search form.
-- Expanded the form to include the questions from the older What do you know?, Official-source lookup clues, Dawes search, and current-index search workflows.
-- Moved Unified Results directly below the Universal Search form.
-- Reordered unified output so the Built Research Path appears first, followed by summary, local/index matches, official-source leads, prepared links, and record-request packet.
-- Added an “I don’t know where to start” button that builds a starter research path when the user has no clue yet.
-- Improved built research path cards to explain what to look for and where to search for each record type.
-- Added guards so older advanced-tool JavaScript does not fail when the old wizard section is no longer present on the homepage.
-
-
-## v0.45 — Unified search + research packet
-
-- Added a one-search homepage engine that accepts names, roll/card numbers, addresses, coordinates, township/range/section, counties, family stories, and legal-notice clues.
-- Added `/api/unified-search` to classify clues, build a research path, prepare source links, return approved D1 record matches, and generate request-packet text.
-- Added `assets/unified-search.js` to search local map/Dawes/index data, approved records, NARA/LOC/Federal Register/Chronicling America/Census connectors, and render one printable results package.
-- Added branded print/save-PDF support for all unified results.
-- Keeps advanced individual tools on the page for power users while giving regular users one place to start.
-
-
-## v0.44 — Address-to-coordinate lookup for Census/TIGERweb
-
-- Added `/api/address-resolve` endpoint.
-- Added “Address → coordinates” button to the Official Source Lookup form.
-- Census lookup now attempts address-to-coordinate fallback if Census cannot match a street address directly.
-- Added OpenStreetMap/Nominatim attribution and verification warnings.
-- Removed the need for ordinary users to manually find latitude/longitude before using Census/TIGERweb geography leads.
-
-# v0.43 — Census coordinate bug hotfix
-
-- Fixed `/api/census-lookup` so missing `lat` / `lon` parameters remain blank instead of being treated as `0`.
-- This prevents false coordinate lookups at `0,0` when users search by address only.
-- Added clearer guidance when Census cannot geocode a rural, historic, or non-standard street address: use latitude/longitude from a map pin.
-
-## v0.36 — Dawes quick-search layer and branded PDF packet
-
-- Added a home-page Dawes / Five Tribes quick-search section powered by `data/dawes_index.json`.
-- Added fields for name, tribe/nation, enrollment category, roll/enrollment number, census card number, age, sex, blood degree, relationship, source, and notes.
-- Added `data/dawes_index_template.csv` and `tools/build_dawes_index_from_csv.py` so reviewed CSV rows can be converted into the public JSON index.
-- Added branded print / save-as-PDF research packets for selected or current Dawes search results.
-- Added print CSS that hides the normal page and prints a branded AllottedLand.com research packet with a research-only disclaimer.
-
-## v0.35 — Land Loss Project pattern-evidence intake
-
-This release expands `evidence.html` from a short evidence form into a structured pattern-evidence intake. It asks for allottee identity, land description, land-loss mechanism, actors, protection/vulnerability flags, document checklist, federal approval status, and pattern-research consent.
-
-The form still submits the existing compact backend keys (`family_name`, `tribe`, `county`, `decade`, `loss_method`, `source_type`, `summary`, `source_note`, `contact`, and `consent`) so the current pending-evidence queue can keep working. Extended details are compiled into the review summary/source fields and included as `draft_details` for future backend support.
-
-Fast data that can be collected before full map transcription: Dawes roll/card basics, allotment-packet status, county book/page, probate case number, tax-sale year, sheriff deed, mortgage/release, BIA/LTRO file clue, and oil/gas lease clue.
-
-# Changelog
-
-## v0.34 — Site-wide map pattern background
-- Applied the same angled map-pattern background through the shared visual stylesheet across all included pages.
-- Added the shared visual stylesheet link to recovered static pages: About, Contact, and Source Records.
-- Kept the green header/hero treatment intact so the map pattern stays behind the page body content.
-
-
-## v0.33 — Green header restoration and Land Loss Project rename
-- Restored the solid green header so the map-pattern background does not affect the hero/nav area.
-- Renamed the public evidence initiative from People Powered Evidence Project to Land Loss Project.
-- Kept the existing evidence.html route for stability while updating public labels, admin labels, and documentation.
-
-
-
-## v0.32 — Home mission, consent placement, and visual background
-- Moved search/research-path consent checkboxes next to the buttons they unlock.
-- Removed the separate “Before using the research tools” box from the home page.
-- Expanded the Mission panel with more detail about source-first, family-guided research.
-- Added a light angled map-pattern background outside the green header area.
-## v0.29b — Workbench admin navigation
-
-- Adds an Admin link to the Workbench header so trusted reviewers can move from data entry to review without typing the URL.
-- Keeps v0.29 admin lock/home cleanup changes.
-
-# Changelog
-
-## v0.11 — Tile Review Upgrade
-
-- Improved the local OCR candidate review page.
-- Added tile-image preview for candidate rows using the saved OCR tile path.
-- Added a bounding-box overlay where Tesseract coordinates are available.
-- Added filters for likely map-label noise, rejected rows, and minimum confidence.
-- Added reject/hide and quick-mark review buttons so OCR candidates can be screened before any public record is drafted.
-
-
-All notable public changes to AllottedLand.com will be documented here.
-
-The format follows the spirit of Keep a Changelog: versions are grouped by release and changes are written in plain language for users, families, researchers, and volunteers.
-
-## [0.8] - 2026-06
-
-### Added
-- Added the local Map Indexing Agent starter kit in `tools/map_indexing_agent.py`.
-- Added `tools/review_candidates.html` for local human review of OCR candidate rows.
-- Added `data/allotment_records_candidates.json` as a holding file for unverified OCR leads.
-- Added `docs/ocr-workflow.md` with installation, running, review, and safety instructions.
-- Added `tools/requirements.txt` for Python dependencies.
-
-### Safety
-- OCR results remain candidate leads only. Human review is required before any row is moved into `data/allotment_records.json`.
-- Public submissions and automatic publication remain closed.
-
-## [0.7] - 2026-06
-
-### Added
-- Added `changelog.html` as a public Project Updates page.
-- Added `CHANGELOG.md` for GitHub version tracking.
-- Added project-update links in navigation/footer areas.
-- Added `changelog.html` to `sitemap.xml`.
-
-### Kept closed
-- Public uploads, testimonials, corrections, and land-loss submissions remain closed until privacy, consent, and review rules are finalized.
-
-## [0.6] - 2026-06
-
-### Fixed
-- Replaced primary contact buttons with Gmail web-compose links.
-- Added a copy-email button for `allottedland@gmail.com`.
-- Kept a default email-app fallback link.
-
-## [0.5] - 2026-06
-
-### Added
-- Added the project email address: `allottedland@gmail.com`.
-- Updated Contact page buttons for questions, corrections/removal requests, and volunteer indexing.
-- Added contact email to footers and policy pages.
-
-## [0.4] - 2026-06
-
-### Added
-- Added Phase 1 data-status language.
-- Added `transcribe.html` for the safe map-indexing workflow.
-- Added map review status and transcription queue templates.
-- Improved map preview fallback behavior.
-
-## [0.3] - 2026-06
-
-### Added
-- Added About, Source Records, and Contact pages.
-- Added sitemap and robots.txt updates.
-- Added footer links and Beta / Phase 1 language.
-
-## [0.2] - 2026-06
-
-### Fixed
-- Removed personal family sample data from public example text.
-- Changed search behavior so the page starts with no results until a user searches.
-- Clarified untranscribed map status language.
-
-## [0.1] - 2026-06
-
-### Added
-- Created the first public static site foundation.
-- Added homepage, guided finder, search prototype, county request builder, privacy policy, terms of use, and submission consent page.
-- Started the data layer with the Library of Congress Cherokee Nation atlas map index.
-
-
-## v0.10 Windows Tesseract path helper
-
-If Windows says `tesseract` is not recognized even though Tesseract is installed, run the agent with:
-
-```cmd
-python tools\map_indexing_agent.py --page 29 --max-tiles 12 --psm 11 --min-conf 60 --preprocess threshold --tesseract-cmd "C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
-
-The agent also now checks common Windows install locations automatically.
-
-
-## v0.28 — Public homepage database connection and simplified navigation
-- Removed homepage section-anchor links from the public nav.
-- Added a dynamic approved-records count from Cloudflare D1.
-- Added pending-record count so admins can see review backlog.
-- Added a latest-approved-records panel.
-- Added homepage search wiring to `/api/records`.
-
-## v0.29 — Locked admin panel and cleaner home page
-
-- Adds an admin-key gate to `admin.html` so pending/admin data does not load until the key is entered and verified.
-- Adds `functions/api/admin-dashboard.js` for admin-only dashboard counts and latest approved records.
-- Moves latest-approved-record display and Phase 1 data status off the public home page and into the admin panel.
-- Keeps the public home page focused on search, guidance, source records, and the volunteer workbench.
-
-## v0.30 — Login, testimonials, Land Loss Project, consent gate
-- Added `/login.html` for reviewer/admin key storage and verification.
-- Added Testimonials page with consent-gated public submissions for review.
-- Added Land Loss Project page with consent-gated evidence submissions and aggregate chart placeholders.
-- Added backend APIs for testimonials and evidence review using Cloudflare Pages Functions + D1.
-- Added admin review sections for pending testimonials and evidence submissions.
-- Cleaned the public home page: removed launch/verification-rule blocks and Help Index Maps button.
-- Added Privacy/Terms agreement gate before public search and guided research-path tools.
-- Updated Workbench with user-focused instructions, LOC source link, saved reviewer-key loading, and township/range county lookup architecture.
-- Added D1 migration `migrations/0002_testimonials_evidence.sql`.
-
-## v0.31 — Required Consent Gates and Compliance Hardening
-- Disabled public Search and Build Research Path buttons until the user checks the Privacy Policy / Terms of Use agreement.
-- Disabled testimonial, evidence, and Workbench submit buttons until all required consent boxes are checked.
-- Added age/guardian confirmation to public testimonial and evidence submissions.
-- Added server-side consent checks for Workbench record submissions, testimonials, and evidence submissions.
-- Updated Privacy Policy, Terms of Use, and Submission Consent Policy language for the live beta submission workflow.
-- Added a legal/compliance notes document for ongoing review.
-
-## v0.37 — Dawes search screen/PDF hotfix
-
-- Fixed the branded print packet appearing on the live homepage screen.
-- Added an inline Dawes research-lead consent checkbox before Dawes searching/printing.
-- Disabled Dawes search and print buttons until the checkbox is checked.
-- Stopped the Dawes starter record from appearing as a result before the user runs a search.
-- Requires at least one Dawes search clue before showing results.
-- Added cache-busting query strings to the Dawes CSS/JS references in `index.html`.
-
-## v0.38 — Universal Branded Print Packets + Data API Roadmap
-
-- Fixed print output by moving the hidden print packet outside `<main>`, so print CSS no longer hides the packet's parent container.
-- Added branded print/save-PDF support for:
-  - built research path results;
-  - generated county-record request text;
-  - visible site-search index results and map leads;
-  - individual visible result cards;
-  - Dawes/Five Tribes result packets through the existing Dawes print button.
-- Added `assets/print-packet.js` as a client-side universal print manager.
-- Added print buttons for “Build research path” results and “Search the current index” results.
-- Added CSS for printable preformatted county-request text and result cards.
-- Data roadmap: NARA Catalog API, LOC JSON/IIIF APIs, OHS Dawes database fields, and BIA/LTRO record paths should be treated as source-linked leads, not proof.
-
-## v0.39 — Official Source Connector Hub
-
-- Added homepage Official Source Lookup section for NARA, LOC, OHS, BIA/LTRO, BLM GLO, and NARA AWS bulk dataset paths.
-- Added `assets/source-connectors.js` for source clue collection, official link generation, NARA lookup, LOC map lookup, source result cards, and branded print/save-PDF packets.
-- Added `/api/nara-search` Cloudflare Pages Function. It requires `NARA_API_KEY` and keeps the key server-side.
-- Added `/api/loc-search` Cloudflare Pages Function for public Library of Congress map-source leads.
-- Added `data/source_catalog.json` to document the source systems and their best use.
-- Updated `sources.html` with the official-source connector hub and source roadmap.
-- Added CSS for source connector cards, thumbnails, result cards, source links, and print behavior.
-
-Notes:
-- NARA live API results require a Cloudflare Pages secret named `NARA_API_KEY`.
-- OHS, BIA/LTRO, and BLM GLO are included as official linkout / request paths unless an official public API is identified and approved for this use.
-- Do not scrape NARA live API for bulk data. Use NARA AWS Catalog dataset for bulk metadata work.
-
-## v0.40 — Official source connector resilience hotfix
-
-- Fixed LOC source lookup so a 403/rate-limit/proxy block no longer leaves users with no useful result. The connector now returns printable official LOC search-link cards when live JSON cannot be fetched.
-- Broadened NARA live API searches and added multiple fallback searches instead of forcing one over-specific Dawes/allotment phrase.
-- Added NARA fallback result cards when the API key is missing, placeholder, blocked, or the live API returns no rows.
-- Improved NARA result normalization for nested v2 Catalog API records.
-- Updated cache-busting query strings to `v=040` for the homepage connector assets.
-
-## v0.41 — Full deployment repair package
-
-- Rebuilt a complete deployable site snapshot instead of a changed-files-only patch.
-- Restored core static assets such as `assets/styles.css`, `assets/app.js`, data files, docs, and all public pages.
-- Preserved v0.40 connector resilience fixes and v0.39 official-source connectors.
-- Use this folder for Wrangler deployments. Do not deploy a changed-files-only patch folder as the entire Cloudflare Pages site.
-
-## v0.42 — Public source-lead connectors
-
-- Added `/api/chronicling-search` for Chronicling America / LOC historic newspaper source leads, with printable fallback official links.
-- Added `/api/fr-search` for FederalRegister.gov source leads. No API key required.
-- Added `/api/census-lookup` for Census Geocoder and TIGERweb AIANNH/OTSA geography source leads. No API key required for these endpoints.
-- Expanded the homepage Official Source Lookup section with buttons for newspapers, Federal Register, Census geography lookup, and record request packets.
-- Added address, latitude, and longitude inputs for Census geography lookup.
-- Added printable record request packet text for NARA, OHS, county clerks, BIA/LTRO, and BLM/GLO.
-- Updated `sources.html`, schema notes, and connector source cards.
-
-Deployment note: deploy this as a full site folder with Wrangler, not as a changed-files-only patch.
-
-## v0.47 — One-tool homepage cleanup and plain-English request packets
-
-- Replaced the separate homepage search boxes with one Universal Search workflow.
-- Removed the visible standalone Dawes, current-index, and official-source lookup forms from the homepage so families do not have to choose the right tool before starting.
-- Fixed Universal Search local/index matching so generic terms like Cherokee, section, land, or source do not return every indexed row.
-- Updated Unified Results so the first section is always the Built Research Path, followed by summary, matching records, official-source leads, prepared links, and agency request packets.
-- Rewrote agency request packets in plain English for NARA/OHS, county clerk/court, BIA/LTRO, and BLM/GLO.
-- Added a Copy request button to each agency packet.
-- Fixed browser print/Ctrl+P behavior so the branded print packet auto-builds from visible Universal Search results instead of printing an empty packet.
-- Added print support for individual Universal Search result cards.
-
-
-## v0.49 — Homepage simplification and field-first Universal Search
-
-- Combined the repeated homepage instruction panels into one Start Here panel.
-- Moved Testimonials / Land Loss Project above the Universal Search form.
-- Removed the redundant homepage “Submissions require consent” panel because consent is handled at the submit forms.
-- Made Universal Search field-first instead of starting with a large text box.
-- Removed the visible Search Summary section from results.
-- Added plain explanations for Official source leads and Prepared official links.
-- Removed “In plain English” wording from agency request packet bodies while keeping request text understandable.
-
-
-## v0.51 - public-page simplification
-
-- Simplified public pages except admin and workbench.
-- Replaced public navigation with a user-focused nav: Search, Family stories, Land Loss Project, Search guidance, Contact.
-- Rewrote About, Search Guidance, Contact, Privacy, Terms, Submission Consent, Reviewer Login, Help Index Maps, and Updates pages in plain user-focused language.
-- Kept admin and workbench unchanged for reviewers.
-
-
-## v0.52 - Free-first FamilySearch resource layer
-- Added FamilySearch as the first free outside genealogy starting point in Universal Search results.
-- Added data/partner_links.json for future free-first partner/resource cards.
-- Updated Privacy Policy and Terms to explain outside resource links, future partner/affiliate disclosures, and the no-sale/no-paywall approach for families.
-- Kept paid partner links inactive in this version.
-
-## v0.53 - FamilySearch start-here link
-- Added a FamilySearch link directly inside the Start Here panel so families can gather names, dates, relatives, and places before searching AllottedLand.com.
-- Removed the public-facing “Paid partner links are not active in this version” sentence from the homepage Start Here box.
-- Updated homepage cache-busting to v053.
+#!/usr/bin/env python3
+"""
+AllottedLand.com Map Indexing Agent v0.12
+
+Purpose:
+  Turn a Library of Congress allotment map image into *candidate* OCR rows for
+  human review. This script does NOT create verified public records by itself.
+
+What changed in v0.12:
+  - Adds section-first extraction using the PLSS township section grid.
+  - Supports --sections 24 or --sections all or --sections 1,2,3.
+  - Saves one crop image per section so reviewers can inspect a fixed legal land unit.
+  - Adds section, section_source, section_image_path, and section_grid metadata to candidates.
+  - Keeps the older tile workflow as a fallback.
+
+What changed in v0.10:
+  - Auto-detects common Windows Tesseract install paths.
+  - Adds --tesseract-cmd so Windows users can point directly to tesseract.exe if PATH fails.
+
+Safety rule:
+  Treat every OCR row as a lead. Move a row into data/allotment_records.json
+  only after a human verifies it against the original source map image.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import re
+import shutil
+import subprocess
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Iterable
+
+import requests
+from PIL import Image, ImageFilter, ImageOps
+import pytesseract
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+MAP_INDEX_PATH = PROJECT_ROOT / "data" / "map_index.json"
+CANDIDATES_PATH = PROJECT_ROOT / "data" / "allotment_records_candidates.json"
+RUNS_DIR = PROJECT_ROOT / "data" / "ocr_runs"
+IMAGE_DIR = RUNS_DIR / "source_images"
+
+COMMONS_URL_TEMPLATE = "https://commons.wikimedia.org/wiki/Special:FilePath/Cherokee_Nation_LOC_2011585467-{page}.jpg"
+LOC_VIEW_TEMPLATE = "https://www.loc.gov/resource/g4021gm.gla00497/?sp={page}&st=image"
+
+# Standard PLSS section numbering when the map is north-up:
+# top row is 6 5 4 3 2 1, then row 2 is 7 8 9 10 11 12, etc.
+SECTION_GRID = [
+    [6, 5, 4, 3, 2, 1],
+    [7, 8, 9, 10, 11, 12],
+    [18, 17, 16, 15, 14, 13],
+    [19, 20, 21, 22, 23, 24],
+    [30, 29, 28, 27, 26, 25],
+    [31, 32, 33, 34, 35, 36],
+]
+
+SKIP_LINE_PATTERNS = [
+    r"^township\b", r"^range\b", r"^section\b", r"^cherokee\b", r"^scale\b",
+    r"^legend\b", r"^index\b", r"^map\b", r"^north\b", r"^south\b", r"^east\b", r"^west\b",
+    r"^page\b", r"^loc\b", r"^image\b", r"^not\s+ocred\b",
+]
+
+MAP_NOISE_WORDS = {
+    "road", "roads", "creek", "river", "branch", "school", "cem", "cemetery", "church",
+    "railroad", "r.r", "rr", "town", "townsite", "boundary", "line", "reserve", "reservation",
+    "north", "south", "east", "west", "range", "township", "muskogee", "sale", "building",
+}
+
+@dataclass
+class Tile:
+    tile_id: str
+    left: int
+    top: int
+    right: int
+    bottom: int
+    path: Path
+    preprocess: str
+    section: str = ""
+    section_source: str = ""
+    section_image_path: str = ""
+    section_grid: dict[str, Any] | None = None
+
+
+def load_map_index() -> list[dict[str, Any]]:
+    if not MAP_INDEX_PATH.exists():
+        raise FileNotFoundError(f"Missing map index: {MAP_INDEX_PATH}")
+    return json.loads(MAP_INDEX_PATH.read_text(encoding="utf-8"))
+
+
+def find_page(page_no: int) -> dict[str, Any]:
+    for row in load_map_index():
+        if int(row.get("loc_page", -1)) == page_no:
+            return row
+    raise ValueError(f"Page {page_no} not found in data/map_index.json")
+
+
+def resolve_tesseract(tesseract_cmd: str | None = None) -> str:
+    candidates: list[str] = []
+    if tesseract_cmd:
+        candidates.append(tesseract_cmd)
+    found = shutil.which("tesseract")
+    if found:
+        candidates.append(found)
+    candidates.extend([
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    ])
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate)
+        if shutil.which(candidate) or path.exists():
+            pytesseract.pytesseract.tesseract_cmd = str(candidate)
+            return str(candidate)
+    raise RuntimeError(
+        "Tesseract OCR engine was not found. Install Tesseract first, or run with "
+        "--tesseract-cmd \"C:\\Program Files\\Tesseract-OCR\\tesseract.exe\"."
+    )
+
+
+def check_tesseract(tesseract_cmd: str | None = None) -> None:
+    cmd = resolve_tesseract(tesseract_cmd)
+    subprocess.run([cmd, "--version"], check=True, capture_output=True, text=True)
+    print(f"Using Tesseract: {cmd}")
+
+
+def download_image(page_no: int, image_url: str | None = None, overwrite: bool = False) -> Path:
+    IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = IMAGE_DIR / f"cherokee_nation_loc_page_{page_no:03}.jpg"
+    if out_path.exists() and not overwrite:
+        return out_path
+    url = image_url or COMMONS_URL_TEMPLATE.format(page=page_no)
+    headers = {"User-Agent": "AllottedLandMapIndexingAgent/0.12 (+https://allottedland.com)"}
+    resp = requests.get(url, headers=headers, timeout=120, allow_redirects=True)
+    if resp.status_code != 200 or not resp.content:
+        raise RuntimeError(f"Could not download image for page {page_no}: HTTP {resp.status_code} from {url}")
+    out_path.write_bytes(resp.content)
+    return out_path
+
+
+def base_image(path: Path, scale: float = 3.0) -> Image.Image:
+    img = Image.open(path).convert("L")
+    if scale and scale != 1:
+        w, h = img.size
+        img = img.resize((int(w * scale), int(h * scale)), Image.Resampling.LANCZOS)
+    img = ImageOps.autocontrast(img)
+    return img
+
+
+def preprocess_image(img: Image.Image, mode: str) -> Image.Image:
+    out = img.copy()
+    if mode == "soft":
+        out = out.filter(ImageFilter.SHARPEN)
+        out = ImageOps.expand(out, border=25, fill=255)
+        return out
+    if mode == "threshold":
+        out = out.filter(ImageFilter.SHARPEN)
+        out = out.point(lambda p: 255 if p > 178 else 0)
+        out = ImageOps.expand(out, border=25, fill=255)
+        return out
+    if mode == "invert":
+        out = ImageOps.invert(out)
+        out = out.filter(ImageFilter.SHARPEN)
+        out = out.point(lambda p: 255 if p > 170 else 0)
+        out = ImageOps.invert(out)
+        out = ImageOps.expand(out, border=25, fill=255)
+        return out
+    raise ValueError(f"Unknown preprocess mode: {mode}")
+
+
+def parse_psm_list(psm_value: str) -> list[int]:
+    out: list[int] = []
+    for item in str(psm_value).split(','):
+        item = item.strip()
+        if item:
+            out.append(int(item))
+    return out or [11]
+
+
+def parse_sections(value: str | None) -> list[int]:
+    if not value:
+        return []
+    value = value.strip().lower()
+    if value in {"all", "*"}:
+        return list(range(1, 37))
+    sections: list[int] = []
+    for part in value.split(','):
+        part = part.strip()
+        if not part:
+            continue
+        if '-' in part:
+            a, b = [int(x.strip()) for x in part.split('-', 1)]
+            sections.extend(range(min(a, b), max(a, b) + 1))
+        else:
+            sections.append(int(part))
+    return sorted({s for s in sections if 1 <= s <= 36})
+
+
+def section_to_row_col(section: int) -> tuple[int, int]:
+    for r, row in enumerate(SECTION_GRID):
+        for c, value in enumerate(row):
+            if value == section:
+                return r, c
+    raise ValueError(f"Invalid section number: {section}")
+
+
+def parse_grid_pct(value: str, w: int, h: int) -> tuple[int, int, int, int]:
+    """Parse left,top,right,bottom as percentages/fractions or pixels.
+
+    Examples:
+      --grid-pct 0.07,0.12,0.93,0.88
+      --grid-pct 7,12,93,88
+      --grid-pct 300,420,5100,5200
+    """
+    parts = [float(p.strip()) for p in value.split(',')]
+    if len(parts) != 4:
+        raise ValueError("--grid-pct must contain four values: left,top,right,bottom")
+    # 0..1 fractions
+    if all(0 <= p <= 1 for p in parts):
+        l, t, r, b = parts
+        return int(l * w), int(t * h), int(r * w), int(b * h)
+    # 0..100 percentages
+    if all(0 <= p <= 100 for p in parts):
+        l, t, r, b = [p / 100.0 for p in parts]
+        return int(l * w), int(t * h), int(r * w), int(b * h)
+    # pixels
+    l, t, r, b = parts
+    return int(l), int(t), int(r), int(b)
+
+
+def make_tiles(img: Image.Image, page_no: int, tile_size: int, overlap: int, preprocess: str) -> list[Tile]:
+    tiles: list[Tile] = []
+    tile_dir = RUNS_DIR / f"page_{page_no:03}_tiles"
+    tile_dir.mkdir(parents=True, exist_ok=True)
+    w, h = img.size
+    step = max(1, tile_size - overlap)
+    idx = 0
+    for top in range(0, h, step):
+        for left in range(0, w, step):
+            right = min(left + tile_size, w)
+            bottom = min(top + tile_size, h)
+            if right - left < 250 or bottom - top < 250:
+                continue
+            idx += 1
+            tile_id = f"p{page_no:03}_{preprocess}_t{idx:04}"
+            tile_path = tile_dir / f"{tile_id}.jpg"
+            img.crop((left, top, right, bottom)).save(tile_path, quality=94)
+            tiles.append(Tile(tile_id, left, top, right, bottom, tile_path, preprocess))
+    return tiles
+
+
+def make_section_crops(
+    img: Image.Image,
+    page_no: int,
+    sections: list[int],
+    preprocess: str,
+    grid_pct: str,
+    padding: int = 30,
+) -> list[Tile]:
+    crops: list[Tile] = []
+    section_dir = RUNS_DIR / f"page_{page_no:03}_sections" / preprocess
+    section_dir.mkdir(parents=True, exist_ok=True)
+    w, h = img.size
+    gl, gt, gr, gb = parse_grid_pct(grid_pct, w, h)
+    gl, gt = max(0, gl), max(0, gt)
+    gr, gb = min(w, gr), min(h, gb)
+    cell_w = (gr - gl) / 6.0
+    cell_h = (gb - gt) / 6.0
+    grid_meta = {"left": gl, "top": gt, "right": gr, "bottom": gb, "grid_pct": grid_pct}
+
+    for section in sections:
+        row, col = section_to_row_col(section)
+        left = int(gl + col * cell_w) - padding
+        top = int(gt + row * cell_h) - padding
+        right = int(gl + (col + 1) * cell_w) + padding
+        bottom = int(gt + (row + 1) * cell_h) + padding
+        left, top = max(0, left), max(0, top)
+        right, bottom = min(w, right), min(h, bottom)
+        tile_id = f"p{page_no:03}_{preprocess}_s{section:02}"
+        crop_path = section_dir / f"{tile_id}.jpg"
+        img.crop((left, top, right, bottom)).save(crop_path, quality=94)
+        crops.append(Tile(
+            tile_id=tile_id,
+            left=left,
+            top=top,
+            right=right,
+            bottom=bottom,
+            path=crop_path,
+            preprocess=preprocess,
+            section=str(section),
+            section_source="plss-grid-crop",
+            section_image_path=str(crop_path.relative_to(PROJECT_ROOT)),
+            section_grid={**grid_meta, "row": row, "col": col, "section": section},
+        ))
+    return crops
+
+
+def clean_text(text: str) -> str:
+    text = re.sub(r"\s+", " ", text or "").strip()
+    text = text.replace("|", "I")
+    return text
+
+
+def token_quality(text: str) -> dict[str, int | float]:
+    letters = sum(ch.isalpha() for ch in text)
+    digits = sum(ch.isdigit() for ch in text)
+    spaces = sum(ch.isspace() for ch in text)
+    punct = max(0, len(text) - letters - digits - spaces)
+    alpha_ratio = letters / max(1, len(text))
+    return {"letters": letters, "digits": digits, "punct": punct, "alpha_ratio": alpha_ratio}
+
+
+def looks_like_candidate(text: str, avg_conf: float | None, min_conf: float) -> bool:
+    t = clean_text(text)
+    if len(t) < 2 or len(t) > 100:
+        return False
+    q = token_quality(t)
+    if q["letters"] < 2 and q["digits"] < 2:
+        return False
+    if avg_conf is not None and avg_conf < min_conf:
+        return False
+    lower = t.lower()
+    if any(re.search(pattern, lower) for pattern in SKIP_LINE_PATTERNS):
+        return False
+    words = {w.strip(".,;:'\"()[]{}-_").lower() for w in lower.split()}
+    if words and words.issubset(MAP_NOISE_WORDS):
+        return False
+    if q["digits"] > q["letters"] * 3 and q["letters"] > 0:
+        return False
+    if q["punct"] > q["letters"] + q["digits"]:
+        return False
+    if q["alpha_ratio"] < 0.22 and q["digits"] < 2:
+        return False
+    return True
+
+
+def guess_name_and_allotment(line: str) -> tuple[str, str]:
+    text = clean_text(line)
+    nums = re.findall(r"(?<![.\d])\b\d{2,5}\b(?![.\d])", text)
+    allotment_number = nums[0] if nums else ""
+    name = re.sub(r"(?<![.\d])\b\d{1,5}\b(?![.\d])", " ", text)
+    name = re.sub(r"[^A-Za-z .,'\-]", " ", name)
+    name = clean_text(name)
+    parts = name.split()
+    if parts and sum(1 for p in parts if len(p) == 1) > max(2, len(parts) // 2):
+        return "", allotment_number
+    return name, allotment_number
+
+
+def split_name(name: str) -> tuple[str, str]:
+    parts = [p.strip(" .,;:") for p in clean_text(name).split() if p.strip(" .,;:")]
+    if not parts:
+        return "", ""
+    if len(parts) == 1:
+        return parts[0], ""
+    return " ".join(parts[:-1]), parts[-1]
+
+
+def get_lines_from_tesseract(tile: Tile, psm: int, min_conf: float) -> list[dict[str, Any]]:
+    config = f"--oem 3 --psm {psm} -l eng"
+    data = pytesseract.image_to_data(Image.open(tile.path), config=config, output_type=pytesseract.Output.DICT)
+    grouped: dict[tuple[int, int, int], list[int]] = {}
+    for i, text in enumerate(data.get("text", [])):
+        if not clean_text(text):
+            continue
+        key = (data["block_num"][i], data["par_num"][i], data["line_num"][i])
+        grouped.setdefault(key, []).append(i)
+
+    lines: list[dict[str, Any]] = []
+    for _, idxs in grouped.items():
+        words = [clean_text(data["text"][i]) for i in idxs if clean_text(data["text"][i])]
+        line = clean_text(" ".join(words))
+        confs: list[float] = []
+        for i in idxs:
+            try:
+                c = float(data["conf"][i])
+                if c >= 0:
+                    confs.append(c)
+            except Exception:
+                pass
+        avg_conf = round(sum(confs) / len(confs), 2) if confs else None
+        if not looks_like_candidate(line, avg_conf, min_conf):
+            continue
+        lefts = [int(data["left"][i]) for i in idxs]
+        tops = [int(data["top"][i]) for i in idxs]
+        rights = [int(data["left"][i]) + int(data["width"][i]) for i in idxs]
+        bottoms = [int(data["top"][i]) + int(data["height"][i]) for i in idxs]
+        lines.append({
+            "tile_id": tile.tile_id,
+            "tile_path": str(tile.path.relative_to(PROJECT_ROOT)),
+            "preprocess": tile.preprocess,
+            "psm": psm,
+            "tile_box": {"left": tile.left, "top": tile.top, "right": tile.right, "bottom": tile.bottom},
+            "bbox_in_tile": {"left": min(lefts), "top": min(tops), "right": max(rights), "bottom": max(bottoms)},
+            "raw_line": line,
+            "ocr_confidence_percent": avg_conf,
+            "section": tile.section,
+            "section_source": tile.section_source,
+            "section_image_path": tile.section_image_path,
+            "section_grid": tile.section_grid or {},
+        })
+    return lines
+
+
+def dedupe_lines(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    best: dict[str, dict[str, Any]] = {}
+    for line in lines:
+        text_key = re.sub(r"[^a-z0-9]", "", line.get("raw_line", "").lower())
+        if not text_key:
+            continue
+        section_key = line.get("section") or ""
+        tile_key = line.get("tile_id", "").split("_t")[-1]
+        key = f"{section_key}:{tile_key}:{text_key}"
+        conf = line.get("ocr_confidence_percent") or 0
+        if key not in best or conf > (best[key].get("ocr_confidence_percent") or 0):
+            best[key] = line
+    return list(best.values())
+
+
+def candidate_from_line(line: dict[str, Any], page: dict[str, Any], run_id: str, idx: int) -> dict[str, Any]:
+    guessed_name, guessed_allotment = guess_name_and_allotment(line["raw_line"])
+    given, surname = split_name(guessed_name)
+    section = str(line.get("section") or "")
+    legal_description = ""
+    if section:
+        legal_description = f"Section {section}, {page.get('township_range', '')}".strip()
+    return {
+        "record_type": "ocr-candidate",
+        "run_id": run_id,
+        "candidate_id": f"{run_id}-{idx:05}",
+        "verified_name": "",
+        "possible_ocr_name": guessed_name,
+        "surname": surname,
+        "given_name": given,
+        "tribe": "Cherokee Nation",
+        "roll_number": "",
+        "enrollment_number": "",
+        "census_card_number": "",
+        "allotment_number": guessed_allotment,
+        "status_restriction_notation": "",
+        "loc_page": int(page.get("loc_page", 0)),
+        "sheet_title": page.get("sheet_title", ""),
+        "township_range": page.get("township_range", ""),
+        "township": page.get("township", ""),
+        "range": page.get("range", ""),
+        "section": section,
+        "section_source": line.get("section_source", ""),
+        "section_image_path": line.get("section_image_path", ""),
+        "section_grid": line.get("section_grid", {}),
+        "county": "",
+        "state": "Oklahoma",
+        "legal_description": legal_description,
+        "source_link": page.get("loc_image_view") or LOC_VIEW_TEMPLATE.format(page=page.get("loc_page", "")),
+        "image_source": COMMONS_URL_TEMPLATE.format(page=page.get("loc_page", "")),
+        "tile_id": line.get("tile_id", ""),
+        "tile_path": line.get("tile_path", ""),
+        "tile_box": line.get("tile_box", {}),
+        "bbox_in_tile": line.get("bbox_in_tile", {}),
+        "raw_ocr_line": line.get("raw_line", ""),
+        "ocr_confidence_percent": line.get("ocr_confidence_percent"),
+        "ocr_psm": line.get("psm"),
+        "preprocess": line.get("preprocess", ""),
+        "confidence": "ocr-candidate",
+        "needs_human_review": "yes",
+        "review_status": "not-reviewed",
+        "notes": "Machine-extracted from a public LOC map image. Human review required before publishing as a searchable record."
+    }
+
+
+def write_candidates(rows: list[dict[str, Any]], append: bool = False) -> None:
+    CANDIDATES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if append and CANDIDATES_PATH.exists():
+        existing = json.loads(CANDIDATES_PATH.read_text(encoding="utf-8") or "[]")
+    else:
+        existing = []
+    seen = {row.get("candidate_id") for row in existing}
+    for row in rows:
+        if row.get("candidate_id") not in seen:
+            existing.append(row)
+    CANDIDATES_PATH.write_text(json.dumps(existing, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def write_csv(path: Path, rows: Iterable[dict[str, Any]]) -> None:
+    rows = list(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        path.write_text("", encoding="utf-8")
+        return
+    flat_rows: list[dict[str, Any]] = []
+    for row in rows:
+        flat = dict(row)
+        for key in ("tile_box", "bbox_in_tile", "section_grid"):
+            if isinstance(flat.get(key), dict):
+                for k, v in flat[key].items():
+                    flat[f"{key}_{k}"] = v
+                flat.pop(key, None)
+        flat_rows.append(flat)
+    fields = sorted({k for row in flat_rows for k in row.keys()})
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(flat_rows)
+
+
+def write_json(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="OCR one LOC allotment map page into human-review candidate records.")
+    parser.add_argument("--page", type=int, required=False, help="LOC sequence page number, e.g. 29")
+    parser.add_argument("--image-url", default=None, help="Optional direct image URL. Defaults to Wikimedia Commons LOC mirror.")
+    parser.add_argument("--overwrite-image", action="store_true", help="Redownload source image even if cached.")
+    parser.add_argument("--scale", type=float, default=3.0, help="Image scale before cropping/OCR. Default: 3.0")
+    parser.add_argument("--mode", choices=["tiles", "sections"], default="tiles", help="OCR random tiles or PLSS section crops. Default: tiles")
+    parser.add_argument("--sections", default="", help="Section-first mode: e.g. 24, 24,25, 19-24, or all")
+    parser.add_argument("--grid-pct", default="7,12,93,88", help="Section grid left,top,right,bottom as percent/fraction/pixels. Default: 7,12,93,88")
+    parser.add_argument("--section-padding", type=int, default=30, help="Extra pixels around each section crop after scaling. Default: 30")
+    parser.add_argument("--tile-size", type=int, default=1200, help="Tile size in pixels after scaling. Default: 1200")
+    parser.add_argument("--overlap", type=int, default=220, help="Overlap between tiles in pixels. Default: 220")
+    parser.add_argument("--psm", default="11", help="Tesseract PSM mode(s), e.g. 11 or 11,6. Default: 11")
+    parser.add_argument("--preprocess", choices=["soft", "threshold", "invert", "all"], default="threshold", help="Preprocessing mode. Default: threshold")
+    parser.add_argument("--tesseract-cmd", default=None, help="Optional full path to tesseract.exe, useful on Windows if PATH fails.")
+    parser.add_argument("--min-conf", type=float, default=45.0, help="Minimum average OCR confidence. Default: 45")
+    parser.add_argument("--max-tiles", type=int, default=0, help="Limit tile/section count for quick testing. 0 means no limit.")
+    parser.add_argument("--append", action="store_true", help="Append to data/allotment_records_candidates.json instead of replacing it.")
+    parser.add_argument("--clear-candidates", action="store_true", help="Clear data/allotment_records_candidates.json and exit.")
+    args = parser.parse_args()
+
+    if args.clear_candidates:
+        CANDIDATES_PATH.write_text("[]\n", encoding="utf-8")
+        print(f"Cleared: {CANDIDATES_PATH.relative_to(PROJECT_ROOT)}")
+        return
+    if not args.page:
+        raise SystemExit("Error: --page is required unless using --clear-candidates")
+
+    check_tesseract(args.tesseract_cmd)
+    page = find_page(args.page)
+    run_id = f"loc{args.page:03}_{args.mode}_{time.strftime('%Y%m%d_%H%M%S')}"
+    print(f"Run: {run_id}")
+    print(f"Page: {page.get('loc_page')} — {page.get('sheet_title')}")
+    print(f"Mode: {args.mode} | PSM: {args.psm} | preprocess: {args.preprocess} | min_conf: {args.min_conf}")
+
+    image_path = download_image(args.page, args.image_url, overwrite=args.overwrite_image)
+    base = base_image(image_path, scale=args.scale)
+    preprocess_modes = ["soft", "threshold", "invert"] if args.preprocess == "all" else [args.preprocess]
+    psm_modes = parse_psm_list(args.psm)
+
+    all_raw_lines: list[dict[str, Any]] = []
+    processed_count = 0
+    for mode in preprocess_modes:
+        img = preprocess_image(base, mode)
+        if args.mode == "sections":
+            sections = parse_sections(args.sections or "all")
+            units = make_section_crops(img, args.page, sections, mode, args.grid_pct, args.section_padding)
+            label = "section crops"
+        else:
+            units = make_tiles(img, args.page, args.tile_size, args.overlap, mode)
+            label = "tiles"
+        if args.max_tiles and args.max_tiles > 0:
+            units = units[: args.max_tiles]
+        print(f"{label.capitalize()} to OCR for {mode}: {len(units)}")
+        processed_count += len(units)
+        for unit in units:
+            unit_lines: list[dict[str, Any]] = []
+            for psm in psm_modes:
+                unit_lines.extend(get_lines_from_tesseract(unit, psm, args.min_conf))
+            unit_lines = dedupe_lines(unit_lines)
+            all_raw_lines.extend(unit_lines)
+            unit_label = f"section {unit.section}" if unit.section else unit.tile_id
+            print(f"{unit.tile_id} ({unit_label}): {len(unit_lines)} candidate lines")
+
+    all_raw_lines = dedupe_lines(all_raw_lines)
+    candidates = [candidate_from_line(line, page, run_id, i + 1) for i, line in enumerate(all_raw_lines)]
+
+    write_candidates(candidates, append=args.append)
+    suffix = f"page_{args.page:03}_{args.mode}"
+    write_csv(RUNS_DIR / f"{suffix}_candidates.csv", candidates)
+    write_csv(RUNS_DIR / f"{suffix}_raw_lines.csv", all_raw_lines)
+    write_json(RUNS_DIR / f"{run_id}_candidates.json", candidates)
+
+    print(f"Units processed: {processed_count}")
+    print(f"Candidate rows after filtering: {len(candidates)}")
+    print(f"Wrote/updated: {CANDIDATES_PATH.relative_to(PROJECT_ROOT)}")
+    print(f"Wrote CSV: data/ocr_runs/{suffix}_candidates.csv")
+    print(f"Wrote run JSON: data/ocr_runs/{run_id}_candidates.json")
+    if args.mode == "sections":
+        print("Next: review section crop images under data/ocr_runs/page_XXX_sections/ and adjust --grid-pct if section boxes are off.")
+    print("Next: open tools/review_candidates.html locally and review candidates before publishing any row.")
+
+
+if __name__ == "__main__":
+    main()

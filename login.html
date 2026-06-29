@@ -3,44 +3,52 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reviewer Login — AllottedLand.com</title>
-  <meta name="description" content="Reviewer and admin login page for trusted AllottedLand.com reviewers." />
+  <title>About / Contact — AllottedLand.com</title>
+  <meta name="description" content="About AllottedLand.com and project contact information for questions, corrections, removal requests, and volunteer help." />
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=053" />
-  <style>.login-card{max-width:760px;margin:20px auto}.key-row{display:grid;gap:14px}.ok{background:#e8f6ef;border:1px solid #9fcdb7;padding:12px;border-radius:12px}.bad{background:#fff0ef;border:1px solid #d9a7a1;padding:12px;border-radius:12px}</style>
+  <link rel="stylesheet" href="assets/v032-visual.css?v=054" />
 </head>
 <body>
-<header class="site-header">
-  <nav class="topnav" aria-label="Main navigation">
+<header class="site-header doc-hero">
+<nav class="topnav" aria-label="Main navigation">
   <a class="brand-link" href="index.html">AllottedLand.com</a>
   <a href="index.html#universal-search">Search</a>
   <a href="testimonials.html">Family stories</a>
   <a href="evidence.html">Land Loss Project</a>
   <a href="about.html">About / Contact</a>
 </nav>
-  <div class="hero doc-hero">
-    <p class="eyebrow">Reviewer / admin only</p>
-    <h1>Reviewer login</h1>
-    <p class="subtitle">Families do not need an account to search. This page is only for trusted reviewers and admins.</p>
+  <div class="hero">
+    <p class="eyebrow">About / Contact</p>
+    <h1>About AllottedLand.com</h1>
+    <p class="subtitle">A free public research tool that helps Native families turn family information into a record trail for Dawes records, allotment jackets, maps, county records, BIA/LTRO records, and land-history research.</p>
   </div>
 </header>
 <main class="doc-main">
-
-  <section class="panel login-card">
-    <h2>Reviewer or admin access</h2>
-    <p class="alert">If you are here to search for family land records, go back to the Universal Search. No login is needed.</p>
-    <p class="muted">Use the Search link in the header for family research.</p>
-    <div class="key-row">
-      <label>Access type
-        <select id="role"><option value="reviewer">Reviewer / data entry</option><option value="admin">Admin / approval panel</option></select>
-      </label>
-      <label>Access key <input id="accessKey" type="password" autocomplete="off" placeholder="Paste reviewer or admin key"></label>
-      <label><input id="remember" type="checkbox" style="width:auto"> Remember on this browser</label>
-      <div class="buttons"><button id="loginBtn">Verify key</button><button class="secondary" id="clearBtn" type="button">Clear saved keys</button></div>
-      <div id="status" class="status">Enter a key to continue.</div>
-    </div>
+  <section class="panel">
+    <h2>What this site does</h2>
+    <p>AllottedLand.com helps families decide what record to look for next. Search can organize names, roll numbers, card numbers, township/range/section, county information, addresses, deeds, tax-sale information, probate information, and family stories into a research path.</p>
+    <p>Search results are leads. The proof comes from original source records such as Dawes cards, enrollment packets, allotment jackets, maps, county deed records, court files, BIA/LTRO title records, and other official records.</p>
   </section>
-
+  <section class="panel">
+    <h2>What this site does not do</h2>
+    <p>AllottedLand.com does not decide title, ownership, heirship, enrollment, citizenship, trust status, restriction status, mineral rights, probate rights, or legal rights. It is not a tribal, federal, county, court, title-company, or law-firm system.</p>
+  </section>
+  <section id="contact" class="panel">
+    <h2>Contact</h2>
+    <p>Use email for questions, corrections, removal requests, volunteer coordination, or site problems.</p>
+    <p><strong>Email:</strong> <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
+    <h3>Helpful information to include</h3>
+    <ul>
+      <li>The page, result, source link, or record involved.</li>
+      <li>Ancestor or family name, tribe/Nation, roll number, card number, township/range/section, county, or case/book/page information if relevant.</li>
+      <li>Whether you are asking for a correction, removal, volunteer help, or general guidance.</li>
+    </ul>
+    <p><strong>Do not email sensitive private documents.</strong> Do not send Social Security numbers, private addresses of living people, government IDs, financial records, medical records, or unredacted private family documents.</p>
+  </section>
+  <section class="panel">
+    <h2>Free genealogy starting point</h2>
+    <p>Some families need to build a basic family tree before they know which names, relatives, dates, counties, or record numbers to search here. AllottedLand.com may point users to FamilySearch as a free outside genealogy resource. AllottedLand.com does not control FamilySearch and does not charge families to search this site.</p>
+  </section>
 </main>
 <footer class="site-footer">
   <div class="footer-grid">
@@ -50,11 +58,5 @@
   </div>
   <p class="small-note">Questions, corrections, or removal requests: <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
 </footer>
-<script>
-const $=id=>document.getElementById(id);
-function setStatus(msg, cls='status'){const el=$('status'); el.className=cls; el.textContent=msg;}
-async function verify(){const role=$('role').value; const key=$('accessKey').value.trim(); if(!key) return setStatus('Enter a key first.','bad'); try{ const res=await fetch('/api/login-check',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role,key})}); const data=await res.json(); if(!res.ok) throw new Error(data.error||'Key rejected.'); const storage=$('remember').checked?localStorage:sessionStorage; const other=$('remember').checked?sessionStorage:localStorage; if(role==='admin'){storage.setItem('allottedland_admin_key',key); other.removeItem('allottedland_admin_key');} else {storage.setItem('allottedland_reviewer_key',key); other.removeItem('allottedland_reviewer_key');} setStatus(data.message || 'Key accepted.','ok'); setTimeout(()=>{ location.href = role==='admin' ? 'admin.html' : 'workbench.html'; }, 650);}catch(e){setStatus(e.message,'bad');}}
-$('loginBtn').addEventListener('click',verify); $('accessKey').addEventListener('keydown',e=>{if(e.key==='Enter')verify();}); $('clearBtn').addEventListener('click',()=>{['allottedland_admin_key','allottedland_reviewer_key'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)}); $('accessKey').value=''; setStatus('Saved keys cleared.','ok');});
-</script>
 </body>
 </html>

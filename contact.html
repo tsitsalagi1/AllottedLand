@@ -1,28 +1,377 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="refresh" content="0; url=about.html#contact" />
-  <title>Contact moved — AllottedLand.com</title>
-  <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/v032-visual.css?v=053" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AllottedLand Map Workbench v0.26</title>
+<style>
+:root{--green:#183f33;--green2:#245f50;--cream:#f6f1e8;--paper:#fffdf8;--line:#d8cdbd;--gold:#c59b56;--ink:#0f1f2e;--muted:#5d6a76;--danger:#9b2d20;--blue:#2076a8;--red:#bf4b3e;--ok:#1f6b50;}
+*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45} header{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;padding:28px 36px} header .eyebrow{letter-spacing:.12em;text-transform:uppercase;color:#fae2ad;font-weight:800;font-size:.8rem} header h1{margin:.3rem 0 .2rem;font-size:2rem} header p{margin:0;max-width:980px} main{max-width:1540px;margin:0 auto;padding:24px} section.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;margin:0 0 18px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.04)} h2{margin:0 0 12px} h3{margin:.5rem 0}.grid2{display:grid;grid-template-columns: minmax(650px,1fr) minmax(420px,560px);gap:16px;align-items:start}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#efe8db;border:1px solid var(--line);font-size:.82rem;font-weight:800}.note{background:#edf8f4;border:1px solid #cde5dc;border-radius:12px;padding:10px;margin:10px 0}.warn{background:#fff5df;border-color:#e6c980}.danger{background:#fff0ef;border-color:#e5b9b5}.muted{color:var(--muted);font-size:.92rem}button,.buttonlike{border:0;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer;background:var(--green);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}button.secondary{background:#efe8db;color:#19272f;border:1px solid var(--line)}button.danger{background:var(--danger);color:#fff}button.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}button:disabled{opacity:.45;cursor:not-allowed}input,select,textarea{width:100%;padding:10px;border:1px solid #d8cdbd;border-radius:11px;background:#fffdf8;font:inherit}label{display:block;font-weight:800;margin:.35rem 0 .2rem}.small{font-size:.84rem}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.formgrid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.full{grid-column:1/-1}.canvasWrap{position:relative;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;max-height:82vh}.canvasWrap canvas{display:block;max-width:none;background:#fff}.sectionCanvasWrap{border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;max-height:76vh}.sectionCanvasWrap canvas{display:block;background:#fff}.statusGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:12px 0}.secbtn{background:#fff;color:#111;border:1px solid var(--line);border-radius:10px;padding:9px 4px;text-align:center;font-weight:900}.secbtn.selected{outline:3px solid var(--blue);}.secbtn.complete{background:#dff3e9}.secbtn.has_rows{background:#e8f5ff}.secbtn.needs_review{background:#fff1c7}.secbtn.no_records{background:#eee}.secbtn.not_started{background:#fff}.lineLegend{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.swatch{width:18px;height:4px;display:inline-block;vertical-align:middle;border-radius:3px}.blue{background:var(--blue)}.red{background:var(--red)}.green{background:var(--ok)}.splitHeader{display:flex;justify-content:space-between;gap:10px;align-items:center}.rowList{display:grid;gap:8px}.rowCard{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;display:grid;grid-template-columns:1fr auto;gap:8px}.dupeBox{display:none}.dupeBox.show{display:block}.jsonPreview{white-space:pre-wrap;max-height:260px;overflow:auto;background:#12211d;color:#e8fff5;border-radius:12px;padding:12px;font-size:.85rem}.guide{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;margin:10px 0}.guide summary{font-weight:900;cursor:pointer}.guide ul{margin:.5rem 0 .2rem 1.2rem;padding:0}.exampleBox{background:#f8f5ee;border:1px dashed #cbb99d;border-radius:10px;padding:10px;margin:.5rem 0}.sticky{position:sticky;top:12px}@media (max-width:1100px){.grid2{grid-template-columns:1fr}.sticky{position:static}}@media print{header,.toolbar,.noPrint{display:none!important}main{padding:0}section.card{box-shadow:none;break-inside:avoid}.grid2{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<header class="site-header doc-hero"><nav class="topnav" aria-label="Main navigation">
-  <a class="brand-link" href="index.html">AllottedLand.com</a>
-  <a href="index.html#universal-search">Search</a>
-  <a href="testimonials.html">Family stories</a>
-  <a href="evidence.html">Land Loss Project</a>
-  <a href="about.html">About / Contact</a>
-</nav><div class="hero"><h1>Contact moved</h1><p class="subtitle">Contact information is now on the About / Contact page.</p></div></header>
-<main class="doc-main"><section class="panel"><p>Open <a href="about.html#contact">About / Contact</a> or email <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a>.</p></section></main>
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div><strong>AllottedLand.com</strong><p>One search path for family allotment research. Results are leads, not proof of title, ownership, enrollment, heirship, or legal rights.</p></div>
-    <div><strong>For families</strong><p><a href="index.html#universal-search">Search</a><br><a href="testimonials.html">Family stories</a><br><a href="evidence.html">Land Loss Project</a></p></div>
-    <div><strong>Project</strong><p><a href="about.html">About / Contact</a><br><a href="privacy.html">Privacy</a><br><a href="terms.html">Terms</a><br><a href="submission-policy.html">Submission consent</a></p></div>
+<header>
+  <div class="eyebrow">AllottedLand.com · Local full-map transcription tool</div>
+  <h1>Full Map Workbench v0.26</h1>
+  <p>Load one LOC township/range map image, calibrate the section grid over that image, click a section to zoom in, enter human-reviewed records, and track section completion. No crop files required. v0.26 is the primary production tool: the source image stays in your browser, while human-reviewed rows can be submitted to the website database.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>1. Load one full LOC page image</h2>
+    <p class="muted">This page runs in your browser. It does not upload the source image. Use the original source map image locally, then submit only human-reviewed record data to the website.</p>
+    <div class="formgrid">
+      <div><label>Full source map image</label><input id="sourceImageInput" type="file" accept="image/*"></div>
+      <div><label>Optional existing grid JSON</label><input id="gridJsonInput" type="file" accept="application/json,.json"></div>
+      <div><label>Optional existing public records JSON for duplicate checks</label><input id="existingJsonInput" type="file" accept="application/json,.json"></div>
+      <div><label>Optional previous workbench save JSON</label><input id="workbookJsonInput" type="file" accept="application/json,.json"></div>
+    </div>
+    <div id="loadStatus" class="note">Load a full map image to begin.</div>
+  </section>
+
+    <section class="card" id="onlineSubmitCard">
+      <h2>Online submission</h2>
+      <p class="muted">The source map image stays in your browser. The submit button sends only the human-reviewed row data, section status, and grid metadata to AllottedLand.com.</p>
+      <div class="formgrid">
+        <div><label>Reviewer contact or initials</label><input id="reviewerContact" placeholder="name, initials, or email"></div>
+        <div><label>Reviewer key (optional for trusted direct approval)</label><input id="reviewerKey" type="password" placeholder="leave blank for pending review"></div>
+      </div>
+      <div class="toolbar noPrint" style="margin-top:12px">
+        <button type="button" id="loadServerDataBtn" class="secondary">Load website records/progress</button>
+        <button type="button" id="submitRowsBtn">Submit queued rows to website</button>
+      </div>
+      <div id="submitStatus" class="note">Rows will submit to <code>/api/submit-records</code> once the Cloudflare D1 backend is set up.</div>
+    </section>
+
+
+  <div class="grid2">
+    <div>
+      <section class="card">
+        <div class="splitHeader">
+          <h2>2. Calibrate the grid over the full map</h2>
+          <div class="toolbar noPrint">
+            <button class="secondary" id="fitFullBtn" type="button">Fit full map</button>
+            <button class="secondary" id="oneToOneBtn" type="button">100%</button>
+          </div>
+        </div>
+        <div class="lineLegend small"><span><i class="swatch blue"></i> outside boundary</span><span><i class="swatch red"></i> internal section lines</span><span>Drag any line. Set outside first, then distribute internal lines.</span></div>
+        <div class="toolbar noPrint">
+          <button id="initGridBtn" type="button">Initialize grid</button>
+          <button class="secondary" id="distributeBtn" type="button">Distribute internal lines</button>
+          <button class="secondary" id="downloadGridBtn" type="button">Download grid JSON</button>
+          <button class="secondary" id="downloadWorkbookBtn" type="button">Download workbench save</button>
+        </div>
+        <div class="toolbar noPrint" style="margin-top:10px">
+          <label style="width:auto">Map scale <input id="mapScale" type="range" min="10" max="140" value="55" style="width:180px"></label><span id="mapScaleLabel" class="pill">55%</span>
+          <label style="width:auto"><input id="showLabels" type="checkbox" checked style="width:auto"> show section labels</label>
+          <label style="width:auto"><input id="lockInternal" type="checkbox" style="width:auto"> lock internal lines</label>
+        </div>
+        <div class="canvasWrap" id="fullWrap"><canvas id="fullCanvas"></canvas></div>
+      </section>
+
+      <section class="card">
+        <div class="splitHeader"><h2>3. Selected section zoom</h2><span id="selectedLabel" class="pill">No section selected</span></div>
+        <p class="muted">This is generated live from the full image and calibrated grid. It is not a saved crop file.</p>
+        <div class="toolbar noPrint">
+          <label style="width:auto">Zoom <input id="sectionScale" type="range" min="60" max="350" value="145" style="width:180px"></label><span id="sectionScaleLabel" class="pill">145%</span>
+          <button class="secondary" id="fitSectionBtn" type="button">Fit section width</button>
+          <button class="secondary" id="openSectionBtn" type="button">Open section image</button>
+          <label style="width:auto">Padding <input id="sectionPad" type="number" min="0" max="500" value="70" style="width:100px"></label>
+        </div>
+        <div class="sectionCanvasWrap"><canvas id="sectionCanvas"></canvas></div>
+      </section>
+    </div>
+
+    <aside class="sticky">
+      <section class="card">
+        <h2>Township / Range / Section</h2>
+        <div class="formgrid3">
+          <div><label>LOC page</label><input id="locPage" value="29"></div>
+          <div><label>Township</label><input id="township" value="24"></div>
+          <div><label>Range</label><input id="range" value="14"></div>
+          <div class="full"><label>Township/Range</label><input id="townshipRange" value="T24N R14E"></div>
+        </div>
+        <div class="statusGrid" id="sectionGrid"></div>
+        <div class="formgrid">
+          <div><label>Selected section</label><select id="sectionSelect"></select></div>
+          <div><label>Status</label><select id="sectionStatus"><option value="not_started">not started</option><option value="has_rows">has rows</option><option value="complete">complete</option><option value="needs_review">needs review</option><option value="no_records">no records</option></select></div>
+        </div>
+        <div class="toolbar noPrint" style="margin-top:10px">
+          <button type="button" id="markStatusBtn">Save section status</button>
+          <button class="secondary" type="button" id="downloadStatusBtn">Download status JSON</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4. Add human-reviewed record</h2>
+        <details class="guide" open>
+          <summary>How to read the LOC map labels before entering a record</summary>
+          <ul>
+            <li><strong>Names:</strong> enter the person's name as read from the map. If there is no middle name or middle initial, leave Middle blank.</li>
+            <li><strong>Numbers beside names:</strong> enter the number exactly in <em>Number shown on map</em>. Do not force it into Roll # or Allotment # unless you know what it is.</li>
+            <li><strong>Status letters:</strong> small notes such as <strong>H</strong>, <strong>minor</strong>, or other marks go in Status/restriction note exactly as shown. Do not guess what an unclear mark means.</li>
+            <li><strong>Dawes/NARA fields:</strong> Roll, enrollment, and census-card numbers should stay blank unless verified from Dawes/NARA or another source outside this map.</li>
+            <li><strong>Uncertainty:</strong> if spelling, middle initial, or number type is uncertain, choose confidence <strong>needs-review</strong> or <strong>uncertain</strong> and explain in Notes.</li>
+          </ul>
+          <div class="exampleBox small"><strong>Example:</strong> Map reads “Sarah R. Gourd” with number “18338.” Enter First = Sarah, Middle = R., Last = Gourd, Number shown on map = 18338, Number type = unknown/map number unless separately verified.</div>
+        </details>
+        <div id="dupeBox" class="note danger dupeBox"></div>
+        <div class="formgrid3">
+          <div><label>First name</label><input id="firstName" placeholder="Example: Sarah"></div>
+          <div><label>Middle name / initial</label><input id="middleName" placeholder="Leave blank if not shown"></div>
+          <div><label>Last name</label><input id="lastName" placeholder="Example: Gourd"></div>
+          <div class="full"><label>Full name preview / name as written</label><input id="verifiedName" placeholder="Auto-filled from first/middle/last; edit to match map if needed"></div>
+          <div><label>Number shown on map</label><input id="mapNumber" placeholder="Enter exactly as shown"></div>
+          <div><label>Number type</label><select id="numberType"><option value="unknown_map_number">unknown / map number</option><option value="allotment_number">allotment number</option><option value="roll_number">roll number</option><option value="enrollment_number">enrollment number</option><option value="census_card_number">census card number</option><option value="other">other / note</option></select></div>
+          <div><label>Status / restriction note</label><input id="statusNote" placeholder="H, minor, etc. exactly as shown"></div>
+          <div><label>Tribe/Nation</label><input id="tribe" value="Cherokee Nation"></div>
+          <div><label>County</label><input id="county" placeholder="leave blank if unknown"></div>
+          <div><label>Confidence</label><select id="confidence"><option>human-reviewed</option><option>needs-review</option><option>uncertain</option></select></div>
+          <div><label>Reviewer initials</label><input id="reviewer" placeholder="initials"></div>
+          <div><label>Roll number</label><input id="rollNumber" placeholder="only if separately verified"></div>
+          <div><label>Enrollment number</label><input id="enrollmentNumber" placeholder="only if separately verified"></div>
+          <div class="full"><label>Census card #</label><input id="censusCardNumber" placeholder="only if separately verified"></div>
+          <div class="full"><label>Legal description</label><textarea id="legalDescription" rows="2"></textarea></div>
+          <div class="full"><label>Source link</label><textarea id="sourceLink" rows="2">https://www.loc.gov/resource/g4021gm.gla00497/?sp=29&amp;st=image</textarea></div>
+          <div class="full"><label>Notes</label><textarea id="notes" rows="3" placeholder="Describe uncertainty, map position, unclear mark, or why a number type was chosen."></textarea></div>
+        </div>
+        <label class="small"><input id="allowDuplicate" type="checkbox" style="width:auto"> Allow duplicate override for this row</label>
+        <div class="toolbar noPrint" style="margin-top:12px">
+          <button type="button" id="addRowBtn">Add row</button>
+          <button type="button" id="addClearBtn" class="secondary">Add row + clear name fields</button>
+          <button type="button" id="clearNameBtn" class="secondary">Clear name fields</button>
+        </div>
+        <div class="note warn small">The LOC item describes this atlas as showing names, statuses, and allotment numbers, but this tool preserves the exact map number separately so reviewers do not accidentally mislabel roll/enrollment/census-card numbers.</div>
+      </section>
+
+      <section class="card">
+        <h2>Approved rows</h2>
+        <p class="muted">Rows are queued in this page until you submit them to the website database. The source image is never uploaded.</p>
+        <div class="toolbar noPrint">
+          <button id="submitRowsBtn2" type="button">Submit queued rows to website</button>
+          <button id="loadServerDataBtn2" type="button" class="secondary">Reload website duplicate/progress data</button>
+          <button id="clearRowsBtn" type="button" class="danger">Clear rows</button>
+        </div>
+        <details class="guide small"><summary>Backup export tools if website submission fails</summary>
+          <div class="toolbar noPrint" style="margin-top:10px">
+            <button id="downloadRowsBtn" type="button" class="secondary">Download approved rows JSON backup</button>
+            <button id="copyRowsBtn" type="button" class="secondary">Copy approved array backup</button>
+          </div>
+        </details>
+        <p><strong id="rowCount">0</strong> approved rows queued.</p>
+        <div id="rowsList" class="rowList"></div>
+        <h3>JSON preview</h3>
+        <pre id="jsonPreview" class="jsonPreview">[]</pre>
+      </section>
+    </aside>
   </div>
-  <p class="small-note">Questions, corrections, or removal requests: <a href="mailto:allottedland@gmail.com">allottedland@gmail.com</a></p>
-</footer>
-</body></html>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const state = {
+  img:null, imgUrl:'', imageName:'', imageWidth:0, imageHeight:0,
+  xLines:[], yLines:[], drag:null, selectedSection:1,
+  approvedRows:[], existingRows:[], sectionStatus:{}, mapScale:0.55, sectionScale:1.45
+};
+const sectionOrder = [
+  [6,5,4,3,2,1],
+  [7,8,9,10,11,12],
+  [18,17,16,15,14,13],
+  [19,20,21,22,23,24],
+  [30,29,28,27,26,25],
+  [31,32,33,34,35,36]
+];
+function sectionToCell(sec){
+  for(let r=0;r<6;r++){ for(let c=0;c<6;c++){ if(sectionOrder[r][c]===Number(sec)) return {row:r,col:c}; }}
+  return {row:0,col:5};
+}
+function cellToSection(r,c){return sectionOrder[r][c];}
+function slugTR(){return ($('townshipRange').value||'T_R').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
+function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+function num(s){return Number(String(s||'').replace(/[^0-9.]/g,''))||0;}
+function buildName(){return [$('firstName').value.trim(), $('middleName').value.trim(), $('lastName').value.trim()].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();}
+function refreshName(){ if(!$('verifiedName').dataset.manual || !$('verifiedName').value.trim()) $('verifiedName').value = buildName(); }
+['firstName','middleName','lastName'].forEach(id=>$(id).addEventListener('input', refreshName));
+$('verifiedName').addEventListener('input',()=>{$('verifiedName').dataset.manual='1'});
+function defaultSource(){return `https://www.loc.gov/resource/g4021gm.gla00497/?sp=${$('locPage').value||''}&st=image`;}
+function refreshMetaFields(){
+  const sec = $('sectionSelect').value || state.selectedSection || 1;
+  $('townshipRange').value = `T${$('township').value}N R${$('range').value}E`;
+  $('legalDescription').value = `Section ${sec}, ${$('townshipRange').value}`;
+  $('sourceLink').value = defaultSource();
+}
+['locPage','township','range','sectionSelect'].forEach(id=>$(id).addEventListener('input', refreshMetaFields));
+function initControls(){
+  for(let i=1;i<=36;i++){
+    const opt=document.createElement('option'); opt.value=i; opt.textContent=`Section ${i}`; $('sectionSelect').appendChild(opt);
+  }
+  $('sectionSelect').value='1';
+  buildSectionGrid(); refreshMetaFields(); renderAll();
+}
+function buildSectionGrid(){
+  const grid=$('sectionGrid'); grid.innerHTML='';
+  for(let r=0;r<6;r++) for(let c=0;c<6;c++){
+    const sec=cellToSection(r,c); const b=document.createElement('button'); b.type='button'; b.textContent=sec; b.className='secbtn '+(state.sectionStatus[sec]?.status||'not_started');
+    if(Number(sec)===Number(state.selectedSection)) b.classList.add('selected');
+    b.addEventListener('click',()=>selectSection(sec)); grid.appendChild(b);
+  }
+}
+function selectSection(sec){
+  state.selectedSection=Number(sec); $('sectionSelect').value=String(sec); $('selectedLabel').textContent=`Section ${sec}`;
+  const status=state.sectionStatus[sec]?.status || 'not_started'; $('sectionStatus').value=status;
+  refreshMetaFields(); buildSectionGrid(); renderAll();
+}
+$('sectionSelect').addEventListener('change',e=>selectSection(Number(e.target.value)));
+function setDefaultGrid(){
+  if(!state.img) return;
+  const w=state.imageWidth,h=state.imageHeight;
+  // Conservative default. User drags outside lines to exact township boundary, then distributes.
+  const l=w*0.16,r=w*0.93,t=h*0.075,b=h*0.94;
+  state.xLines = distribute(l,r,7); state.yLines = distribute(t,b,7);
+  renderAll();
+}
+function distribute(a,b,n){const arr=[]; for(let i=0;i<n;i++) arr.push(a+(b-a)*i/(n-1)); return arr;}
+function distributeInternal(){
+  if(state.xLines.length!==7 || state.yLines.length!==7) return setDefaultGrid();
+  state.xLines = distribute(state.xLines[0], state.xLines[6], 7);
+  state.yLines = distribute(state.yLines[0], state.yLines[6], 7);
+  renderAll();
+}
+function loadImageFile(file){
+  if(!file) return; if(state.imgUrl) URL.revokeObjectURL(state.imgUrl);
+  const url=URL.createObjectURL(file); const img=new Image();
+  img.onload=()=>{state.img=img; state.imgUrl=url; state.imageName=file.name; state.imageWidth=img.naturalWidth; state.imageHeight=img.naturalHeight; $('loadStatus').textContent=`Loaded ${file.name} (${img.naturalWidth} × ${img.naturalHeight}). Calibrate outside grid lines, then pick a section.`; setDefaultGrid();};
+  img.src=url;
+}
+$('sourceImageInput').addEventListener('change',e=>loadImageFile(e.target.files[0]));
+function readJsonFile(file, cb){ const r=new FileReader(); r.onload=()=>{ try{cb(JSON.parse(r.result), file.name)}catch(e){alert('Could not parse JSON: '+e.message)} }; r.readAsText(file); }
+$('gridJsonInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; readJsonFile(f,(j)=>{loadGridJson(j); renderAll();}); });
+$('existingJsonInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; readJsonFile(f,(j)=>{state.existingRows=Array.isArray(j)?j:(j.records||j.rows||j.data||[]); $('loadStatus').textContent=`Loaded ${state.existingRows.length} existing rows for duplicate checks.`;});});
+$('workbookJsonInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; readJsonFile(f,(j)=>{ if(j.grid) loadGridJson(j.grid); if(j.approvedRows) state.approvedRows=j.approvedRows; if(j.sectionStatus) state.sectionStatus=j.sectionStatus; if(j.meta){$('locPage').value=j.meta.loc_page||$('locPage').value; $('township').value=j.meta.township||$('township').value; $('range').value=j.meta.range||$('range').value; $('townshipRange').value=j.meta.township_range||$('townshipRange').value;} refreshRows(); buildSectionGrid(); renderAll();}); });
+function loadGridJson(j){
+  const x = j.x_lines || j.xLines || j.grid?.x_lines || j.grid?.xLines; const y = j.y_lines || j.yLines || j.grid?.y_lines || j.grid?.yLines;
+  if(!Array.isArray(x)||!Array.isArray(y)||x.length!==7||y.length!==7){alert('Grid JSON must have 7 x_lines and 7 y_lines.');return;}
+  state.xLines=x.map(Number); state.yLines=y.map(Number);
+  if(j.meta){$('locPage').value=j.meta.loc_page||$('locPage').value; $('township').value=j.meta.township||$('township').value; $('range').value=j.meta.range||$('range').value; $('townshipRange').value=j.meta.township_range||$('townshipRange').value;}
+}
+function canvasPos(evt, canvas){const r=canvas.getBoundingClientRect(); return {x:(evt.clientX-r.left)*(canvas.width/r.width), y:(evt.clientY-r.top)*(canvas.height/r.height)};}
+function renderFull(){
+  const canvas=$('fullCanvas'), ctx=canvas.getContext('2d');
+  if(!state.img){canvas.width=900; canvas.height=540; ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#667'; ctx.font='18px system-ui'; ctx.fillText('Load a full LOC source map image.',30,50); return;}
+  const s=state.mapScale; canvas.width=Math.max(1,Math.round(state.imageWidth*s)); canvas.height=Math.max(1,Math.round(state.imageHeight*s));
+  ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(state.img,0,0,canvas.width,canvas.height);
+  if(state.xLines.length===7 && state.yLines.length===7){
+    ctx.lineWidth=2; ctx.font='bold 14px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    for(let i=0;i<7;i++){ctx.strokeStyle=(i===0||i===6)?'#2076a8':'#bf4b3e'; ctx.lineWidth=(i===0||i===6)?2.5:1.4; const x=state.xLines[i]*s; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke();}
+    for(let i=0;i<7;i++){ctx.strokeStyle=(i===0||i===6)?'#2076a8':'#bf4b3e'; ctx.lineWidth=(i===0||i===6)?2.5:1.4; const y=state.yLines[i]*s; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();}
+    // selected section highlight
+    const {row,col}=sectionToCell(state.selectedSection); const x1=state.xLines[col]*s,y1=state.yLines[row]*s,x2=state.xLines[col+1]*s,y2=state.yLines[row+1]*s;
+    ctx.fillStyle='rgba(40,120,170,.18)'; ctx.fillRect(x1,y1,x2-x1,y2-y1); ctx.strokeStyle='#1f6b50'; ctx.lineWidth=4; ctx.strokeRect(x1,y1,x2-x1,y2-y1);
+    if($('showLabels').checked){ for(let r=0;r<6;r++) for(let c=0;c<6;c++){ const sec=cellToSection(r,c); const cx=(state.xLines[c]+state.xLines[c+1])*s/2, cy=(state.yLines[r]+state.yLines[r+1])*s/2; ctx.fillStyle='rgba(255,255,255,.75)'; ctx.beginPath(); ctx.arc(cx,cy,15,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#0f1f2e'; ctx.fillText(sec,cx,cy); }}
+  }
+}
+function sectionBox(sec, pad=0){const {row,col}=sectionToCell(sec); return {x1:Math.max(0,state.xLines[col]-pad), y1:Math.max(0,state.yLines[row]-pad), x2:Math.min(state.imageWidth,state.xLines[col+1]+pad), y2:Math.min(state.imageHeight,state.yLines[row+1]+pad)};}
+function renderSection(){
+  const canvas=$('sectionCanvas'), ctx=canvas.getContext('2d');
+  if(!state.img||state.xLines.length!==7){canvas.width=600;canvas.height=400;ctx.fillStyle='#fff';ctx.fillRect(0,0,600,400);ctx.fillStyle='#667';ctx.font='16px system-ui';ctx.fillText('Load image and calibrate grid first.',20,40);return;}
+  const pad=Number($('sectionPad').value)||0; const b=sectionBox(state.selectedSection,pad); const sw=b.x2-b.x1, sh=b.y2-b.y1, s=state.sectionScale;
+  canvas.width=Math.max(1,Math.round(sw*s)); canvas.height=Math.max(1,Math.round(sh*s)); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(state.img,b.x1,b.y1,sw,sh,0,0,canvas.width,canvas.height);
+}
+function renderAll(){renderFull(); renderSection();}
+$('mapScale').addEventListener('input',e=>{state.mapScale=Number(e.target.value)/100; $('mapScaleLabel').textContent=e.target.value+'%'; renderFull();});
+$('sectionScale').addEventListener('input',e=>{state.sectionScale=Number(e.target.value)/100; $('sectionScaleLabel').textContent=e.target.value+'%'; renderSection();});
+$('sectionPad').addEventListener('input',renderSection); $('showLabels').addEventListener('change',renderFull);
+$('initGridBtn').addEventListener('click',setDefaultGrid); $('distributeBtn').addEventListener('click',distributeInternal); $('fitFullBtn').addEventListener('click',()=>{$('mapScale').value=55; state.mapScale=.55; $('mapScaleLabel').textContent='55%'; renderFull();}); $('oneToOneBtn').addEventListener('click',()=>{$('mapScale').value=100; state.mapScale=1; $('mapScaleLabel').textContent='100%'; renderFull();});
+$('fitSectionBtn').addEventListener('click',()=>{ if(!state.img) return; const box=sectionBox(state.selectedSection,Number($('sectionPad').value)||0); const wrap=document.querySelector('.sectionCanvasWrap'); const pct=Math.max(60,Math.min(350,Math.floor((wrap.clientWidth-25)/(box.x2-box.x1)*100))); $('sectionScale').value=pct; state.sectionScale=pct/100; $('sectionScaleLabel').textContent=pct+'%'; renderSection();});
+$('openSectionBtn').addEventListener('click',()=>{ const c=$('sectionCanvas'); const w=window.open(''); if(w){w.document.write('<title>Section '+state.selectedSection+'</title><img style="max-width:100%" src="'+c.toDataURL('image/jpeg',.92)+'">');}});
+$('fullCanvas').addEventListener('mousedown',e=>{
+  if(!state.img||state.xLines.length!==7) return; const p=canvasPos(e,$('fullCanvas')); const x=p.x/state.mapScale,y=p.y/state.mapScale; const tol=12/state.mapScale; let best=null;
+  state.xLines.forEach((v,i)=>{ if(Math.abs(x-v)<tol && (!best||Math.abs(x-v)<best.d)) best={type:'x',i,d:Math.abs(x-v)}; });
+  state.yLines.forEach((v,i)=>{ if(Math.abs(y-v)<tol && (!best||Math.abs(y-v)<best.d)) best={type:'y',i,d:Math.abs(y-v)}; });
+  if(best){ if($('lockInternal').checked && best.i>0 && best.i<6) return; state.drag=best; }
+});
+window.addEventListener('mouseup',()=>state.drag=null);
+$('fullCanvas').addEventListener('mousemove',e=>{
+  const canvas=$('fullCanvas'); if(!state.img) return; const p=canvasPos(e,canvas); const x=p.x/state.mapScale,y=p.y/state.mapScale;
+  if(state.drag){ const arr=state.drag.type==='x'?state.xLines:state.yLines; const min=state.drag.i>0?arr[state.drag.i-1]+5:0; const max=state.drag.i<6?arr[state.drag.i+1]-5:(state.drag.type==='x'?state.imageWidth:state.imageHeight); arr[state.drag.i]=Math.max(min,Math.min(max,state.drag.type==='x'?x:y)); renderAll(); }
+  else { const tol=12/state.mapScale; const nearX=state.xLines.some(v=>Math.abs(x-v)<tol), nearY=state.yLines.some(v=>Math.abs(y-v)<tol); canvas.style.cursor=(nearX||nearY)?'grab':'crosshair'; }
+});
+$('fullCanvas').addEventListener('dblclick',e=>{
+  if(!state.img||state.xLines.length!==7) return; const p=canvasPos(e,$('fullCanvas')); const x=p.x/state.mapScale,y=p.y/state.mapScale;
+  for(let r=0;r<6;r++) for(let c=0;c<6;c++) if(x>=state.xLines[c]&&x<=state.xLines[c+1]&&y>=state.yLines[r]&&y<=state.yLines[r+1]) selectSection(cellToSection(r,c));
+});
+function currentGridJson(){return {version:'0.24', type:'allottedland-grid-calibration', x_lines:state.xLines.map(v=>Math.round(v)), y_lines:state.yLines.map(v=>Math.round(v)), meta:{image_name:state.imageName,image_width:state.imageWidth,image_height:state.imageHeight, loc_page:$('locPage').value, township:$('township').value, range:$('range').value, township_range:$('townshipRange').value, created_at:new Date().toISOString()}};}
+function downloadJson(obj, filename){ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+$('downloadGridBtn').addEventListener('click',()=>downloadJson(currentGridJson(),`grid_${slugTR()}_p${$('locPage').value||''}.json`));
+$('downloadWorkbookBtn').addEventListener('click',()=>downloadJson({version:'0.24', meta:{loc_page:$('locPage').value,township:$('township').value,range:$('range').value,township_range:$('townshipRange').value,image_name:state.imageName}, grid:currentGridJson(), sectionStatus:state.sectionStatus, approvedRows:state.approvedRows},`workbench_${slugTR()}_p${$('locPage').value||''}.json`));
+$('markStatusBtn').addEventListener('click',()=>{ const sec=String(state.selectedSection); state.sectionStatus[sec]={status:$('sectionStatus').value, updated_at:new Date().toISOString(), rows:state.approvedRows.filter(r=>String(r.section)===sec && r.township_range===$('townshipRange').value).length}; buildSectionGrid();});
+$('downloadStatusBtn').addEventListener('click',()=>downloadJson({version:'0.24', township_range:$('townshipRange').value, loc_page:Number($('locPage').value)||'', section_status:state.sectionStatus, updated_at:new Date().toISOString()},`section_status_${slugTR()}_p${$('locPage').value||''}.json`));
+function primaryNumber(r){return r.map_number || r.number_shown_on_map || r.allotment_number || r.roll_number || r.enrollment_number || r.census_card_number || ''; }
+function makeKey(r){return [norm(r.verified_name), norm(primaryNumber(r)), norm(r.township_range), norm(r.section)].join('|');}
+function dupeMessage(row){ const key=makeKey(row); const matches=[...state.approvedRows,...state.existingRows].filter(r=>makeKey(r)===key); return matches.length?`Possible duplicate: ${matches.length} existing/queued row(s) match this name + map number + township/range + section.`:'';}
+function interpretedNumbers(mapNumber, numberType){
+  const out={roll_number:$('rollNumber').value.trim(), enrollment_number:$('enrollmentNumber').value.trim(), census_card_number:$('censusCardNumber').value.trim(), allotment_number:''};
+  if(numberType==='allotment_number') out.allotment_number=mapNumber;
+  if(numberType==='roll_number' && !out.roll_number) out.roll_number=mapNumber;
+  if(numberType==='enrollment_number' && !out.enrollment_number) out.enrollment_number=mapNumber;
+  if(numberType==='census_card_number' && !out.census_card_number) out.census_card_number=mapNumber;
+  return out;
+}
+function buildRow(){ const first=$('firstName').value.trim(), middle=$('middleName').value.trim(), last=$('lastName').value.trim(); const verified=$('verifiedName').value.trim() || buildName(); const sec=String(state.selectedSection); const mapNumber=$('mapNumber').value.trim(); const numberType=$('numberType').value; const nums=interpretedNumbers(mapNumber, numberType); return {verified_name:verified, first_name:first, middle_name:middle, last_name:last, surname:last, given_name:first, tribe:$('tribe').value.trim(), map_number:mapNumber, number_shown_on_map:mapNumber, number_type:numberType, roll_number:nums.roll_number, enrollment_number:nums.enrollment_number, census_card_number:nums.census_card_number, allotment_number:nums.allotment_number, status_restriction_notation:$('statusNote').value.trim(), loc_page:Number($('locPage').value)||'', township_range:$('townshipRange').value.trim(), township:$('township').value.trim(), range:$('range').value.trim(), section:sec, county:$('county').value.trim(), state:'Oklahoma', legal_description:$('legalDescription').value.trim(), source_link:$('sourceLink').value.trim(), confidence:$('confidence').value, needs_human_review:$('confidence').value==='human-reviewed'?'no':'yes', notes:$('notes').value.trim(), review_trace:{tool:'map_workbench_v0.25', image_name:state.imageName, grid:currentGridJson(), section_box: state.img ? sectionBox(state.selectedSection,Number($('sectionPad').value)||0) : {}, reviewer_initials:$('reviewer').value.trim(), reviewed_at:new Date().toISOString()}}; }
+function addRow(clearNames){ const row=buildRow(); if(!row.verified_name){ alert('Add at least a verified name. If the map number is missing or unclear, leave it blank and explain in Notes.'); return; } const dupe=dupeMessage(row); if(dupe && !$('allowDuplicate').checked){ const box=$('dupeBox'); box.textContent=dupe+' Check “Allow duplicate override” only if this is intentionally separate.'; box.classList.add('show'); return; } $('dupeBox').classList.remove('show'); state.approvedRows.push(row); const sec=String(state.selectedSection); state.sectionStatus[sec]={status:'has_rows', updated_at:new Date().toISOString(), rows:(state.sectionStatus[sec]?.rows||0)+1}; refreshRows(); buildSectionGrid(); if(clearNames){clearNameFields();} }
+function clearNameFields(){ ['firstName','middleName','lastName','verifiedName','mapNumber','statusNote','rollNumber','enrollmentNumber','censusCardNumber','notes'].forEach(id=>$(id).value=''); $('numberType').value='unknown_map_number'; $('verifiedName').dataset.manual=''; $('allowDuplicate').checked=false; }
+$('addRowBtn').addEventListener('click',()=>addRow(false)); $('addClearBtn').addEventListener('click',()=>addRow(true)); $('clearNameBtn').addEventListener('click',clearNameFields);
+function refreshRows(){ $('rowCount').textContent=state.approvedRows.length; $('jsonPreview').textContent=JSON.stringify(state.approvedRows,null,2); const list=$('rowsList'); list.innerHTML=''; state.approvedRows.forEach((r,i)=>{ const div=document.createElement('div'); div.className='rowCard'; div.innerHTML=`<div><strong>${r.verified_name||'(no name)'}</strong><br><span class="muted">Map # ${primaryNumber(r)||''} · ${r.number_type||'unknown'} · ${r.township_range||''} · Section ${r.section||''}</span></div><div class="toolbar"><button class="secondary" type="button" data-load="${i}">Load</button><button class="danger" type="button" data-remove="${i}">Remove</button></div>`; list.appendChild(div); }); list.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{state.approvedRows.splice(Number(b.dataset.remove),1); refreshRows();})); list.querySelectorAll('[data-load]').forEach(b=>b.addEventListener('click',()=>{loadRowToForm(state.approvedRows[Number(b.dataset.load)]);}));}
+function loadRowToForm(r){$('firstName').value=r.first_name||r.given_name||''; $('middleName').value=r.middle_name||''; $('lastName').value=r.last_name||r.surname||''; $('verifiedName').value=r.verified_name||''; $('verifiedName').dataset.manual='1'; $('mapNumber').value=r.map_number||r.number_shown_on_map||primaryNumber(r)||''; $('numberType').value=r.number_type||'unknown_map_number'; $('statusNote').value=r.status_restriction_notation||''; $('tribe').value=r.tribe||''; $('county').value=r.county||''; $('confidence').value=r.confidence||'human-reviewed'; $('reviewer').value=r.review_trace?.reviewer_initials||''; $('rollNumber').value=r.roll_number||''; $('enrollmentNumber').value=r.enrollment_number||''; $('censusCardNumber').value=r.census_card_number||''; $('legalDescription').value=r.legal_description||''; $('sourceLink').value=r.source_link||''; $('notes').value=r.notes||''; if(r.section) selectSection(Number(r.section));}
+$('downloadRowsBtn').addEventListener('click',()=>downloadJson(state.approvedRows,`approved_allotment_records_${slugTR()}_p${$('locPage').value||''}.json`));
+$('copyRowsBtn').addEventListener('click',()=>navigator.clipboard?.writeText(JSON.stringify(state.approvedRows,null,2)).then(()=>alert('Copied approved rows array.')).catch(()=>alert('Copy failed; use JSON preview.')));
+
+function apiMeta(){ return {loc_page:$('locPage').value, township:$('township').value, range:$('range').value, township_range:$('townshipRange').value, source_link:$('sourceLink').value, image_name:state.imageName}; }
+function getReviewerKey(){ return ($('reviewerKey')?.value||'').trim(); }
+function getReviewerContact(){ return ($('reviewerContact')?.value||$('reviewer')?.value||'').trim(); }
+async function loadWebsiteData(){
+  const tr=encodeURIComponent($('townshipRange').value||slugTR());
+  const status=$('submitStatus');
+  status.textContent='Loading website records and section progress...';
+  try{
+    const [recordsRes,statusRes]=await Promise.all([
+      fetch(`/api/records?township_range=${tr}`),
+      fetch(`/api/section-status?township_range=${tr}`)
+    ]);
+    if(recordsRes.ok){ const r=await recordsRes.json(); state.existingRows=Array.isArray(r.records)?r.records:[]; }
+    if(statusRes.ok){ const ss=await statusRes.json(); if(ss.section_status){ state.sectionStatus=ss.section_status; buildSectionGrid(); } }
+    status.textContent=`Loaded ${state.existingRows.length} website records for duplicate checks and section progress for ${$('townshipRange').value||slugTR()}.`;
+  }catch(err){ status.textContent='Could not load website data yet. The backend may not be set up: '+err.message; }
+}
+async function submitQueuedRows(){
+  const status=$('submitStatus');
+  if(!state.approvedRows.length){ alert('No queued rows to submit.'); return; }
+  const payload={
+    client_version:'v0.26',
+    meta:apiMeta(),
+    reviewer:{contact:getReviewerContact(), initials:$('reviewer')?.value||''},
+    grid:currentGridJson(),
+    section_status:state.sectionStatus,
+    records:state.approvedRows
+  };
+  status.textContent='Submitting rows to website...';
+  try{
+    const headers={'Content-Type':'application/json'};
+    const key=getReviewerKey(); if(key) headers['X-Reviewer-Key']=key;
+    const res=await fetch('/api/submit-records',{method:'POST',headers,body:JSON.stringify(payload)});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){ throw new Error(data.error||`HTTP ${res.status}`); }
+    status.textContent=`Submitted ${data.record_count||state.approvedRows.length} row(s). Mode: ${data.mode||'pending_review'}. Submission ID: ${data.submission_id||''}`;
+    if(confirm('Submission succeeded. Clear queued rows from this page?')){ state.approvedRows=[]; refreshRows(); }
+    await loadWebsiteData();
+  }catch(err){ status.textContent='Submit failed: '+err.message+'  Check D1 setup, function deployment, and bindings.'; }
+}
+$('loadServerDataBtn')?.addEventListener('click',loadWebsiteData);
+$('loadServerDataBtn2')?.addEventListener('click',loadWebsiteData);
+$('submitRowsBtn')?.addEventListener('click',submitQueuedRows);
+$('submitRowsBtn2')?.addEventListener('click',submitQueuedRows);
+
+$('clearRowsBtn').addEventListener('click',()=>{ if(confirm('Clear all approved rows in this page?')){state.approvedRows=[];refreshRows();}});
+initControls();
+</script>
+</body>
+</html>
