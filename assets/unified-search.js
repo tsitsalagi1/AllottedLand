@@ -269,6 +269,7 @@
     return {
       title: naraTitle(hit),
       naId,
+      sourceId: naId ? `NAID ${naId}` : '',
       date: naraFirst(naraDateText(rec.productionDates), naraDateText(rec.inclusiveStartDate), naraDateText(rec.date)),
       level: naraFirst(rec.levelOfDescription, source.levelOfDescription),
       type: naraFirst(Array.isArray(rec.generalRecordsTypes) ? rec.generalRecordsTypes.join(', ') : rec.generalRecordsTypes, rec.recordType, 'NARA Catalog'),
