@@ -307,6 +307,10 @@
   function sourceLeadScore(r, q){
     const c = collectUniversalClues();
     const blob = sourceBlob(r);
+    // A fallback/no-match newspaper card is not a record match. Keep it out of Best Matching leads.
+    if (/no newspaper match found|no automatic newspaper match|manual newspaper search/i.test(blob)) {
+      return {score:0, best:false};
+    }
     let score = 0;
     let strongSpecific = false;
 
@@ -366,7 +370,7 @@
     const qClean = text(q);
     calls.push(searchNaraWorker(qClean, MAX_SOURCE).catch(e => ({provider:'NARA Catalog API', results:[], notice:e.message})));
     calls.push(api('/api/fr-search', new URLSearchParams({q:[qClean, legalTerms(qClean) ? '' : 'Bureau of Indian Affairs allotment land'].filter(Boolean).join(' '), limit:String(MAX_SOURCE)})).catch(e => ({provider:'Federal Register', results:[], notice:e.message})));
-    calls.push(api('/api/chronicling-search', new URLSearchParams({q:[qClean, lossTerms(qClean) ? '' : 'tax sale sheriff sale guardian probate allotment'].filter(Boolean).join(' '), limit:String(MAX_SOURCE)})).catch(e => ({provider:'Historic newspapers', results:[], notice:e.message})));
+    calls.push(api('/api/chronicling-search', new URLSearchParams({q:qClean, limit:String(MAX_SOURCE)})).catch(e => ({provider:'Historic newspapers', results:[], notice:e.message})));
     // Keep LOC as prepared linkout until LOC Labs resolves 403 behavior from server-side requests.
     if (c.lat && c.lon) calls.push(api('/api/census-lookup', new URLSearchParams({lat:c.lat, lon:c.lon, limit:'18'})).catch(e => ({provider:'Census', results:[], notice:e.message})));
     else if (c.address || looksAddress(qClean)) calls.push(api('/api/census-lookup', new URLSearchParams({address:c.address || qClean, limit:'18'})).catch(e => ({provider:'Census', results:[], notice:e.message})));

@@ -8,23 +8,15 @@ function clean(v){ return String(v == null ? '' : v).replace(/\s+/g, ' ').trim()
 function first(...vals){ return vals.map(clean).find(Boolean) || ''; }
 function officialUrl(q){ return `https://www.loc.gov/collections/chronicling-america/?q=${encodeURIComponent(q)}`; }
 function fallbackRows(q, reason){
-  const query = clean(q) || 'Cherokee allotment';
-  const searches = [
-    query,
-    `${query} tax sale`,
-    `${query} sheriff sale`,
-    `${query} guardian sale`,
-    `${query} restricted Indian land`,
-    `${query} allotment`
-  ];
-  return searches.map((term, idx) => ({
-    title: idx === 0 ? `Open Chronicling America search for: ${term}` : `Newspaper backup search: ${term}`,
-    url: officialUrl(term),
+  const query = clean(q) || 'allotment';
+  return [{
+    title: 'No automatic newspaper match found',
+    url: officialUrl(query),
     date: '',
-    type: 'Historic newspaper search',
-    description: reason ? 'No matching newspaper record was found automatically. Open the official Chronicling America search to check manually.' : 'Prepared official historic-newspaper search link.',
+    type: 'Chronicling America manual search',
+    description: 'No matching newspaper record was found automatically. Open Chronicling America to manually check historic newspaper notices for this name, family, or land record.',
     thumbnail: ''
-  }));
+  }];
 }
 function normalize(item){
   const title = first(item.title, item.item?.title, item.name, 'Chronicling America source lead');
