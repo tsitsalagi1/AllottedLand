@@ -1,19 +1,18 @@
-AllottedLand.com — Best/Related Official Leads Patch
+AllottedLand.com patch: user-friendly Chronicling America no-match text
 
-Purpose:
-- Keeps NARA Catalog API results, but separates stronger matches from broad official leads.
-- Adds two sections to the unified packet/output:
-  1. Best matching official leads
-  2. Related official leads
-- Broad NARA records such as photographs, postmaster appointments, or general Cherokee Nation records will no longer be presented as "best matches" unless they also contain strong family/land/Dawes/allotment signals.
+Replace this one file in your full website folder:
 
-Upload:
-1. Extract this ZIP.
-2. Copy assets/unified-search.js into your full site folder:
-   C:\Users\dynam\Desktop\Allotted Land\AllottedLand-main\assets\unified-search.js
-3. Deploy from the full site folder:
-   cd "C:\Users\dynam\Desktop\Allotted Land\AllottedLand-main"
-   npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+  functions/api/chronicling-search.js
 
-Do not deploy this ZIP by itself as the entire website.
-Do not put the NARA API key in any website file. The key stays in the Cloudflare Worker secret.
+with the patched file in this ZIP.
+
+Then deploy from your full site folder:
+
+  cd "C:\Users\dynam\Desktop\Allotted Land\AllottedLand-main"
+  npx.cmd wrangler pages deploy . --project-name allottedland --branch main
+
+What changed:
+- Removed technical wording like "Live newspaper API did not return usable rows (HTTP 403)."
+- Replaced it with: "No matching newspaper record was found automatically. Open the official Chronicling America search to check manually."
+
+No API keys are included. No page wording or layout was changed.

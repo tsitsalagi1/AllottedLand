@@ -22,7 +22,7 @@ function fallbackRows(q, reason){
     url: officialUrl(term),
     date: '',
     type: 'Historic newspaper search',
-    description: reason ? `Live newspaper API did not return usable rows (${reason}). Open this official LOC/Chronicling America search as the source lead.` : 'Prepared official historic-newspaper search link.',
+    description: reason ? 'No matching newspaper record was found automatically. Open the official Chronicling America search to check manually.' : 'Prepared official historic-newspaper search link.',
     thumbnail: ''
   }));
 }
