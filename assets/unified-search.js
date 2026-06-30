@@ -12,6 +12,7 @@
   const MAX_LOCAL = 10;
   const MAX_SOURCE = 8;
   const STOP = new Set('i me my the a an and or of for to in on at by with from into help find search everything where what know start record records source sources lead leads official family land allotted allotment allotments dawes five civilized tribes cherokee nation county ok oklahoma indian territory look looking'.split(/\s+/));
+  const NARA_WORKER_URL = 'https://allottedland-nara-proxy.dynamictech-nwa.workers.dev/';
 
   function status(msg, bad){ const el = $('unifiedStatus'); if (el) { el.textContent = msg; el.classList.toggle('bad', !!bad); } }
   function val(id){ return text($(id)?.value); }
@@ -231,11 +232,75 @@
     return results.sort((a,b)=>b.score-a.score).slice(0, 24);
   }
 
+
+  function naraClean(value){
+    return String(value == null ? '' : value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function naraFirst(...values){
+    return values.map(naraClean).find(Boolean) || '';
+  }
+  function naraTitle(hit){
+    const source = hit?._source || {};
+    const rec = source.record || source.description || source;
+    return naraFirst(rec.title, rec.heading, source.title, 'NARA Catalog source lead');
+  }
+  function naraNaid(hit){
+    const source = hit?._source || {};
+    const rec = source.record || source.description || source;
+    return naraFirst(rec.naId, rec.naid, source.naId, source.naid, hit?._id);
+  }
+  function naraDescription(hit){
+    const source = hit?._source || {};
+    const rec = source.record || source.description || source;
+    return naraFirst(rec.scopeAndContentNote, rec.description, rec.summary, rec.generalNote, source.description).slice(0, 800);
+  }
+  function naraDateText(value){
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value.map(naraDateText).filter(Boolean).join('; ');
+    if (typeof value === 'object') return naraClean(value.logicalDate || [value.month, value.day, value.year].filter(Boolean).join('/') || value.year || '');
+    return naraClean(value);
+  }
+  function normalizeNaraHit(hit){
+    const source = hit?._source || {};
+    const rec = source.record || source.description || source;
+    const naId = naraNaid(hit);
+    const digital = Array.isArray(rec.digitalObjects) ? rec.digitalObjects[0] : null;
+    return {
+      title: naraTitle(hit),
+      naId,
+      date: naraFirst(naraDateText(rec.productionDates), naraDateText(rec.inclusiveStartDate), naraDateText(rec.date)),
+      level: naraFirst(rec.levelOfDescription, source.levelOfDescription),
+      type: naraFirst(Array.isArray(rec.generalRecordsTypes) ? rec.generalRecordsTypes.join(', ') : rec.generalRecordsTypes, rec.recordType, 'NARA Catalog'),
+      description: naraDescription(hit),
+      url: naraFirst(rec.catalogUrl, rec.url, source.catalogUrl, naId ? `https://catalog.archives.gov/id/${encodeURIComponent(naId)}` : 'https://catalog.archives.gov/'),
+      thumbnail: naraFirst(rec.thumbnailUrl, digital?.thumbnailUrl, digital?.objectUrl),
+      provider: 'NARA Catalog API'
+    };
+  }
+  async function searchNaraWorker(q, limit){
+    const url = new URL(NARA_WORKER_URL);
+    url.searchParams.set('q', q);
+    url.searchParams.set('rows', String(Math.max(1, Math.min(25, limit || MAX_SOURCE))));
+    const response = await fetch(url.toString(), { headers: { accept: 'application/json' }, cache: 'no-store' });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || data.message || `NARA Worker failed: ${response.status}`);
+    const hits = data?.hits?.hits || data?.body?.hits?.hits || [];
+    const results = hits.map(normalizeNaraHit).filter(r => r.title || r.naId).slice(0, limit || MAX_SOURCE);
+    return {
+      provider: 'NARA Catalog API',
+      results,
+      official_url: `https://catalog.archives.gov/search?q=${encodeURIComponent(q)}`,
+      fallback: false,
+      notice: 'This product uses the National Archives Catalog API but is not endorsed or certified by the National Archives and Records Administration.'
+    };
+  }
+
   async function sourceCalls(q){
     const c = collectUniversalClues();
     const calls = [];
     const qClean = text(q);
-    calls.push(api('/api/nara-search', new URLSearchParams({q:qClean, limit:String(MAX_SOURCE)})).catch(e => ({provider:'NARA', results:[], notice:e.message})));
+    calls.push(searchNaraWorker(qClean, MAX_SOURCE).catch(e => ({provider:'NARA Catalog API', results:[], notice:e.message})));
     calls.push(api('/api/fr-search', new URLSearchParams({q:[qClean, legalTerms(qClean) ? '' : 'Bureau of Indian Affairs allotment land'].filter(Boolean).join(' '), limit:String(MAX_SOURCE)})).catch(e => ({provider:'Federal Register', results:[], notice:e.message})));
     calls.push(api('/api/chronicling-search', new URLSearchParams({q:[qClean, lossTerms(qClean) ? '' : 'tax sale sheriff sale guardian probate allotment'].filter(Boolean).join(' '), limit:String(MAX_SOURCE)})).catch(e => ({provider:'Historic newspapers', results:[], notice:e.message})));
     // Keep LOC as prepared linkout until LOC Labs resolves 403 behavior from server-side requests.
