@@ -297,6 +297,69 @@
     };
   }
 
+
+  function sourceBlob(r){
+    return norm([r.provider, r.group, r.type, r.title, r.name, r.sourceId, r.description, r.notice, r.date, r.url].filter(Boolean).join(' '));
+  }
+  function hasResearchSignal(blob){
+    return /(dawes|allotment|allotted|enrollment|enrolment|census card|final roll|five civilized tribes|five tribes|application for enrollment|application for allotment|allotment jacket|land allotment|patent|title status|title record|tract|township|range|section|plat|map|bureau of indian affairs|indian affairs|bia|rg 75|rg75|rg 48|ltro|restricted land|trust land|probate|guardian|tax sale|sheriff sale|deed|mortgage|lease)/.test(blob);
+  }
+  function sourceLeadScore(r, q){
+    const c = collectUniversalClues();
+    const blob = sourceBlob(r);
+    let score = 0;
+    let strongSpecific = false;
+
+    const ids = [c.roll, c.card, c.allotment, ...numbersFromQuery(q), ...(digits(q).length >= 3 ? [digits(q)] : [])]
+      .filter(Boolean)
+      .map(String);
+    for (const id of ids) {
+      if (id.length >= 3 && blob.includes(id)) { score += 90; strongSpecific = true; }
+    }
+
+    const names = [];
+    if (c.first || c.last) names.push([c.first, c.last].filter(Boolean));
+    const guessed = queryNameParts(q);
+    if (guessed?.first || guessed?.last) names.push([guessed.first, guessed.last].filter(Boolean));
+    for (const parts of names) {
+      const good = parts.filter(Boolean).filter(t => t.length > 2);
+      if (good.length >= 2 && good.every(t => blob.includes(t))) { score += 80; strongSpecific = true; }
+      else if (good.length === 1 && good[0].length > 4 && blob.includes(good[0])) { score += 35; strongSpecific = true; }
+    }
+
+    const qt = c.township && c.range ? {t:String(c.township), r:String(c.range), sec:String(c.section||'')} : extractTRS(q);
+    if (qt.t && qt.r) {
+      const tHit = new RegExp(`\b(township\s*)?${qt.t}\s*n?\b`).test(blob);
+      const rHit = new RegExp(`\b(range\s*)?${qt.r}\s*e?\b`).test(blob);
+      const sHit = !qt.sec || new RegExp(`\b(section\s*)?${qt.sec}\b`).test(blob);
+      if (tHit && rHit && sHit) { score += 80; strongSpecific = true; }
+    }
+
+    const signal = hasResearchSignal(blob);
+    if (signal) score += 28;
+
+    const tokens = cleanTokens(q).filter(t => t.length > 3 && !['cherokee','nation','county','indian','records','record','source','official','search','land','family'].includes(t));
+    const hits = tokens.filter(t => blob.includes(t));
+    score += Math.min(hits.length * 10, 40);
+
+    if (/NARA Catalog API/i.test(r.provider || '') && !signal && !strongSpecific) score -= 18;
+    if (/photograph|photo|byway|youth choir|postmaster appointments|still picture/i.test([r.title, r.description, r.type].filter(Boolean).join(' ')) && !strongSpecific && !signal) score -= 30;
+
+    return {score, best: (strongSpecific && score >= 55) || (signal && score >= 60)};
+  }
+  function splitOfficialSources(flatSources, q){
+    const best = [];
+    const related = [];
+    for (const r of flatSources) {
+      const ranked = sourceLeadScore(r, q);
+      const enriched = {...r, matchScore: ranked.score};
+      if (ranked.best) best.push(enriched);
+      else related.push(enriched);
+    }
+    const sorter = (a,b) => (b.matchScore || 0) - (a.matchScore || 0);
+    return {best: best.sort(sorter), related: related.sort(sorter)};
+  }
+
   async function sourceCalls(q){
     const c = collectUniversalClues();
     const calls = [];
@@ -367,12 +430,14 @@
         const label = s.provider || 'Official source';
         if (Array.isArray(s.results) && s.results.length) for (const r of s.results.slice(0, MAX_SOURCE)) flatSources.push({...r, provider:label});
       }
-      sections.push(section('Official source leads', flatSources.length ? `<p class="section-help"><strong>What these are:</strong> These are possible matches or search leads from official record systems such as NARA, Federal Register, historic newspapers, Census/TIGERweb, and other public source sites. Open the source and verify the record there before relying on it.</p>${flatSources.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No official-source cards yet.</strong> Use the prepared official links below. They open the right source searches even when the site cannot retrieve a result automatically.</p>', `${flatSources.length} lead(s)`));
+      const rankedSources = splitOfficialSources(flatSources, q);
+      sections.push(section('Best matching official leads', rankedSources.best.length ? `<p class="section-help"><strong>What these are:</strong> These official-source leads contain stronger signals from the information entered, such as a name, number, township/range/section, or Dawes/allotment/land-record terms. They are still leads, not proof. Open the source and verify the original record before relying on it.</p>${rankedSources.best.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No strong official-source matches yet.</strong> This does not mean no record exists. Use the related official leads and prepared source links below to continue searching.</p>', `${rankedSources.best.length} match(es)`));
+      sections.push(section('Related official leads', rankedSources.related.length ? `<p class="section-help"><strong>What these are:</strong> These are broader official-source leads from systems such as NARA, Federal Register, historic newspapers, Census/TIGERweb, and other public source sites. They may be useful context, but they are not being treated as strong matches.</p>${rankedSources.related.map(r => sourceCard(r, r.provider)).join('')}` : '<p class="muted"><strong>No related official-source leads found.</strong> Use the prepared official links below. They open the right source searches even when the site cannot retrieve a result automatically.</p>', `${rankedSources.related.length} lead(s)`));
       const officialLinks = (planner.official_source_leads || []).map(r => sourceCard(r, r.group)).join('');
       sections.push(section('Prepared official links', `<p class="section-help"><strong>What these do:</strong> These links are safety-net searches and agency paths. They are useful when the official source search does not return a result, when an outside site blocks an automated request, or when the family needs to continue the search directly on an official site.</p>${officialLinks}`, `${(planner.official_source_leads||[]).length} link(s)`));
       sections.push(section('Agency record request packets', `<p class="section-help"><strong>What these are:</strong> Copy the request for the agency, archive, county clerk, court clerk, BIA/LTRO office, or land-record office. Each request tells the office what record trail the family is trying to locate and lists the record types to check.</p>${(planner.record_request_packet || []).map(requestCard).join('')}`, `${(planner.record_request_packet||[]).length} request(s)`));
       if (output) output.innerHTML = sections.join('');
-      if ($('unifiedCount')) $('unifiedCount').textContent = `${siteCards.length + flatSources.length} matching result/lead card(s)`;
+      if ($('unifiedCount')) $('unifiedCount').textContent = `${siteCards.length + rankedSources.best.length} best match card(s); ${rankedSources.related.length} related official lead(s)`;
       status('Unified search complete. Start with the built research path, then use the matching records, source links, and copy-paste request packets below.');
     } catch (e) {
       if (output) output.innerHTML = `<p class="status bad">Unified search failed: ${esc(e.message || e)}</p>`;

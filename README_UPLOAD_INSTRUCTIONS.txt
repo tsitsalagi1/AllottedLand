@@ -1,38 +1,19 @@
-AllottedLand.com NARA packet/results patch
+AllottedLand.com — Best/Related Official Leads Patch
 
-This patch fixes the problem where the Cloudflare Worker worked in the browser console, but NARA API hits were not reliably showing inside the same “Official source leads” section that the printable packet uses.
+Purpose:
+- Keeps NARA Catalog API results, but separates stronger matches from broad official leads.
+- Adds two sections to the unified packet/output:
+  1. Best matching official leads
+  2. Related official leads
+- Broad NARA records such as photographs, postmaster appointments, or general Cherokee Nation records will no longer be presented as "best matches" unless they also contain strong family/land/Dawes/allotment signals.
 
-UPLOAD TO WEBSITE:
-1. Replace this file on the full website:
-   assets/unified-search.js
-
-2. Deploy from the FULL site folder, not from this patch folder:
+Upload:
+1. Extract this ZIP.
+2. Copy assets/unified-search.js into your full site folder:
+   C:\Users\dynam\Desktop\Allotted Land\AllottedLand-main\assets\unified-search.js
+3. Deploy from the full site folder:
    cd "C:\Users\dynam\Desktop\Allotted Land\AllottedLand-main"
    npx.cmd wrangler pages deploy . --project-name allottedland --branch main
 
-WORKER UPDATE RECOMMENDED:
-The uploaded PDF was generated from a Cloudflare Pages preview URL:
-https://48a1b44d.allottedland.pages.dev
-
-If the Worker only allows https://allottedland.com, NARA results can work on the live site but fail on preview/PDF testing because of CORS. To fix that, open:
-Cloudflare → Workers & Pages → allottedland-nara-proxy → Edit code
-
-Replace the Worker code with:
-worker/allottedland-nara-proxy-worker-v4.js
-
-Then Save and deploy.
-
-TESTS:
-1. Worker health:
-   https://allottedland-nara-proxy.dynamictech-nwa.workers.dev/health
-
-2. Worker search:
-   https://allottedland-nara-proxy.dynamictech-nwa.workers.dev/?q=Cherokee&rows=5&nocache=v4
-
-3. Live site:
-   https://allottedland.com
-   Search: Cherokee Nation
-   Print/save packet. NARA Catalog API cards should appear under Official source leads.
-
-SECURITY:
-Do not put the NARA API key into any website file. It stays only in the Worker secret named NARA_API_KEY.
+Do not deploy this ZIP by itself as the entire website.
+Do not put the NARA API key in any website file. The key stays in the Cloudflare Worker secret.
